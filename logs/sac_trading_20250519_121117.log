@@ -1,0 +1,6 @@
+2025-05-19 12:11:19 - sac_trading - INFO - Actor 네트워크 초기화 완료: 상태 차원 10, 행동 차원 1
+2025-05-19 12:11:19 - sac_trading - INFO - Critic 네트워크 초기화 완료: 상태 차원 10, 행동 차원 1
+2025-05-19 12:11:19 - sac_trading - INFO - Critic 네트워크 초기화 완료: 상태 차원 10, 행동 차원 1
+2025-05-19 12:11:21 - sac_trading - INFO - SAC 에이전트 초기화 완료: 행동 차원 1, 일반 모델 사용
+2025-05-19 12:11:21 - sac_trading - INFO - 모델 저장 완료: C:\big19\final_project\v02_sac-trading\models\sac_model_20250519_121121
+2025-05-19 12:11:21 - sac_trading - INFO - 모델 로드 완료: C:\big19\final_project\v02_sac-trading\models\sac_model_20250519_121121

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAC 트레이딩 시스템 대시보드</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">SAC 트레이딩 시스템</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">대시보드</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/live-trading">실시간 트레이딩</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/backtest">백테스트 결과</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/models">모델 관리</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/settings">설정</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">트레이딩 시스템 개요</h5>
+                        <button class="btn btn-sm btn-outline-primary refresh-btn" onclick="refreshDashboard()">
+                            <i class="bi bi-arrow-clockwise"></i> 새로고침
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="stat-card">
+                                    <h6>현재 포트폴리오 가치</h6>
+                                    <h3 id="portfolio-value">-</h3>
+                                    <p id="portfolio-change" class="mb-0">변화: <span>-</span></p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card">
+                                    <h6>오늘의 손익</h6>
+                                    <h3 id="today-pnl">-</h3>
+                                    <p id="today-trades" class="mb-0">거래 횟수: <span>-</span></p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card">
+                                    <h6>총 수익률</h6>
+                                    <h3 id="total-return">-</h3>
+                                    <p id="total-duration" class="mb-0">기간: <span>-</span></p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card">
+                                    <h6>현재 포지션</h6>
+                                    <h3 id="positions-count">-</h3>
+                                    <p id="positions-value" class="mb-0">가치: <span>-</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">포트폴리오 가치 변화</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="portfolio-chart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">수익률 변화</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="returns-chart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">낙폭(Drawdown) 변화</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="drawdown-chart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">거래 분포</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="trade-distribution-chart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">최근 거래 내역</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>시간</th>
+                                        <th>심볼</th>
+                                        <th>종류</th>
+                                        <th>수량</th>
+                                        <th>가격</th>
+                                        <th>금액</th>
+                                        <th>상태</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-trades">
+                                    <tr>
+                                        <td colspan="7" class="text-center">데이터 로딩 중...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">© 2023 SAC 트레이딩 시스템 대시보드</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 페이지 로드 시 데이터 로드
+            loadDashboardData();
+            
+            // 1분마다 자동 새로고침
+            setInterval(loadDashboardData, 60000);
+        });
+
+        function loadDashboardData() {
+            // 트레이딩 통계 로드
+            $.getJSON('/api/trading-stats', function(data) {
+                updateTradingStats(data);
+            });
+            
+            // 차트 로드
+            loadCharts();
+        }
+
+        function refreshDashboard() {
+            // 새로고침 버튼 클릭 시 데이터 다시 로드
+            $.getJSON('/api/trading-stats?refresh=true', function(data) {
+                updateTradingStats(data);
+            });
+            
+            // 차트 다시 로드
+            loadCharts();
+        }
+
+        function updateTradingStats(data) {
+            // 만약 데이터가 없으면 기본값 표시
+            if (!data || $.isEmptyObject(data)) {
+                $('#portfolio-value').text('데이터 없음');
+                $('#portfolio-change').html('변화: <span>-</span>');
+                $('#today-pnl').text('데이터 없음');
+                $('#today-trades').html('거래 횟수: <span>-</span>');
+                $('#total-return').text('데이터 없음');
+                $('#total-duration').html('기간: <span>-</span>');
+                $('#positions-count').text('데이터 없음');
+                $('#positions-value').html('가치: <span>-</span>');
+                $('#recent-trades').html('<tr><td colspan="7" class="text-center">데이터가 없습니다.</td></tr>');
+                return;
+            }
+
+            // 포트폴리오 가치 및 변화 업데이트
+            if (data.account && data.trading_stats) {
+                const currentBalance = data.account.balance || 0;
+                const initialBalance = data.trading_stats.initial_balance || 0;
+                const pnl = data.trading_stats.pnl || 0;
+                const pnlPercent = initialBalance > 0 ? (pnl / initialBalance * 100) : 0;
+                
+                $('#portfolio-value').text(`$${currentBalance.toLocaleString('ko-KR', {maximumFractionDigits: 2})}`);
+                
+                const changeClass = pnl >= 0 ? 'text-success' : 'text-danger';
+                const changeSign = pnl >= 0 ? '+' : '';
+                $('#portfolio-change').html(`변화: <span class="${changeClass}">${changeSign}$${pnl.toLocaleString('ko-KR', {maximumFractionDigits: 2})} (${changeSign}${pnlPercent.toFixed(2)}%)</span>`);
+            }
+
+            // 오늘의 손익 및 거래 횟수 업데이트
+            if (data.trading_stats && data.trading_stats.trades) {
+                const today = new Date().toISOString().split('T')[0];
+                const todayTrades = data.trading_stats.trades.filter(t => t.timestamp && t.timestamp.startsWith(today));
+                const todayPnl = todayTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+                
+                $('#today-pnl').text(`$${todayPnl.toLocaleString('ko-KR', {maximumFractionDigits: 2})}`);
+                $('#today-trades').html(`거래 횟수: <span>${todayTrades.length}</span>`);
+            }
+
+            // 총 수익률 및 기간 업데이트
+            if (data.trading_stats && data.trading_stats.start_time) {
+                const totalReturn = data.trading_stats.pnl || 0;
+                const initialBalance = data.trading_stats.initial_balance || 0;
+                const returnPercent = initialBalance > 0 ? (totalReturn / initialBalance * 100) : 0;
+                
+                $('#total-return').text(`${returnPercent.toFixed(2)}%`);
+                
+                // 기간 계산
+                const startTime = new Date(data.trading_stats.start_time);
+                const now = new Date();
+                const diffDays = Math.floor((now - startTime) / (1000 * 60 * 60 * 24));
+                
+                $('#total-duration').html(`기간: <span>${diffDays}일</span>`);
+            }
+
+            // 현재 포지션 수 및 가치 업데이트
+            if (data.positions) {
+                const positionsCount = Object.keys(data.positions).length;
+                let positionsValue = 0;
+                
+                for (const symbol in data.positions) {
+                    positionsValue += data.positions[symbol].market_value || 0;
+                }
+                
+                $('#positions-count').text(positionsCount);
+                $('#positions-value').html(`가치: <span>$${positionsValue.toLocaleString('ko-KR', {maximumFractionDigits: 2})}</span>`);
+            }
+
+            // 최근 거래 내역 업데이트
+            if (data.trading_stats && data.trading_stats.trades && data.trading_stats.trades.length > 0) {
+                const trades = data.trading_stats.trades;
+                // 최근 거래 10개만 표시
+                const recentTrades = trades.slice(-10).reverse();
+                
+                let tradesHtml = '';
+                recentTrades.forEach(trade => {
+                    const timestamp = trade.timestamp || '';
+                    const symbol = trade.symbol || '';
+                    const side = (trade.side || '').toUpperCase();
+                    const quantity = (trade.quantity || 0).toLocaleString('ko-KR', {maximumFractionDigits: 6});
+                    const price = (trade.price || 0).toLocaleString('ko-KR', {maximumFractionDigits: 2});
+                    const amount = ((trade.quantity || 0) * (trade.price || 0)).toLocaleString('ko-KR', {maximumFractionDigits: 2});
+                    const status = trade.status || '';
+                    
+                    const sideClass = side === 'BUY' ? 'text-success' : 'text-danger';
+                    const statusClass = status === 'success' ? 'text-success' : 'text-danger';
+                    
+                    tradesHtml += `
+                        <tr>
+                            <td>${timestamp}</td>
+                            <td>${symbol}</td>
+                            <td class="${sideClass}">${side}</td>
+                            <td>${quantity}</td>
+                            <td>$${price}</td>
+                            <td>$${amount}</td>
+                            <td class="${statusClass}">${status}</td>
+                        </tr>
+                    `;
+                });
+                
+                if (tradesHtml === '') {
+                    tradesHtml = '<tr><td colspan="7" class="text-center">거래 내역이 없습니다.</td></tr>';
+                }
+                
+                $('#recent-trades').html(tradesHtml);
+            } else {
+                $('#recent-trades').html('<tr><td colspan="7" class="text-center">거래 내역이 없습니다.</td></tr>');
+            }
+        }
+
+        function loadCharts() {
+            // 포트폴리오 가치 차트 로드
+            $.getJSON('/api/charts/portfolio', function(data) {
+                if (data && !data.error) {
+                    Plotly.newPlot('portfolio-chart', data.data, data.layout);
+                } else {
+                    $('#portfolio-chart').html('<div class="text-center py-5">포트폴리오 데이터가 없습니다.</div>');
+                }
+            });
+            
+            // 수익률 차트 로드
+            $.getJSON('/api/charts/returns', function(data) {
+                if (data && !data.error) {
+                    Plotly.newPlot('returns-chart', data.data, data.layout);
+                } else {
+                    $('#returns-chart').html('<div class="text-center py-5">수익률 데이터가 없습니다.</div>');
+                }
+            });
+            
+            // 낙폭 차트 로드
+            $.getJSON('/api/charts/drawdown', function(data) {
+                if (data && !data.error) {
+                    Plotly.newPlot('drawdown-chart', data.data, data.layout);
+                } else {
+                    $('#drawdown-chart').html('<div class="text-center py-5">낙폭 데이터가 없습니다.</div>');
+                }
+            });
+            
+            // 거래 분포 차트 로드
+            $.getJSON('/api/charts/trade-distribution', function(data) {
+                if (data && !data.error) {
+                    Plotly.newPlot('trade-distribution-chart', data.data, data.layout);
+                } else {
+                    $('#trade-distribution-chart').html('<div class="text-center py-5">거래 분포 데이터가 없습니다.</div>');
+                }
+            });
+        }
+    </script>
+</body>
+</html> 

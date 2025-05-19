@@ -1,0 +1,26 @@
+2025-05-10 23:13:13 - sac_trading - INFO - 학습 시작: 대상 심볼 ['AAPL']
+2025-05-10 23:13:13 - sac_trading - INFO - DataCollector 초기화 완료: 1개 종목 대상
+2025-05-10 23:13:13 - sac_trading - INFO - 저장된 데이터 로드 중...
+2025-05-10 23:13:13 - sac_trading - INFO - AAPL 데이터 로드 완료: 3108 행
+2025-05-10 23:13:13 - sac_trading - INFO - 총 1/1 종목 데이터 로드 완료
+2025-05-10 23:13:13 - sac_trading - INFO - 데이터 전처리 중...
+2025-05-10 23:13:13 - sac_trading - INFO - DataProcessor 초기화 완료: 윈도우 크기 30
+2025-05-10 23:13:13 - sac_trading - INFO - AAPL 데이터 전처리 시작
+2025-05-10 23:13:13 - sac_trading - INFO - 데이터 전처리 완료: 3108 행
+2025-05-10 23:13:13 - sac_trading - INFO - 특성 추출 완료: 33개 특성
+2025-05-10 23:13:13 - sac_trading - INFO - AAPL 데이터 정규화 완료
+2025-05-10 23:13:13 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (3078, 30, 33), y 형태 (3078,)
+2025-05-10 23:13:13 - sac_trading - INFO - 데이터 분할 완료: 학습 2154개, 검증 462개, 테스트 462개
+2025-05-10 23:13:13 - sac_trading - INFO - AAPL 데이터 전처리 완료
+2025-05-10 23:13:13 - sac_trading - INFO - 총 1/1 종목 데이터 전처리 완료
+2025-05-10 23:13:13 - sac_trading - INFO - 단일 자산 트레이딩 환경 생성 중: AAPL
+2025-05-10 23:13:13 - sac_trading - INFO - AAPL 트레이딩 환경 초기화 완료: 데이터 길이 3108
+2025-05-10 23:13:13 - sac_trading - INFO - SAC 에이전트 생성 중...
+2025-05-10 23:13:13 - sac_trading - INFO - CNN Actor 네트워크 초기화 완료: 입력 형태 (30, 33), 행동 차원 1
+2025-05-10 23:13:13 - sac_trading - INFO - CNN Critic 네트워크 초기화 완료: 입력 형태 (30, 33), 행동 차원 1
+2025-05-10 23:13:13 - sac_trading - INFO - CNN Critic 네트워크 초기화 완료: 입력 형태 (30, 33), 행동 차원 1
+2025-05-10 23:13:13 - sac_trading - INFO - SAC 에이전트 초기화 완료: 행동 차원 1, CNN 사용
+2025-05-10 23:13:13 - sac_trading - INFO - 트레이너 생성 중...
+2025-05-10 23:13:13 - sac_trading - INFO - Trainer 초기화 완료: 2개 에피소드, 배치 크기 256
+2025-05-10 23:13:13 - sac_trading - INFO - 학습 시작...
+2025-05-10 23:13:13 - sac_trading - INFO - 학습 시작: 2개 에피소드

@@ -1,0 +1,10 @@
+2025-05-18 15:49:46 - sac_trading - INFO - DB 엔진 생성 성공
+2025-05-18 15:49:46 - sac_trading - INFO - DataCollector 초기화 완료: 1개 종목 대상
+2025-05-18 15:49:46 - sac_trading - INFO - aapl 데이터 로드 시작...
+2025-05-18 15:49:48 - sac_trading - INFO - aapl 데이터 로드 완료: 284643 행
+2025-05-18 15:49:48 - sac_trading - INFO - 총 1/1 종목 데이터 로드 완료
+2025-05-18 15:49:49 - sac_trading - INFO - Actor 네트워크 초기화 완료: 상태 차원 10, 행동 차원 1
+2025-05-18 15:49:49 - sac_trading - INFO - Critic 네트워크 초기화 완료: 상태 차원 10, 행동 차원 1
+2025-05-18 15:49:49 - sac_trading - INFO - Critic 네트워크 초기화 완료: 상태 차원 10, 행동 차원 1
+2025-05-18 15:49:51 - sac_trading - INFO - SAC 에이전트 초기화 완료: 행동 차원 1, 일반 모델 사용
+2025-05-18 15:49:51 - sac_trading - INFO - 모델 로드 완료: C:\big19\final_project\v02_sac-trading\models\sac_model_20250517_162213

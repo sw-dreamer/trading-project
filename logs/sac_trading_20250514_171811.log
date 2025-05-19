@@ -1,0 +1,726 @@
+2025-05-14 17:18:14 - sac_trading - INFO - 학습 시작: 대상 심볼 ['AAPL', 'VALE', 'NEM', 'FCX', 'T', 'NFLX', 'WBD', 'TSLA', 'AMZN', 'NKE', 'PEP', 'KVUE', 'PM', 'PBR', 'KMI', 'SHEL', 'ITUB', 'USB', 'MUFG', 'AZN', 'ABT', 'UNH', 'CSX', 'BA', 'RTX', 'NVDA', 'ERIC', 'YMM', 'NEE']
+2025-05-14 17:18:14 - sac_trading - INFO - DB 엔진 생성 성공
+2025-05-14 17:18:14 - sac_trading - INFO - DataCollector 초기화 완료: 29개 종목 대상
+2025-05-14 17:18:14 - sac_trading - INFO - 저장된 데이터 로드 중...
+2025-05-14 17:18:14 - sac_trading - INFO - AAPL 데이터 로드 시작...
+2025-05-14 17:18:16 - sac_trading - INFO - AAPL 데이터 로드 완료: 276495 행
+2025-05-14 17:18:16 - sac_trading - INFO - VALE 데이터 로드 시작...
+2025-05-14 17:18:17 - sac_trading - INFO - VALE 데이터 로드 완료: 155468 행
+2025-05-14 17:18:17 - sac_trading - INFO - NEM 데이터 로드 시작...
+2025-05-14 17:18:18 - sac_trading - INFO - NEM 데이터 로드 완료: 156078 행
+2025-05-14 17:18:18 - sac_trading - INFO - FCX 데이터 로드 시작...
+2025-05-14 17:18:19 - sac_trading - INFO - FCX 데이터 로드 완료: 152955 행
+2025-05-14 17:18:19 - sac_trading - INFO - T 데이터 로드 시작...
+2025-05-14 17:18:20 - sac_trading - INFO - T 데이터 로드 완료: 155987 행
+2025-05-14 17:18:20 - sac_trading - INFO - NFLX 데이터 로드 시작...
+2025-05-14 17:18:21 - sac_trading - INFO - NFLX 데이터 로드 완료: 146117 행
+2025-05-14 17:18:21 - sac_trading - INFO - WBD 데이터 로드 시작...
+2025-05-14 17:18:22 - sac_trading - INFO - WBD 데이터 로드 완료: 154465 행
+2025-05-14 17:18:22 - sac_trading - INFO - TSLA 데이터 로드 시작...
+2025-05-14 17:18:24 - sac_trading - INFO - TSLA 데이터 로드 완료: 159814 행
+2025-05-14 17:18:24 - sac_trading - INFO - AMZN 데이터 로드 시작...
+2025-05-14 17:18:25 - sac_trading - INFO - AMZN 데이터 로드 완료: 159387 행
+2025-05-14 17:18:25 - sac_trading - INFO - NKE 데이터 로드 시작...
+2025-05-14 17:18:26 - sac_trading - INFO - NKE 데이터 로드 완료: 155579 행
+2025-05-14 17:19:22 - sac_trading - INFO - PEP 데이터 로드 시작...
+2025-05-14 17:19:23 - sac_trading - INFO - PEP 데이터 로드 완료: 138657 행
+2025-05-14 17:19:23 - sac_trading - INFO - KVUE 데이터 로드 시작...
+2025-05-14 17:19:24 - sac_trading - INFO - KVUE 데이터 로드 완료: 126070 행
+2025-05-14 17:19:24 - sac_trading - INFO - PM 데이터 로드 시작...
+2025-05-14 17:19:25 - sac_trading - INFO - PM 데이터 로드 완료: 131214 행
+2025-05-14 17:19:25 - sac_trading - INFO - PBR 데이터 로드 시작...
+2025-05-14 17:19:26 - sac_trading - INFO - PBR 데이터 로드 완료: 154045 행
+2025-05-14 17:19:26 - sac_trading - INFO - KMI 데이터 로드 시작...
+2025-05-14 17:19:27 - sac_trading - INFO - KMI 데이터 로드 완료: 140158 행
+2025-05-14 17:19:27 - sac_trading - INFO - SHEL 데이터 로드 시작...
+2025-05-14 17:19:28 - sac_trading - INFO - SHEL 데이터 로드 완료: 157404 행
+2025-05-14 17:19:28 - sac_trading - INFO - ITUB 데이터 로드 시작...
+2025-05-14 17:19:29 - sac_trading - INFO - ITUB 데이터 로드 완료: 123846 행
+2025-05-14 17:19:29 - sac_trading - INFO - USB 데이터 로드 시작...
+2025-05-14 17:19:29 - sac_trading - INFO - USB 데이터 로드 완료: 129437 행
+2025-05-14 17:19:29 - sac_trading - INFO - MUFG 데이터 로드 시작...
+2025-05-14 17:19:30 - sac_trading - INFO - MUFG 데이터 로드 완료: 135231 행
+2025-05-14 17:19:30 - sac_trading - INFO - AZN 데이터 로드 시작...
+2025-05-14 17:19:31 - sac_trading - INFO - AZN 데이터 로드 완료: 156016 행
+2025-05-14 17:19:31 - sac_trading - INFO - ABT 데이터 로드 시작...
+2025-05-14 17:19:32 - sac_trading - INFO - ABT 데이터 로드 완료: 124107 행
+2025-05-14 17:19:32 - sac_trading - INFO - UNH 데이터 로드 시작...
+2025-05-14 17:19:33 - sac_trading - INFO - UNH 데이터 로드 완료: 126883 행
+2025-05-14 17:19:33 - sac_trading - INFO - CSX 데이터 로드 시작...
+2025-05-14 17:19:34 - sac_trading - INFO - CSX 데이터 로드 완료: 130084 행
+2025-05-14 17:19:34 - sac_trading - INFO - BA 데이터 로드 시작...
+2025-05-14 17:19:35 - sac_trading - INFO - BA 데이터 로드 완료: 154001 행
+2025-05-14 17:19:35 - sac_trading - INFO - RTX 데이터 로드 시작...
+2025-05-14 17:19:36 - sac_trading - INFO - RTX 데이터 로드 완료: 134450 행
+2025-05-14 17:19:36 - sac_trading - INFO - NVDA 데이터 로드 시작...
+2025-05-14 17:19:37 - sac_trading - INFO - NVDA 데이터 로드 완료: 159803 행
+2025-05-14 17:19:37 - sac_trading - INFO - ERIC 데이터 로드 시작...
+2025-05-14 17:19:38 - sac_trading - INFO - ERIC 데이터 로드 완료: 154451 행
+2025-05-14 17:19:38 - sac_trading - INFO - YMM 데이터 로드 시작...
+2025-05-14 17:19:39 - sac_trading - INFO - YMM 데이터 로드 완료: 132312 행
+2025-05-14 17:19:39 - sac_trading - INFO - NEE 데이터 로드 시작...
+2025-05-14 17:19:40 - sac_trading - INFO - NEE 데이터 로드 완료: 142321 행
+2025-05-14 17:19:40 - sac_trading - INFO - 총 29/29 종목 데이터 로드 완료
+2025-05-14 17:19:40 - sac_trading - INFO - 데이터 전처리 중...
+2025-05-14 17:19:40 - sac_trading - INFO - DataProcessor 초기화 완료: 윈도우 크기 30
+2025-05-14 17:19:40 - sac_trading - INFO - AAPL 데이터 전처리 시작
+2025-05-14 17:19:40 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:40 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:40 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:40 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:40 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:40 - sac_trading - INFO - 데이터 전처리 완료: 276495 행
+2025-05-14 17:19:41 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:19:41 - sac_trading - INFO - AAPL 데이터 정규화 완료
+2025-05-14 17:19:51 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (276465, 30, 40), y 형태 (276465,)
+2025-05-14 17:19:51 - sac_trading - INFO - 데이터 분할 완료: 학습 193525개, 검증 41470개, 테스트 41470개
+2025-05-14 17:19:51 - sac_trading - INFO - AAPL 데이터 전처리 완료
+2025-05-14 17:19:51 - sac_trading - INFO - VALE 데이터 전처리 시작
+2025-05-14 17:19:51 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:51 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:51 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:51 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:51 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:51 - sac_trading - INFO - 데이터 전처리 완료: 154988 행
+2025-05-14 17:19:51 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:19:51 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:19:52 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:19:52 - sac_trading - INFO - VALE 데이터 정규화 완료
+2025-05-14 17:19:57 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (154958, 30, 40), y 형태 (154958,)
+2025-05-14 17:19:57 - sac_trading - INFO - 데이터 분할 완료: 학습 108470개, 검증 23244개, 테스트 23244개
+2025-05-14 17:19:57 - sac_trading - INFO - VALE 데이터 전처리 완료
+2025-05-14 17:19:57 - sac_trading - INFO - NEM 데이터 전처리 시작
+2025-05-14 17:19:57 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:57 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:57 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:57 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:57 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:19:57 - sac_trading - INFO - 데이터 전처리 완료: 155598 행
+2025-05-14 17:19:58 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:19:58 - sac_trading - INFO - NEM 데이터 정규화 완료
+2025-05-14 17:20:03 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (155568, 30, 40), y 형태 (155568,)
+2025-05-14 17:20:03 - sac_trading - INFO - 데이터 분할 완료: 학습 108897개, 검증 23335개, 테스트 23336개
+2025-05-14 17:20:03 - sac_trading - INFO - NEM 데이터 전처리 완료
+2025-05-14 17:20:03 - sac_trading - INFO - FCX 데이터 전처리 시작
+2025-05-14 17:20:03 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:03 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:03 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:03 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:03 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:03 - sac_trading - INFO - 데이터 전처리 완료: 152475 행
+2025-05-14 17:20:03 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:20:03 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:20:04 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:20:04 - sac_trading - INFO - FCX 데이터 정규화 완료
+2025-05-14 17:20:09 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (152445, 30, 40), y 형태 (152445,)
+2025-05-14 17:20:09 - sac_trading - INFO - 데이터 분할 완료: 학습 106711개, 검증 22867개, 테스트 22867개
+2025-05-14 17:20:09 - sac_trading - INFO - FCX 데이터 전처리 완료
+2025-05-14 17:20:09 - sac_trading - INFO - T 데이터 전처리 시작
+2025-05-14 17:20:09 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:09 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:09 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:09 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:09 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:09 - sac_trading - INFO - 데이터 전처리 완료: 155513 행
+2025-05-14 17:20:10 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:20:10 - sac_trading - INFO - T 데이터 정규화 완료
+2025-05-14 17:20:16 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (155483, 30, 40), y 형태 (155483,)
+2025-05-14 17:20:16 - sac_trading - INFO - 데이터 분할 완료: 학습 108838개, 검증 23322개, 테스트 23323개
+2025-05-14 17:20:16 - sac_trading - INFO - T 데이터 전처리 완료
+2025-05-14 17:20:16 - sac_trading - INFO - NFLX 데이터 전처리 시작
+2025-05-14 17:20:16 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:16 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:16 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:16 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:16 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:16 - sac_trading - INFO - 데이터 전처리 완료: 145640 행
+2025-05-14 17:20:16 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:20:16 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:20:16 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:20:16 - sac_trading - INFO - NFLX 데이터 정규화 완료
+2025-05-14 17:20:22 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (145610, 30, 40), y 형태 (145610,)
+2025-05-14 17:20:22 - sac_trading - INFO - 데이터 분할 완료: 학습 101927개, 검증 21841개, 테스트 21842개
+2025-05-14 17:20:22 - sac_trading - INFO - NFLX 데이터 전처리 완료
+2025-05-14 17:20:22 - sac_trading - INFO - WBD 데이터 전처리 시작
+2025-05-14 17:20:22 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:22 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:22 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:22 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:22 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:22 - sac_trading - INFO - 데이터 전처리 완료: 153992 행
+2025-05-14 17:20:22 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:20:22 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:20:22 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:20:22 - sac_trading - INFO - WBD 데이터 정규화 완료
+2025-05-14 17:20:28 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (153962, 30, 40), y 형태 (153962,)
+2025-05-14 17:20:28 - sac_trading - INFO - 데이터 분할 완료: 학습 107773개, 검증 23094개, 테스트 23095개
+2025-05-14 17:20:28 - sac_trading - INFO - WBD 데이터 전처리 완료
+2025-05-14 17:20:28 - sac_trading - INFO - TSLA 데이터 전처리 시작
+2025-05-14 17:20:28 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:28 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:28 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:28 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:28 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:28 - sac_trading - INFO - 데이터 전처리 완료: 159334 행
+2025-05-14 17:20:28 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:20:28 - sac_trading - INFO - TSLA 데이터 정규화 완료
+2025-05-14 17:20:34 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (159304, 30, 40), y 형태 (159304,)
+2025-05-14 17:20:34 - sac_trading - INFO - 데이터 분할 완료: 학습 111512개, 검증 23896개, 테스트 23896개
+2025-05-14 17:20:34 - sac_trading - INFO - TSLA 데이터 전처리 완료
+2025-05-14 17:20:34 - sac_trading - INFO - AMZN 데이터 전처리 시작
+2025-05-14 17:20:34 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:34 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:34 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:34 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:34 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:34 - sac_trading - INFO - 데이터 전처리 완료: 158907 행
+2025-05-14 17:20:35 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:20:35 - sac_trading - INFO - AMZN 데이터 정규화 완료
+2025-05-14 17:20:40 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (158877, 30, 40), y 형태 (158877,)
+2025-05-14 17:20:40 - sac_trading - INFO - 데이터 분할 완료: 학습 111213개, 검증 23832개, 테스트 23832개
+2025-05-14 17:20:40 - sac_trading - INFO - AMZN 데이터 전처리 완료
+2025-05-14 17:20:40 - sac_trading - INFO - NKE 데이터 전처리 시작
+2025-05-14 17:20:40 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:40 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:40 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:40 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:40 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:40 - sac_trading - INFO - 데이터 전처리 완료: 155101 행
+2025-05-14 17:20:41 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:20:41 - sac_trading - INFO - NKE 데이터 정규화 완료
+2025-05-14 17:20:47 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (155071, 30, 40), y 형태 (155071,)
+2025-05-14 17:20:47 - sac_trading - INFO - 데이터 분할 완료: 학습 108549개, 검증 23261개, 테스트 23261개
+2025-05-14 17:20:47 - sac_trading - INFO - NKE 데이터 전처리 완료
+2025-05-14 17:20:47 - sac_trading - INFO - PEP 데이터 전처리 시작
+2025-05-14 17:20:47 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:47 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:47 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:47 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:47 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:47 - sac_trading - INFO - 데이터 전처리 완료: 138183 행
+2025-05-14 17:20:47 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:20:47 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:20:47 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:20:48 - sac_trading - INFO - PEP 데이터 정규화 완료
+2025-05-14 17:20:52 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (138153, 30, 40), y 형태 (138153,)
+2025-05-14 17:20:52 - sac_trading - INFO - 데이터 분할 완료: 학습 96707개, 검증 20723개, 테스트 20723개
+2025-05-14 17:20:52 - sac_trading - INFO - PEP 데이터 전처리 완료
+2025-05-14 17:20:52 - sac_trading - INFO - KVUE 데이터 전처리 시작
+2025-05-14 17:20:52 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:52 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:52 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:52 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:52 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:52 - sac_trading - INFO - 데이터 전처리 완료: 125597 행
+2025-05-14 17:20:52 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:20:52 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:20:53 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:20:53 - sac_trading - INFO - KVUE 데이터 정규화 완료
+2025-05-14 17:20:57 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (125567, 30, 40), y 형태 (125567,)
+2025-05-14 17:20:57 - sac_trading - INFO - 데이터 분할 완료: 학습 87896개, 검증 18835개, 테스트 18836개
+2025-05-14 17:20:57 - sac_trading - INFO - KVUE 데이터 전처리 완료
+2025-05-14 17:20:57 - sac_trading - INFO - PM 데이터 전처리 시작
+2025-05-14 17:20:57 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:57 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:57 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:57 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:57 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:20:57 - sac_trading - INFO - 데이터 전처리 완료: 130753 행
+2025-05-14 17:20:57 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:20:57 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:20:58 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:20:58 - sac_trading - INFO - PM 데이터 정규화 완료
+2025-05-14 17:21:02 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (130723, 30, 40), y 형태 (130723,)
+2025-05-14 17:21:02 - sac_trading - INFO - 데이터 분할 완료: 학습 91506개, 검증 19608개, 테스트 19609개
+2025-05-14 17:21:02 - sac_trading - INFO - PM 데이터 전처리 완료
+2025-05-14 17:21:02 - sac_trading - INFO - PBR 데이터 전처리 시작
+2025-05-14 17:21:02 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:02 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:02 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:02 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:02 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:02 - sac_trading - INFO - 데이터 전처리 완료: 153565 행
+2025-05-14 17:21:02 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:02 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:03 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:21:03 - sac_trading - INFO - PBR 데이터 정규화 완료
+2025-05-14 17:21:09 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (153535, 30, 40), y 형태 (153535,)
+2025-05-14 17:21:09 - sac_trading - INFO - 데이터 분할 완료: 학습 107474개, 검증 23030개, 테스트 23031개
+2025-05-14 17:21:09 - sac_trading - INFO - PBR 데이터 전처리 완료
+2025-05-14 17:21:09 - sac_trading - INFO - KMI 데이터 전처리 시작
+2025-05-14 17:21:09 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:09 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:09 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:09 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:09 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:09 - sac_trading - INFO - 데이터 전처리 완료: 139678 행
+2025-05-14 17:21:09 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:09 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:09 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:21:10 - sac_trading - INFO - KMI 데이터 정규화 완료
+2025-05-14 17:21:14 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (139648, 30, 40), y 형태 (139648,)
+2025-05-14 17:21:14 - sac_trading - INFO - 데이터 분할 완료: 학습 97753개, 검증 20947개, 테스트 20948개
+2025-05-14 17:21:14 - sac_trading - INFO - KMI 데이터 전처리 완료
+2025-05-14 17:21:14 - sac_trading - INFO - SHEL 데이터 전처리 시작
+2025-05-14 17:21:14 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:14 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:14 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:14 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:14 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:14 - sac_trading - INFO - 데이터 전처리 완료: 156927 행
+2025-05-14 17:21:14 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:14 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:15 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:21:16 - sac_trading - INFO - SHEL 데이터 정규화 완료
+2025-05-14 17:21:21 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (156897, 30, 40), y 형태 (156897,)
+2025-05-14 17:21:21 - sac_trading - INFO - 데이터 분할 완료: 학습 109827개, 검증 23535개, 테스트 23535개
+2025-05-14 17:21:21 - sac_trading - INFO - SHEL 데이터 전처리 완료
+2025-05-14 17:21:21 - sac_trading - INFO - ITUB 데이터 전처리 시작
+2025-05-14 17:21:21 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:21 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:21 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:21 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:21 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:21 - sac_trading - INFO - 데이터 전처리 완료: 123557 행
+2025-05-14 17:21:21 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:21 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:21 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:21:21 - sac_trading - INFO - ITUB 데이터 정규화 완료
+2025-05-14 17:21:27 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (123527, 30, 40), y 형태 (123527,)
+2025-05-14 17:21:27 - sac_trading - INFO - 데이터 분할 완료: 학습 86468개, 검증 18529개, 테스트 18530개
+2025-05-14 17:21:27 - sac_trading - INFO - ITUB 데이터 전처리 완료
+2025-05-14 17:21:27 - sac_trading - INFO - USB 데이터 전처리 시작
+2025-05-14 17:21:27 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:27 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:27 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:27 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:27 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:27 - sac_trading - INFO - 데이터 전처리 완료: 129026 행
+2025-05-14 17:21:27 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:27 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:29 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:21:29 - sac_trading - INFO - USB 데이터 정규화 완료
+2025-05-14 17:21:36 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (128996, 30, 40), y 형태 (128996,)
+2025-05-14 17:21:36 - sac_trading - INFO - 데이터 분할 완료: 학습 90297개, 검증 19349개, 테스트 19350개
+2025-05-14 17:21:36 - sac_trading - INFO - USB 데이터 전처리 완료
+2025-05-14 17:21:36 - sac_trading - INFO - MUFG 데이터 전처리 시작
+2025-05-14 17:21:36 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:36 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:36 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:36 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:36 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:36 - sac_trading - INFO - 데이터 전처리 완료: 134770 행
+2025-05-14 17:21:36 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:36 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:37 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:21:37 - sac_trading - INFO - MUFG 데이터 정규화 완료
+2025-05-14 17:21:42 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (134740, 30, 40), y 형태 (134740,)
+2025-05-14 17:21:42 - sac_trading - INFO - 데이터 분할 완료: 학습 94318개, 검증 20211개, 테스트 20211개
+2025-05-14 17:21:42 - sac_trading - INFO - MUFG 데이터 전처리 완료
+2025-05-14 17:21:42 - sac_trading - INFO - AZN 데이터 전처리 시작
+2025-05-14 17:21:42 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:42 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:42 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:42 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:42 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:42 - sac_trading - INFO - 데이터 전처리 완료: 155536 행
+2025-05-14 17:21:42 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:42 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:43 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:21:43 - sac_trading - INFO - AZN 데이터 정규화 완료
+2025-05-14 17:21:48 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (155506, 30, 40), y 형태 (155506,)
+2025-05-14 17:21:48 - sac_trading - INFO - 데이터 분할 완료: 학습 108854개, 검증 23326개, 테스트 23326개
+2025-05-14 17:21:48 - sac_trading - INFO - AZN 데이터 전처리 완료
+2025-05-14 17:21:48 - sac_trading - INFO - ABT 데이터 전처리 시작
+2025-05-14 17:21:48 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:48 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:48 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:48 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:48 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:48 - sac_trading - INFO - 데이터 전처리 완료: 123664 행
+2025-05-14 17:21:48 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:48 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:49 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:21:49 - sac_trading - INFO - ABT 데이터 정규화 완료
+2025-05-14 17:21:53 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (123634, 30, 40), y 형태 (123634,)
+2025-05-14 17:21:53 - sac_trading - INFO - 데이터 분할 완료: 학습 86543개, 검증 18545개, 테스트 18546개
+2025-05-14 17:21:53 - sac_trading - INFO - ABT 데이터 전처리 완료
+2025-05-14 17:21:53 - sac_trading - INFO - UNH 데이터 전처리 시작
+2025-05-14 17:21:53 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:53 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:53 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:53 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:53 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:53 - sac_trading - INFO - 데이터 전처리 완료: 126405 행
+2025-05-14 17:21:53 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:53 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:54 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:21:54 - sac_trading - INFO - UNH 데이터 정규화 완료
+2025-05-14 17:21:58 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (126375, 30, 40), y 형태 (126375,)
+2025-05-14 17:21:58 - sac_trading - INFO - 데이터 분할 완료: 학습 88462개, 검증 18956개, 테스트 18957개
+2025-05-14 17:21:58 - sac_trading - INFO - UNH 데이터 전처리 완료
+2025-05-14 17:21:58 - sac_trading - INFO - CSX 데이터 전처리 시작
+2025-05-14 17:21:58 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:58 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:58 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:58 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:58 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:21:58 - sac_trading - INFO - 데이터 전처리 완료: 129645 행
+2025-05-14 17:21:58 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:58 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:21:59 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:21:59 - sac_trading - INFO - CSX 데이터 정규화 완료
+2025-05-14 17:22:04 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (129615, 30, 40), y 형태 (129615,)
+2025-05-14 17:22:04 - sac_trading - INFO - 데이터 분할 완료: 학습 90730개, 검증 19442개, 테스트 19443개
+2025-05-14 17:22:04 - sac_trading - INFO - CSX 데이터 전처리 완료
+2025-05-14 17:22:04 - sac_trading - INFO - BA 데이터 전처리 시작
+2025-05-14 17:22:04 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:04 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:04 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:04 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:04 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:04 - sac_trading - INFO - 데이터 전처리 완료: 153522 행
+2025-05-14 17:22:04 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:22:04 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:22:05 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:22:05 - sac_trading - INFO - BA 데이터 정규화 완료
+2025-05-14 17:22:10 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (153492, 30, 40), y 형태 (153492,)
+2025-05-14 17:22:10 - sac_trading - INFO - 데이터 분할 완료: 학습 107444개, 검증 23024개, 테스트 23024개
+2025-05-14 17:22:10 - sac_trading - INFO - BA 데이터 전처리 완료
+2025-05-14 17:22:10 - sac_trading - INFO - RTX 데이터 전처리 시작
+2025-05-14 17:22:10 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:10 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:10 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:10 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:10 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:10 - sac_trading - INFO - 데이터 전처리 완료: 134035 행
+2025-05-14 17:22:10 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:22:10 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:22:11 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:22:11 - sac_trading - INFO - RTX 데이터 정규화 완료
+2025-05-14 17:22:17 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (134005, 30, 40), y 형태 (134005,)
+2025-05-14 17:22:17 - sac_trading - INFO - 데이터 분할 완료: 학습 93803개, 검증 20101개, 테스트 20101개
+2025-05-14 17:22:17 - sac_trading - INFO - RTX 데이터 전처리 완료
+2025-05-14 17:22:17 - sac_trading - INFO - NVDA 데이터 전처리 시작
+2025-05-14 17:22:17 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:17 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:17 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:17 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:17 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:17 - sac_trading - INFO - 데이터 전처리 완료: 159323 행
+2025-05-14 17:22:19 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:22:20 - sac_trading - INFO - NVDA 데이터 정규화 완료
+2025-05-14 17:22:25 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (159293, 30, 40), y 형태 (159293,)
+2025-05-14 17:22:25 - sac_trading - INFO - 데이터 분할 완료: 학습 111505개, 검증 23894개, 테스트 23894개
+2025-05-14 17:22:25 - sac_trading - INFO - NVDA 데이터 전처리 완료
+2025-05-14 17:22:25 - sac_trading - INFO - ERIC 데이터 전처리 시작
+2025-05-14 17:22:26 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:26 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:26 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:26 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:26 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:26 - sac_trading - INFO - 데이터 전처리 완료: 154024 행
+2025-05-14 17:22:26 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:22:26 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:22:26 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:22:27 - sac_trading - INFO - ERIC 데이터 정규화 완료
+2025-05-14 17:22:32 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (153994, 30, 40), y 형태 (153994,)
+2025-05-14 17:22:32 - sac_trading - INFO - 데이터 분할 완료: 학습 107795개, 검증 23099개, 테스트 23100개
+2025-05-14 17:22:32 - sac_trading - INFO - ERIC 데이터 전처리 완료
+2025-05-14 17:22:32 - sac_trading - INFO - YMM 데이터 전처리 시작
+2025-05-14 17:22:32 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:32 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:32 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:32 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:32 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:32 - sac_trading - INFO - 데이터 전처리 완료: 131845 행
+2025-05-14 17:22:32 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:22:32 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:22:32 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:22:33 - sac_trading - INFO - YMM 데이터 정규화 완료
+2025-05-14 17:22:41 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (131815, 30, 40), y 형태 (131815,)
+2025-05-14 17:22:41 - sac_trading - INFO - 데이터 분할 완료: 학습 92270개, 검증 19772개, 테스트 19773개
+2025-05-14 17:22:41 - sac_trading - INFO - YMM 데이터 전처리 완료
+2025-05-14 17:22:41 - sac_trading - INFO - NEE 데이터 전처리 시작
+2025-05-14 17:22:41 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:41 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:41 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:41 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:41 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-14 17:22:41 - sac_trading - INFO - 데이터 전처리 완료: 141848 행
+2025-05-14 17:22:42 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:22:42 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-14 17:22:44 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-14 17:22:44 - sac_trading - INFO - NEE 데이터 정규화 완료
+2025-05-14 17:22:52 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (141818, 30, 40), y 형태 (141818,)
+2025-05-14 17:22:52 - sac_trading - INFO - 데이터 분할 완료: 학습 99272개, 검증 21273개, 테스트 21273개
+2025-05-14 17:22:52 - sac_trading - INFO - NEE 데이터 전처리 완료
+2025-05-14 17:22:52 - sac_trading - INFO - 총 29/29 종목 데이터 전처리 완료
+2025-05-14 17:22:52 - sac_trading - INFO - 단일 자산 트레이딩 환경 생성 중: AAPL
+2025-05-14 17:22:52 - sac_trading - INFO - AAPL 트레이딩 환경 초기화 완료: 데이터 길이 276495
+2025-05-14 17:22:52 - sac_trading - INFO - SAC 에이전트 생성 중...
+2025-05-14 17:22:53 - sac_trading - INFO - Actor 네트워크 초기화 완료: 상태 차원 1202, 행동 차원 1
+2025-05-14 17:22:53 - sac_trading - INFO - Critic 네트워크 초기화 완료: 상태 차원 1202, 행동 차원 1
+2025-05-14 17:22:53 - sac_trading - INFO - Critic 네트워크 초기화 완료: 상태 차원 1202, 행동 차원 1
+2025-05-14 17:22:59 - sac_trading - INFO - SAC 에이전트 초기화 완료: 행동 차원 1, 일반 모델 사용
+2025-05-14 17:22:59 - sac_trading - INFO - 트레이너 생성 중...
+2025-05-14 17:22:59 - sac_trading - INFO - Trainer 초기화 완료: 1000개 에피소드, 배치 크기 256
+2025-05-14 17:22:59 - sac_trading - INFO - 학습 시작...
+2025-05-14 17:22:59 - sac_trading - INFO - 학습 시작: 1000개 에피소드
+2025-05-14 17:22:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:22:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:22:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:22:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:22:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:22:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:22:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514
+2025-05-14 17:23:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.275378056297514

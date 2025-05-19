@@ -1,0 +1,24 @@
+2025-05-19 13:27:08 [INFO] 백테스트 시작
+2025-05-19 13:27:08 [INFO] 설정: Namespace(model_path='C:\\big19\\final_project\\v02_sac-trading\\models\\cnn_sac_model_20250519_122014', config_path=None, data_path=None, use_db=True, db_user='postgres', db_password='mysecretpassword', db_host='192.168.40.193', db_port=5432, db_name='mydb', symbol='tsla', results_dir='results/backtest', initial_balance=10000.0, transaction_fee_percent=0.0025, benchmark_data_path=None, window_size=None, override_window_size=False, feature_selection=None)
+2025-05-19 13:27:08 [INFO] 설정을 성공적으로 로드했습니다.
+2025-05-19 13:27:08 [INFO] 사용할 장치: cuda
+2025-05-19 13:27:08 [INFO] 데이터베이스에서 데이터 로드 중...
+2025-05-19 13:27:10 [INFO] 데이터베이스에서 tsla 데이터 로드 완료: 162694 행
+2025-05-19 13:27:13 [INFO] 백테스트 실행 중...
+2025-05-19 13:40:31 [INFO] Backtest completed with final portfolio value: 0.01
+2025-05-19 13:40:31 [INFO] Total reward: -23210.48
+2025-05-19 13:40:31 [INFO] Performance metrics: {'cumulative_return': -0.999999, 'annual_return': -0.021175647771831008, 'annual_volatility': 0.0, 'sharpe_ratio': 0, 'max_drawdown': -0.9999998384260546, 'win_rate': 0, 'total_trades': 0}
+2025-05-19 13:40:31 [INFO] Backtest results saved to results/backtest\20250519_132708\backtest_results.json
+2025-05-19 13:40:31 [INFO] 백테스트 결과를 results/backtest\20250519_132708\backtest_results.json에 저장했습니다.
+2025-05-19 13:40:31 [INFO] 백테스트 결과 시각화 중...
+2025-05-19 13:40:34 [ERROR] 시각화 중 오류 발생: Object of type int32 is not JSON serializable
+2025-05-19 13:40:34 [INFO] 백테스트 성능 지표:
+2025-05-19 13:40:34 [INFO] 초기 자본금: $10000.00
+2025-05-19 13:40:34 [INFO] 최종 포트폴리오 가치: $0.01
+2025-05-19 13:40:34 [INFO] 누적 수익률: -100.00%
+2025-05-19 13:40:34 [INFO] 연간 수익률: -2.12%
+2025-05-19 13:40:34 [INFO] 샤프 비율: 0.00
+2025-05-19 13:40:34 [INFO] 최대 낙폭: -100.00%
+2025-05-19 13:40:34 [INFO] 총 거래 횟수: 0
+2025-05-19 13:40:34 [INFO] 승률: 0.00%
+2025-05-19 13:40:34 [INFO] 백테스트가 성공적으로 완료되었습니다.

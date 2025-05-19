@@ -1,0 +1,14 @@
+2025-05-18 10:55:40 - sac_trading - INFO - DB 엔진 생성 성공
+2025-05-18 10:55:40 - sac_trading - INFO - DataCollector 초기화 완료: 1개 종목 대상
+2025-05-18 10:55:40 - sac_trading - INFO - 'aapl' 데이터 로드 시작...
+2025-05-18 10:55:40 - sac_trading - ERROR - 'aapl' 데이터 로드 중 DB 오류 발생: (psycopg2.errors.SyntaxError) syntax error at or near "'aapl'"
+LINE 3:             FROM ticker_'aapl'
+                                ^
+
+[SQL: 
+            SELECT *
+            FROM ticker_'aapl'
+            ORDER BY timestamp DESC;
+        ]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-05-18 10:55:40 - sac_trading - INFO - 총 0/1 종목 데이터 로드 완료

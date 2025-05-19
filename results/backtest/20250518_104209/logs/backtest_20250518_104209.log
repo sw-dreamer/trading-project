@@ -1,0 +1,4 @@
+2025-05-18 10:42:09 [INFO] 백테스트 시작
+2025-05-18 10:42:09 [INFO] 설정: Namespace(model_path='C:\\big19\\final_project\\v02_sac-trading\\models\\sac_model_20250517_162213', config_path=None, data_path=None, results_dir='results/backtest', initial_balance=10000.0, commission_rate=0.0025, benchmark_data_path=None, window_size=None)
+2025-05-18 10:42:09 [INFO] 설정을 성공적으로 로드했습니다.
+2025-05-18 10:42:09 [INFO] 사용할 장치: cuda

@@ -1,0 +1,6 @@
+2025-05-18 11:00:26 [INFO] 백테스트 시작
+2025-05-18 11:00:26 [INFO] 설정: Namespace(model_path='C:\\big19\\final_project\\v02_sac-trading\\models\\sac_model_20250517_162213', config_path=None, data_path=None, use_db=True, db_user='postgres', db_password='mysecretpassword', db_host='192.168.40.193', db_port=5432, db_name='mydb', symbol="'tsla'", results_dir='results/backtest', initial_balance=10000.0, commission_rate=0.0025, benchmark_data_path=None, window_size=None)
+2025-05-18 11:00:26 [INFO] 설정을 성공적으로 로드했습니다.
+2025-05-18 11:00:26 [INFO] 사용할 장치: cuda
+2025-05-18 11:00:26 [INFO] 데이터베이스에서 데이터 로드 중...
+2025-05-18 11:00:27 [ERROR] 데이터베이스에서 'tsla' 데이터를 찾을 수 없습니다.

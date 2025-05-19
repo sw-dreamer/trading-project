@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설정 - SAC 트레이딩 시스템</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">SAC 트레이딩 시스템</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">대시보드</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/live-trading">실시간 트레이딩</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/backtest">백테스트 결과</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/models">모델 관리</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/settings">설정</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">시스템 설정</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>SAC 트레이딩 시스템의 다양한 설정을 관리할 수 있습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">트레이딩 설정</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="trading-settings-form">
+                            <div class="mb-3">
+                                <label for="initial-balance" class="form-label">초기 잔고</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="initial-balance" value="10000" min="100">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="max-position-size" class="form-label">최대 포지션 크기 (%)</label>
+                                <input type="range" class="form-range" id="max-position-size" min="1" max="100" value="20">
+                                <div class="text-end" id="max-position-size-value">20%</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="risk-per-trade" class="form-label">거래당 최대 손실 위험 (%)</label>
+                                <input type="range" class="form-range" id="risk-per-trade" min="0.1" max="10" step="0.1" value="1">
+                                <div class="text-end" id="risk-per-trade-value">1%</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="stop-loss" class="form-label">손절매 (기본값 %)</label>
+                                <input type="range" class="form-range" id="stop-loss" min="0.5" max="10" step="0.5" value="2">
+                                <div class="text-end" id="stop-loss-value">2%</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="take-profit" class="form-label">이익실현 (기본값 %)</label>
+                                <input type="range" class="form-range" id="take-profit" min="0.5" max="20" step="0.5" value="5">
+                                <div class="text-end" id="take-profit-value">5%</div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="trailing-stop" checked>
+                                    <label class="form-check-label" for="trailing-stop">트레일링 손절매 사용</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">설정 저장</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">API 설정</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="api-settings-form">
+                            <div class="mb-3">
+                                <label for="api-provider" class="form-label">API 제공업체</label>
+                                <select class="form-select" id="api-provider">
+                                    <option value="simulator">시뮬레이터</option>
+                                    <option value="kis">한국투자증권</option>
+                                    <option value="creon">크레온 플러스</option>
+                                    <option value="binance">바이낸스</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="api-key" class="form-label">API 키</label>
+                                <input type="text" class="form-control" id="api-key" placeholder="API 키를 입력하세요">
+                            </div>
+                            <div class="mb-3">
+                                <label for="api-secret" class="form-label">API 비밀키</label>
+                                <input type="password" class="form-control" id="api-secret" placeholder="API 비밀키를 입력하세요">
+                            </div>
+                            <div class="mb-3">
+                                <label for="api-passphrase" class="form-label">API 암호 (선택사항)</label>
+                                <input type="password" class="form-control" id="api-passphrase" placeholder="일부 거래소에서 필요">
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="paper-trading" checked>
+                                    <label class="form-check-label" for="paper-trading">페이퍼 트레이딩 모드 사용</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">API 설정 저장</button>
+                            <button type="button" class="btn btn-outline-secondary" id="test-api-connection">연결 테스트</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">데이터 및 백업</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="settings-section">
+                                    <h6>캐시 관리</h6>
+                                    <p class="text-muted">시스템 캐시를 관리합니다.</p>
+                                    <button type="button" class="btn btn-outline-danger" id="clear-cache">캐시 초기화</button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="settings-section">
+                                    <h6>데이터 백업</h6>
+                                    <p class="text-muted">트레이딩 데이터와 모델을 백업합니다.</p>
+                                    <button type="button" class="btn btn-outline-primary" id="backup-data">데이터 백업</button>
+                                    <button type="button" class="btn btn-outline-secondary" id="restore-data">백업 복원</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">시스템 정보</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th width="30%">시스템 버전</th>
+                                            <td>1.0.0</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Python 버전</th>
+                                            <td>3.9.10</td>
+                                        </tr>
+                                        <tr>
+                                            <th>PyTorch 버전</th>
+                                            <td>2.0.1</td>
+                                        </tr>
+                                        <tr>
+                                            <th>마지막 업데이트</th>
+                                            <td>2024-05-11</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th width="30%">데이터 디렉토리</th>
+                                            <td id="data-directory">-</td>
+                                        </tr>
+                                        <tr>
+                                            <th>모델 디렉토리</th>
+                                            <td id="model-directory">-</td>
+                                        </tr>
+                                        <tr>
+                                            <th>로그 디렉토리</th>
+                                            <td id="log-directory">-</td>
+                                        </tr>
+                                        <tr>
+                                            <th>디스크 사용량</th>
+                                            <td id="disk-usage">-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">© 2023 SAC 트레이딩 시스템 대시보드</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 설정 로드
+            loadSettings();
+            loadSystemInfo();
+            
+            // 범위 슬라이더 이벤트
+            $('#max-position-size').on('input', function() {
+                $('#max-position-size-value').text($(this).val() + '%');
+            });
+            
+            $('#risk-per-trade').on('input', function() {
+                $('#risk-per-trade-value').text($(this).val() + '%');
+            });
+            
+            $('#stop-loss').on('input', function() {
+                $('#stop-loss-value').text($(this).val() + '%');
+            });
+            
+            $('#take-profit').on('input', function() {
+                $('#take-profit-value').text($(this).val() + '%');
+            });
+            
+            // 폼 제출 이벤트
+            $('#trading-settings-form').submit(function(e) {
+                e.preventDefault();
+                saveTradingSettings();
+            });
+            
+            $('#api-settings-form').submit(function(e) {
+                e.preventDefault();
+                saveApiSettings();
+            });
+            
+            // 버튼 클릭 이벤트
+            $('#test-api-connection').click(function() {
+                testApiConnection();
+            });
+            
+            $('#clear-cache').click(function() {
+                clearCache();
+            });
+            
+            $('#backup-data').click(function() {
+                backupData();
+            });
+            
+            $('#restore-data').click(function() {
+                restoreData();
+            });
+        });
+        
+        function loadSettings() {
+            // TODO: 실제 API 연동 시 설정 로드 API 호출
+            
+            // 임시 데이터로 UI 업데이트
+            $('#initial-balance').val('10000');
+            $('#max-position-size').val('20');
+            $('#max-position-size-value').text('20%');
+            $('#risk-per-trade').val('1');
+            $('#risk-per-trade-value').text('1%');
+            $('#stop-loss').val('2');
+            $('#stop-loss-value').text('2%');
+            $('#take-profit').val('5');
+            $('#take-profit-value').text('5%');
+            $('#trailing-stop').prop('checked', true);
+            
+            $('#api-provider').val('simulator');
+            $('#api-key').val('');
+            $('#api-secret').val('');
+            $('#api-passphrase').val('');
+            $('#paper-trading').prop('checked', true);
+        }
+        
+        function loadSystemInfo() {
+            // TODO: 실제 API 연동 시 시스템 정보 로드 API 호출
+            
+            // 임시 데이터로 UI 업데이트
+            $('#data-directory').text('D:/trading_projects/v02_sac-trading/data');
+            $('#model-directory').text('D:/trading_projects/v02_sac-trading/models');
+            $('#log-directory').text('D:/trading_projects/v02_sac-trading/results/logs');
+            $('#disk-usage').text('256 MB / 500 GB');
+        }
+        
+        function saveTradingSettings() {
+            // 폼 데이터 수집
+            const settings = {
+                initial_balance: parseFloat($('#initial-balance').val()),
+                max_position_size: parseFloat($('#max-position-size').val()),
+                risk_per_trade: parseFloat($('#risk-per-trade').val()),
+                stop_loss: parseFloat($('#stop-loss').val()),
+                take_profit: parseFloat($('#take-profit').val()),
+                trailing_stop: $('#trailing-stop').is(':checked')
+            };
+            
+            // TODO: 실제 API 연동 시 설정 저장 API 호출
+            
+            // 임시 알림
+            alert('트레이딩 설정이 저장되었습니다.');
+        }
+        
+        function saveApiSettings() {
+            // 폼 데이터 수집
+            const settings = {
+                api_provider: $('#api-provider').val(),
+                api_key: $('#api-key').val(),
+                api_secret: $('#api-secret').val(),
+                api_passphrase: $('#api-passphrase').val(),
+                paper_trading: $('#paper-trading').is(':checked')
+            };
+            
+            // TODO: 실제 API 연동 시 API 설정 저장 API 호출
+            
+            // 임시 알림
+            alert('API 설정이 저장되었습니다.');
+        }
+        
+        function testApiConnection() {
+            // TODO: 실제 API 연동 시 API 연결 테스트 API 호출
+            
+            // 임시 알림
+            alert('API 연결 테스트가 성공했습니다.');
+        }
+        
+        function clearCache() {
+            if (confirm('정말로 캐시를 초기화하시겠습니까?')) {
+                // TODO: 실제 API 연동 시 캐시 초기화 API 호출
+                
+                // 임시 알림
+                alert('캐시가 성공적으로 초기화되었습니다.');
+            }
+        }
+        
+        function backupData() {
+            // TODO: 실제 API 연동 시 데이터 백업 API 호출
+            
+            // 임시 알림
+            alert('데이터 백업이 성공적으로 완료되었습니다.');
+        }
+        
+        function restoreData() {
+            if (confirm('백업에서 데이터를 복원하시겠습니까? 이 작업은 현재 데이터를 덮어쓰게 됩니다.')) {
+                // TODO: 실제 API 연동 시 데이터 복원 API 호출
+                
+                // 임시 알림
+                alert('데이터 복원이 성공적으로 완료되었습니다.');
+            }
+        }
+    </script>
+</body>
+</html> 

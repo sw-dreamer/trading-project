@@ -1,0 +1,1375 @@
+2025-05-15 15:57:16 - sac_trading - INFO - run_training 시작
+2025-05-15 15:57:16 - sac_trading - INFO - 학습 시작: 대상 심볼 ['AAPL', 'VALE', 'NEM', 'FCX', 'T', 'NFLX', 'WBD', 'TSLA', 'AMZN', 'NKE', 'PEP', 'KVUE', 'PM', 'PBR', 'KMI', 'SHEL', 'ITUB', 'USB', 'MUFG', 'AZN', 'ABT', 'UNH', 'CSX', 'BA', 'RTX', 'NVDA', 'ERIC', 'YMM', 'NEE']
+2025-05-15 15:57:16 - sac_trading - INFO - DB 엔진 생성 성공
+2025-05-15 15:57:16 - sac_trading - INFO - DataCollector 초기화 완료: 29개 종목 대상
+2025-05-15 15:57:16 - sac_trading - INFO - 저장된 데이터 로드 중...
+2025-05-15 15:57:16 - sac_trading - INFO - AAPL 데이터 로드 시작...
+2025-05-15 15:57:18 - sac_trading - INFO - AAPL 데이터 로드 완료: 283683 행
+2025-05-15 15:57:18 - sac_trading - INFO - VALE 데이터 로드 시작...
+2025-05-15 15:57:19 - sac_trading - INFO - VALE 데이터 로드 완료: 156397 행
+2025-05-15 15:57:19 - sac_trading - INFO - NEM 데이터 로드 시작...
+2025-05-15 15:57:21 - sac_trading - INFO - NEM 데이터 로드 완료: 157023 행
+2025-05-15 15:57:21 - sac_trading - INFO - FCX 데이터 로드 시작...
+2025-05-15 15:57:22 - sac_trading - INFO - FCX 데이터 로드 완료: 153750 행
+2025-05-15 15:57:22 - sac_trading - INFO - T 데이터 로드 시작...
+2025-05-15 15:57:23 - sac_trading - INFO - T 데이터 로드 완료: 156929 행
+2025-05-15 15:57:23 - sac_trading - INFO - NFLX 데이터 로드 시작...
+2025-05-15 15:57:24 - sac_trading - INFO - NFLX 데이터 로드 완료: 147013 행
+2025-05-15 15:57:24 - sac_trading - INFO - WBD 데이터 로드 시작...
+2025-05-15 15:57:25 - sac_trading - INFO - WBD 데이터 로드 완료: 155384 행
+2025-05-15 15:57:25 - sac_trading - INFO - TSLA 데이터 로드 시작...
+2025-05-15 15:57:26 - sac_trading - INFO - TSLA 데이터 로드 완료: 160774 행
+2025-05-15 15:57:26 - sac_trading - INFO - AMZN 데이터 로드 시작...
+2025-05-15 15:57:27 - sac_trading - INFO - AMZN 데이터 로드 완료: 160347 행
+2025-05-15 15:57:27 - sac_trading - INFO - NKE 데이터 로드 시작...
+2025-05-15 15:57:28 - sac_trading - INFO - NKE 데이터 로드 완료: 156537 행
+2025-05-15 15:57:28 - sac_trading - INFO - PEP 데이터 로드 시작...
+2025-05-15 15:57:29 - sac_trading - INFO - PEP 데이터 로드 완료: 139617 행
+2025-05-15 15:57:29 - sac_trading - INFO - KVUE 데이터 로드 시작...
+2025-05-15 15:57:30 - sac_trading - INFO - KVUE 데이터 로드 완료: 126812 행
+2025-05-15 15:57:30 - sac_trading - INFO - PM 데이터 로드 시작...
+2025-05-15 15:57:31 - sac_trading - INFO - PM 데이터 로드 완료: 132043 행
+2025-05-15 15:57:31 - sac_trading - INFO - PBR 데이터 로드 시작...
+2025-05-15 15:57:32 - sac_trading - INFO - PBR 데이터 로드 완료: 154953 행
+2025-05-15 15:57:32 - sac_trading - INFO - KMI 데이터 로드 시작...
+2025-05-15 15:57:33 - sac_trading - INFO - KMI 데이터 로드 완료: 141095 행
+2025-05-15 15:57:33 - sac_trading - INFO - SHEL 데이터 로드 시작...
+2025-05-15 15:57:34 - sac_trading - INFO - SHEL 데이터 로드 완료: 158256 행
+2025-05-15 15:57:34 - sac_trading - INFO - ITUB 데이터 로드 시작...
+2025-05-15 15:57:35 - sac_trading - INFO - ITUB 데이터 로드 완료: 124623 행
+2025-05-15 15:57:35 - sac_trading - INFO - USB 데이터 로드 시작...
+2025-05-15 15:57:35 - sac_trading - INFO - USB 데이터 로드 완료: 130234 행
+2025-05-15 15:57:35 - sac_trading - INFO - MUFG 데이터 로드 시작...
+2025-05-15 15:57:36 - sac_trading - INFO - MUFG 데이터 로드 완료: 136033 행
+2025-05-15 15:57:36 - sac_trading - INFO - AZN 데이터 로드 시작...
+2025-05-15 15:57:37 - sac_trading - INFO - AZN 데이터 로드 완료: 156967 행
+2025-05-15 15:57:37 - sac_trading - INFO - ABT 데이터 로드 시작...
+2025-05-15 15:57:38 - sac_trading - INFO - ABT 데이터 로드 완료: 124887 행
+2025-05-15 15:57:38 - sac_trading - INFO - UNH 데이터 로드 시작...
+2025-05-15 15:57:39 - sac_trading - INFO - UNH 데이터 로드 완료: 127841 행
+2025-05-15 15:57:39 - sac_trading - INFO - CSX 데이터 로드 시작...
+2025-05-15 15:57:40 - sac_trading - INFO - CSX 데이터 로드 완료: 130883 행
+2025-05-15 15:57:40 - sac_trading - INFO - BA 데이터 로드 시작...
+2025-05-15 15:57:41 - sac_trading - INFO - BA 데이터 로드 완료: 154960 행
+2025-05-15 15:57:41 - sac_trading - INFO - RTX 데이터 로드 시작...
+2025-05-15 15:57:42 - sac_trading - INFO - RTX 데이터 로드 완료: 135220 행
+2025-05-15 15:57:42 - sac_trading - INFO - NVDA 데이터 로드 시작...
+2025-05-15 15:57:43 - sac_trading - INFO - NVDA 데이터 로드 완료: 160763 행
+2025-05-15 15:57:43 - sac_trading - INFO - ERIC 데이터 로드 시작...
+2025-05-15 15:57:44 - sac_trading - INFO - ERIC 데이터 로드 완료: 155394 행
+2025-05-15 15:57:44 - sac_trading - INFO - YMM 데이터 로드 시작...
+2025-05-15 15:57:45 - sac_trading - INFO - YMM 데이터 로드 완료: 133075 행
+2025-05-15 15:57:45 - sac_trading - INFO - NEE 데이터 로드 시작...
+2025-05-15 15:57:46 - sac_trading - INFO - NEE 데이터 로드 완료: 143268 행
+2025-05-15 15:57:46 - sac_trading - INFO - 총 29/29 종목 데이터 로드 완료
+2025-05-15 15:57:46 - sac_trading - INFO - 데이터 전처리 중...
+2025-05-15 15:57:46 - sac_trading - INFO - DataProcessor 초기화 완료: 윈도우 크기 30
+2025-05-15 15:57:46 - sac_trading - INFO - AAPL 데이터 전처리 시작
+2025-05-15 15:57:46 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:57:46 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:57:46 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:57:46 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:57:46 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:57:46 - sac_trading - INFO - 데이터 전처리 완료: 277935 행
+2025-05-15 15:57:47 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:57:47 - sac_trading - INFO - AAPL 데이터 정규화 완료
+2025-05-15 15:57:57 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (277905, 30, 40), y 형태 (277905,)
+2025-05-15 15:57:57 - sac_trading - INFO - 데이터 분할 완료: 학습 194533개, 검증 41686개, 테스트 41686개
+2025-05-15 15:57:57 - sac_trading - INFO - AAPL 데이터 전처리 완료
+2025-05-15 15:57:57 - sac_trading - INFO - VALE 데이터 전처리 시작
+2025-05-15 15:57:57 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:57:57 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:57:57 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:57:57 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:57:57 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:57:57 - sac_trading - INFO - 데이터 전처리 완료: 155468 행
+2025-05-15 15:57:57 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:57:57 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:57:57 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:57:58 - sac_trading - INFO - VALE 데이터 정규화 완료
+2025-05-15 15:58:03 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (155438, 30, 40), y 형태 (155438,)
+2025-05-15 15:58:03 - sac_trading - INFO - 데이터 분할 완료: 학습 108806개, 검증 23316개, 테스트 23316개
+2025-05-15 15:58:03 - sac_trading - INFO - VALE 데이터 전처리 완료
+2025-05-15 15:58:03 - sac_trading - INFO - NEM 데이터 전처리 시작
+2025-05-15 15:58:03 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:03 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:03 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:03 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:03 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:03 - sac_trading - INFO - 데이터 전처리 완료: 156078 행
+2025-05-15 15:58:03 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:58:04 - sac_trading - INFO - NEM 데이터 정규화 완료
+2025-05-15 15:58:09 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (156048, 30, 40), y 형태 (156048,)
+2025-05-15 15:58:09 - sac_trading - INFO - 데이터 분할 완료: 학습 109233개, 검증 23407개, 테스트 23408개
+2025-05-15 15:58:09 - sac_trading - INFO - NEM 데이터 전처리 완료
+2025-05-15 15:58:09 - sac_trading - INFO - FCX 데이터 전처리 시작
+2025-05-15 15:58:09 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:09 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:09 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:09 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:09 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:09 - sac_trading - INFO - 데이터 전처리 완료: 152955 행
+2025-05-15 15:58:09 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:58:09 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:58:10 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:58:10 - sac_trading - INFO - FCX 데이터 정규화 완료
+2025-05-15 15:58:15 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (152925, 30, 40), y 형태 (152925,)
+2025-05-15 15:58:15 - sac_trading - INFO - 데이터 분할 완료: 학습 107047개, 검증 22939개, 테스트 22939개
+2025-05-15 15:58:15 - sac_trading - INFO - FCX 데이터 전처리 완료
+2025-05-15 15:58:15 - sac_trading - INFO - T 데이터 전처리 시작
+2025-05-15 15:58:15 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:15 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:15 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:15 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:15 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:15 - sac_trading - INFO - 데이터 전처리 완료: 155993 행
+2025-05-15 15:58:16 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:58:16 - sac_trading - INFO - T 데이터 정규화 완료
+2025-05-15 15:58:21 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (155963, 30, 40), y 형태 (155963,)
+2025-05-15 15:58:21 - sac_trading - INFO - 데이터 분할 완료: 학습 109174개, 검증 23394개, 테스트 23395개
+2025-05-15 15:58:21 - sac_trading - INFO - T 데이터 전처리 완료
+2025-05-15 15:58:21 - sac_trading - INFO - NFLX 데이터 전처리 시작
+2025-05-15 15:58:21 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:21 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:21 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:21 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:21 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:21 - sac_trading - INFO - 데이터 전처리 완료: 146120 행
+2025-05-15 15:58:21 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:58:21 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:58:22 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:58:22 - sac_trading - INFO - NFLX 데이터 정규화 완료
+2025-05-15 15:58:27 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (146090, 30, 40), y 형태 (146090,)
+2025-05-15 15:58:27 - sac_trading - INFO - 데이터 분할 완료: 학습 102263개, 검증 21913개, 테스트 21914개
+2025-05-15 15:58:27 - sac_trading - INFO - NFLX 데이터 전처리 완료
+2025-05-15 15:58:27 - sac_trading - INFO - WBD 데이터 전처리 시작
+2025-05-15 15:58:27 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:27 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:27 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:27 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:27 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:27 - sac_trading - INFO - 데이터 전처리 완료: 154472 행
+2025-05-15 15:58:27 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:58:27 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:58:28 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:58:28 - sac_trading - INFO - WBD 데이터 정규화 완료
+2025-05-15 15:58:33 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (154442, 30, 40), y 형태 (154442,)
+2025-05-15 15:58:33 - sac_trading - INFO - 데이터 분할 완료: 학습 108109개, 검증 23166개, 테스트 23167개
+2025-05-15 15:58:33 - sac_trading - INFO - WBD 데이터 전처리 완료
+2025-05-15 15:58:33 - sac_trading - INFO - TSLA 데이터 전처리 시작
+2025-05-15 15:58:33 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:33 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:33 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:33 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:33 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:33 - sac_trading - INFO - 데이터 전처리 완료: 159814 행
+2025-05-15 15:58:34 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:58:34 - sac_trading - INFO - TSLA 데이터 정규화 완료
+2025-05-15 15:58:40 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (159784, 30, 40), y 형태 (159784,)
+2025-05-15 15:58:40 - sac_trading - INFO - 데이터 분할 완료: 학습 111848개, 검증 23968개, 테스트 23968개
+2025-05-15 15:58:40 - sac_trading - INFO - TSLA 데이터 전처리 완료
+2025-05-15 15:58:40 - sac_trading - INFO - AMZN 데이터 전처리 시작
+2025-05-15 15:58:40 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:40 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:40 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:40 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:40 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:40 - sac_trading - INFO - 데이터 전처리 완료: 159387 행
+2025-05-15 15:58:40 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:58:40 - sac_trading - INFO - AMZN 데이터 정규화 완료
+2025-05-15 15:58:46 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (159357, 30, 40), y 형태 (159357,)
+2025-05-15 15:58:46 - sac_trading - INFO - 데이터 분할 완료: 학습 111549개, 검증 23904개, 테스트 23904개
+2025-05-15 15:58:46 - sac_trading - INFO - AMZN 데이터 전처리 완료
+2025-05-15 15:58:46 - sac_trading - INFO - NKE 데이터 전처리 시작
+2025-05-15 15:58:46 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:46 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:46 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:46 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:46 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:46 - sac_trading - INFO - 데이터 전처리 완료: 155581 행
+2025-05-15 15:58:47 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:58:47 - sac_trading - INFO - NKE 데이터 정규화 완료
+2025-05-15 15:58:52 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (155551, 30, 40), y 형태 (155551,)
+2025-05-15 15:58:52 - sac_trading - INFO - 데이터 분할 완료: 학습 108885개, 검증 23333개, 테스트 23333개
+2025-05-15 15:58:52 - sac_trading - INFO - NKE 데이터 전처리 완료
+2025-05-15 15:58:52 - sac_trading - INFO - PEP 데이터 전처리 시작
+2025-05-15 15:58:52 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:52 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:52 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:52 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:52 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:52 - sac_trading - INFO - 데이터 전처리 완료: 138663 행
+2025-05-15 15:58:52 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:58:52 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:58:53 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:58:53 - sac_trading - INFO - PEP 데이터 정규화 완료
+2025-05-15 15:58:58 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (138633, 30, 40), y 형태 (138633,)
+2025-05-15 15:58:58 - sac_trading - INFO - 데이터 분할 완료: 학습 97043개, 검증 20795개, 테스트 20795개
+2025-05-15 15:58:58 - sac_trading - INFO - PEP 데이터 전처리 완료
+2025-05-15 15:58:58 - sac_trading - INFO - KVUE 데이터 전처리 시작
+2025-05-15 15:58:58 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:58 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:58 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:58 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:58 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:58:58 - sac_trading - INFO - 데이터 전처리 완료: 126077 행
+2025-05-15 15:58:58 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:58:58 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:58:59 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:58:59 - sac_trading - INFO - KVUE 데이터 정규화 완료
+2025-05-15 15:59:03 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (126047, 30, 40), y 형태 (126047,)
+2025-05-15 15:59:10 - sac_trading - INFO - 데이터 분할 완료: 학습 88232개, 검증 18907개, 테스트 18908개
+2025-05-15 15:59:10 - sac_trading - INFO - KVUE 데이터 전처리 완료
+2025-05-15 15:59:10 - sac_trading - INFO - PM 데이터 전처리 시작
+2025-05-15 15:59:10 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:10 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:10 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:10 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:10 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:10 - sac_trading - INFO - 데이터 전처리 완료: 131233 행
+2025-05-15 15:59:10 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:59:10 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:59:11 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:59:11 - sac_trading - INFO - PM 데이터 정규화 완료
+2025-05-15 15:59:15 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (131203, 30, 40), y 형태 (131203,)
+2025-05-15 15:59:15 - sac_trading - INFO - 데이터 분할 완료: 학습 91842개, 검증 19680개, 테스트 19681개
+2025-05-15 15:59:15 - sac_trading - INFO - PM 데이터 전처리 완료
+2025-05-15 15:59:15 - sac_trading - INFO - PBR 데이터 전처리 시작
+2025-05-15 15:59:15 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:15 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:15 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:15 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:15 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:15 - sac_trading - INFO - 데이터 전처리 완료: 154045 행
+2025-05-15 15:59:15 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:59:15 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:59:16 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:59:16 - sac_trading - INFO - PBR 데이터 정규화 완료
+2025-05-15 15:59:21 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (154015, 30, 40), y 형태 (154015,)
+2025-05-15 15:59:21 - sac_trading - INFO - 데이터 분할 완료: 학습 107810개, 검증 23102개, 테스트 23103개
+2025-05-15 15:59:21 - sac_trading - INFO - PBR 데이터 전처리 완료
+2025-05-15 15:59:21 - sac_trading - INFO - KMI 데이터 전처리 시작
+2025-05-15 15:59:21 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:21 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:21 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:21 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:21 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:21 - sac_trading - INFO - 데이터 전처리 완료: 140158 행
+2025-05-15 15:59:21 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:59:21 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:59:22 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:59:22 - sac_trading - INFO - KMI 데이터 정규화 완료
+2025-05-15 15:59:27 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (140128, 30, 40), y 형태 (140128,)
+2025-05-15 15:59:27 - sac_trading - INFO - 데이터 분할 완료: 학습 98089개, 검증 21019개, 테스트 21020개
+2025-05-15 15:59:27 - sac_trading - INFO - KMI 데이터 전처리 완료
+2025-05-15 15:59:27 - sac_trading - INFO - SHEL 데이터 전처리 시작
+2025-05-15 15:59:27 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:27 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:27 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:27 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:27 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:27 - sac_trading - INFO - 데이터 전처리 완료: 157407 행
+2025-05-15 15:59:27 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:59:27 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:59:28 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:59:28 - sac_trading - INFO - SHEL 데이터 정규화 완료
+2025-05-15 15:59:34 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (157377, 30, 40), y 형태 (157377,)
+2025-05-15 15:59:34 - sac_trading - INFO - 데이터 분할 완료: 학습 110163개, 검증 23607개, 테스트 23607개
+2025-05-15 15:59:34 - sac_trading - INFO - SHEL 데이터 전처리 완료
+2025-05-15 15:59:34 - sac_trading - INFO - ITUB 데이터 전처리 시작
+2025-05-15 15:59:34 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:34 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:34 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:34 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:34 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:34 - sac_trading - INFO - 데이터 전처리 완료: 124037 행
+2025-05-15 15:59:34 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:59:34 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:59:34 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:59:35 - sac_trading - INFO - ITUB 데이터 정규화 완료
+2025-05-15 15:59:39 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (124007, 30, 40), y 형태 (124007,)
+2025-05-15 15:59:39 - sac_trading - INFO - 데이터 분할 완료: 학습 86804개, 검증 18601개, 테스트 18602개
+2025-05-15 15:59:39 - sac_trading - INFO - ITUB 데이터 전처리 완료
+2025-05-15 15:59:39 - sac_trading - INFO - USB 데이터 전처리 시작
+2025-05-15 15:59:40 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:40 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:40 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:40 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:40 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:40 - sac_trading - INFO - 데이터 전처리 완료: 129506 행
+2025-05-15 15:59:40 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:59:40 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:59:41 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:59:41 - sac_trading - INFO - USB 데이터 정규화 완료
+2025-05-15 15:59:47 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (129476, 30, 40), y 형태 (129476,)
+2025-05-15 15:59:47 - sac_trading - INFO - 데이터 분할 완료: 학습 90633개, 검증 19421개, 테스트 19422개
+2025-05-15 15:59:47 - sac_trading - INFO - USB 데이터 전처리 완료
+2025-05-15 15:59:47 - sac_trading - INFO - MUFG 데이터 전처리 시작
+2025-05-15 15:59:47 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:57 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:57 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:57 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:57 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 15:59:57 - sac_trading - INFO - 데이터 전처리 완료: 135250 행
+2025-05-15 15:59:57 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:59:57 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 15:59:58 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 15:59:58 - sac_trading - INFO - MUFG 데이터 정규화 완료
+2025-05-15 16:00:03 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (135220, 30, 40), y 형태 (135220,)
+2025-05-15 16:00:03 - sac_trading - INFO - 데이터 분할 완료: 학습 94654개, 검증 20283개, 테스트 20283개
+2025-05-15 16:00:03 - sac_trading - INFO - MUFG 데이터 전처리 완료
+2025-05-15 16:00:03 - sac_trading - INFO - AZN 데이터 전처리 시작
+2025-05-15 16:00:03 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:03 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:03 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:03 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:03 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:03 - sac_trading - INFO - 데이터 전처리 완료: 156016 행
+2025-05-15 16:00:03 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:03 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:03 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 16:00:05 - sac_trading - INFO - AZN 데이터 정규화 완료
+2025-05-15 16:00:11 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (155986, 30, 40), y 형태 (155986,)
+2025-05-15 16:00:11 - sac_trading - INFO - 데이터 분할 완료: 학습 109190개, 검증 23398개, 테스트 23398개
+2025-05-15 16:00:11 - sac_trading - INFO - AZN 데이터 전처리 완료
+2025-05-15 16:00:11 - sac_trading - INFO - ABT 데이터 전처리 시작
+2025-05-15 16:00:11 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:11 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:11 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:11 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:11 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:11 - sac_trading - INFO - 데이터 전처리 완료: 124144 행
+2025-05-15 16:00:11 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:11 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:12 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 16:00:12 - sac_trading - INFO - ABT 데이터 정규화 완료
+2025-05-15 16:00:16 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (124114, 30, 40), y 형태 (124114,)
+2025-05-15 16:00:16 - sac_trading - INFO - 데이터 분할 완료: 학습 86879개, 검증 18617개, 테스트 18618개
+2025-05-15 16:00:16 - sac_trading - INFO - ABT 데이터 전처리 완료
+2025-05-15 16:00:16 - sac_trading - INFO - UNH 데이터 전처리 시작
+2025-05-15 16:00:16 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:16 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:16 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:16 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:16 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:16 - sac_trading - INFO - 데이터 전처리 완료: 126885 행
+2025-05-15 16:00:16 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:16 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:17 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 16:00:17 - sac_trading - INFO - UNH 데이터 정규화 완료
+2025-05-15 16:00:21 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (126855, 30, 40), y 형태 (126855,)
+2025-05-15 16:00:21 - sac_trading - INFO - 데이터 분할 완료: 학습 88798개, 검증 19028개, 테스트 19029개
+2025-05-15 16:00:21 - sac_trading - INFO - UNH 데이터 전처리 완료
+2025-05-15 16:00:21 - sac_trading - INFO - CSX 데이터 전처리 시작
+2025-05-15 16:00:21 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:21 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:21 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:21 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:21 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:21 - sac_trading - INFO - 데이터 전처리 완료: 130125 행
+2025-05-15 16:00:21 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:21 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:22 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 16:00:22 - sac_trading - INFO - CSX 데이터 정규화 완료
+2025-05-15 16:00:26 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (130095, 30, 40), y 형태 (130095,)
+2025-05-15 16:00:26 - sac_trading - INFO - 데이터 분할 완료: 학습 91066개, 검증 19514개, 테스트 19515개
+2025-05-15 16:00:26 - sac_trading - INFO - CSX 데이터 전처리 완료
+2025-05-15 16:00:26 - sac_trading - INFO - BA 데이터 전처리 시작
+2025-05-15 16:00:26 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:26 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:26 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:26 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:26 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:26 - sac_trading - INFO - 데이터 전처리 완료: 154002 행
+2025-05-15 16:00:26 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:26 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:27 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 16:00:27 - sac_trading - INFO - BA 데이터 정규화 완료
+2025-05-15 16:00:32 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (153972, 30, 40), y 형태 (153972,)
+2025-05-15 16:00:32 - sac_trading - INFO - 데이터 분할 완료: 학습 107780개, 검증 23096개, 테스트 23096개
+2025-05-15 16:00:32 - sac_trading - INFO - BA 데이터 전처리 완료
+2025-05-15 16:00:32 - sac_trading - INFO - RTX 데이터 전처리 시작
+2025-05-15 16:00:32 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:32 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:32 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:32 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:32 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:32 - sac_trading - INFO - 데이터 전처리 완료: 134515 행
+2025-05-15 16:00:32 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:32 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:33 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 16:00:33 - sac_trading - INFO - RTX 데이터 정규화 완료
+2025-05-15 16:00:39 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (134485, 30, 40), y 형태 (134485,)
+2025-05-15 16:00:39 - sac_trading - INFO - 데이터 분할 완료: 학습 94139개, 검증 20173개, 테스트 20173개
+2025-05-15 16:00:39 - sac_trading - INFO - RTX 데이터 전처리 완료
+2025-05-15 16:00:39 - sac_trading - INFO - NVDA 데이터 전처리 시작
+2025-05-15 16:00:39 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:39 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:39 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:39 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:39 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:39 - sac_trading - INFO - 데이터 전처리 완료: 159803 행
+2025-05-15 16:00:39 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 16:00:40 - sac_trading - INFO - NVDA 데이터 정규화 완료
+2025-05-15 16:00:51 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (159773, 30, 40), y 형태 (159773,)
+2025-05-15 16:00:51 - sac_trading - INFO - 데이터 분할 완료: 학습 111841개, 검증 23966개, 테스트 23966개
+2025-05-15 16:00:51 - sac_trading - INFO - NVDA 데이터 전처리 완료
+2025-05-15 16:00:51 - sac_trading - INFO - ERIC 데이터 전처리 시작
+2025-05-15 16:00:51 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:51 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:51 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:51 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:51 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:51 - sac_trading - INFO - 데이터 전처리 완료: 154504 행
+2025-05-15 16:00:51 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:51 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:54 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 16:00:54 - sac_trading - INFO - ERIC 데이터 정규화 완료
+2025-05-15 16:00:59 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (154474, 30, 40), y 형태 (154474,)
+2025-05-15 16:00:59 - sac_trading - INFO - 데이터 분할 완료: 학습 108131개, 검증 23171개, 테스트 23172개
+2025-05-15 16:00:59 - sac_trading - INFO - ERIC 데이터 전처리 완료
+2025-05-15 16:00:59 - sac_trading - INFO - YMM 데이터 전처리 시작
+2025-05-15 16:00:59 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:59 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:59 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:59 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:59 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:00:59 - sac_trading - INFO - 데이터 전처리 완료: 132325 행
+2025-05-15 16:00:59 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:00:59 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:01:00 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 16:01:00 - sac_trading - INFO - YMM 데이터 정규화 완료
+2025-05-15 16:01:05 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (132295, 30, 40), y 형태 (132295,)
+2025-05-15 16:01:05 - sac_trading - INFO - 데이터 분할 완료: 학습 92606개, 검증 19844개, 테스트 19845개
+2025-05-15 16:01:05 - sac_trading - INFO - YMM 데이터 전처리 완료
+2025-05-15 16:01:05 - sac_trading - INFO - NEE 데이터 전처리 시작
+2025-05-15 16:01:05 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:01:05 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:01:05 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:01:05 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:01:05 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-15 16:01:05 - sac_trading - INFO - 데이터 전처리 완료: 142328 행
+2025-05-15 16:01:05 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:01:05 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-15 16:01:05 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-15 16:01:06 - sac_trading - INFO - NEE 데이터 정규화 완료
+2025-05-15 16:01:10 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (142298, 30, 40), y 형태 (142298,)
+2025-05-15 16:01:10 - sac_trading - INFO - 데이터 분할 완료: 학습 99608개, 검증 21345개, 테스트 21345개
+2025-05-15 16:01:10 - sac_trading - INFO - NEE 데이터 전처리 완료
+2025-05-15 16:01:10 - sac_trading - INFO - 총 29/29 종목 데이터 전처리 완료
+2025-05-15 16:01:10 - sac_trading - INFO - 단일 자산 트레이딩 환경 생성 중: AAPL
+2025-05-15 16:01:10 - sac_trading - INFO - AAPL 트레이딩 환경 초기화 완료: 데이터 길이 277935
+2025-05-15 16:01:10 - sac_trading - INFO - SAC 에이전트 생성 중...
+2025-05-15 16:01:11 - sac_trading - INFO - Actor 네트워크 초기화 완료: 상태 차원 1202, 행동 차원 1
+2025-05-15 16:01:11 - sac_trading - INFO - Critic 네트워크 초기화 완료: 상태 차원 1202, 행동 차원 1
+2025-05-15 16:01:11 - sac_trading - INFO - Critic 네트워크 초기화 완료: 상태 차원 1202, 행동 차원 1
+2025-05-15 16:01:14 - sac_trading - INFO - SAC 에이전트 초기화 완료: 행동 차원 1, 일반 모델 사용
+2025-05-15 16:01:14 - sac_trading - INFO - 트레이너 생성 중...
+2025-05-15 16:01:14 - sac_trading - INFO - Trainer 초기화 완료: 1000개 에피소드, 배치 크기 256
+2025-05-15 16:01:14 - sac_trading - INFO - 학습 시작...
+2025-05-15 16:01:14 - sac_trading - INFO - 학습 시작: 1000개 에피소드
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:14 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:15 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - INFO - 'actor_loss': -0.7526352405548096
+2025-05-15 16:01:16 - sac_trading - INFO - 'critic_loss': 0.917607843875885
+2025-05-15 16:01:16 - sac_trading - INFO - 'alpha_loss': -0.0
+2025-05-15 16:01:16 - sac_trading - INFO - 'entropy': -0.6666046977043152
+2025-05-15 16:01:16 - sac_trading - INFO - 'alpha': -0.7526352405548096
+2025-05-15 16:01:16 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:16 - sac_trading - INFO - 'actor_loss': -0.9040548801422119
+2025-05-15 16:01:56 - sac_trading - INFO - 'critic_loss': 0.6104899644851685
+2025-05-15 16:01:56 - sac_trading - INFO - 'alpha_loss': -0.0005022347322665155
+2025-05-15 16:01:56 - sac_trading - INFO - 'entropy': -0.6741158962249756
+2025-05-15 16:01:56 - sac_trading - INFO - 'alpha': -0.9040548801422119
+2025-05-15 16:01:56 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:56 - sac_trading - INFO - 'actor_loss': -1.0830169916152954
+2025-05-15 16:01:56 - sac_trading - INFO - 'critic_loss': 0.40745192766189575
+2025-05-15 16:01:56 - sac_trading - INFO - 'alpha_loss': -0.0010047315154224634
+2025-05-15 16:01:56 - sac_trading - INFO - 'entropy': -0.6744565367698669
+2025-05-15 16:01:56 - sac_trading - INFO - 'alpha': -1.0830169916152954
+2025-05-15 16:01:56 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:56 - sac_trading - INFO - 'actor_loss': -1.3056268692016602
+2025-05-15 16:01:56 - sac_trading - INFO - 'critic_loss': 0.11364972591400146
+2025-05-15 16:01:56 - sac_trading - INFO - 'alpha_loss': -0.0015121963806450367
+2025-05-15 16:01:56 - sac_trading - INFO - 'entropy': -0.6800655126571655
+2025-05-15 16:01:56 - sac_trading - INFO - 'alpha': -1.3056268692016602
+2025-05-15 16:01:56 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:56 - sac_trading - INFO - 'actor_loss': -1.5055568218231201
+2025-05-15 16:01:56 - sac_trading - INFO - 'critic_loss': 0.0733143612742424
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha_loss': -0.0020233537070453167
+2025-05-15 16:01:57 - sac_trading - INFO - 'entropy': -0.685882031917572
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha': -1.5055568218231201
+2025-05-15 16:01:57 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:57 - sac_trading - INFO - 'actor_loss': -1.5087920427322388
+2025-05-15 16:01:57 - sac_trading - INFO - 'critic_loss': 0.18084914982318878
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha_loss': -0.002513773273676634
+2025-05-15 16:01:57 - sac_trading - INFO - 'entropy': -0.6754703521728516
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha': -1.5087920427322388
+2025-05-15 16:01:57 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:57 - sac_trading - INFO - 'actor_loss': -1.456842303276062
+2025-05-15 16:01:57 - sac_trading - INFO - 'critic_loss': 0.19736863672733307
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha_loss': -0.003033142304047942
+2025-05-15 16:01:57 - sac_trading - INFO - 'entropy': -0.6846475601196289
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha': -1.456842303276062
+2025-05-15 16:01:57 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:57 - sac_trading - INFO - 'actor_loss': -1.3520488739013672
+2025-05-15 16:01:57 - sac_trading - INFO - 'critic_loss': 0.13386008143424988
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha_loss': -0.0035008075647056103
+2025-05-15 16:01:57 - sac_trading - INFO - 'entropy': -0.6665486693382263
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha': -1.3520488739013672
+2025-05-15 16:01:57 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:57 - sac_trading - INFO - 'actor_loss': -1.2741146087646484
+2025-05-15 16:01:57 - sac_trading - INFO - 'critic_loss': 0.102044977247715
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha_loss': -0.004003511276096106
+2025-05-15 16:01:57 - sac_trading - INFO - 'entropy': -0.667658805847168
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha': -1.2741146087646484
+2025-05-15 16:01:57 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:57 - sac_trading - INFO - 'actor_loss': -1.2234485149383545
+2025-05-15 16:01:57 - sac_trading - INFO - 'critic_loss': 0.08533190190792084
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha_loss': -0.004532730206847191
+2025-05-15 16:01:57 - sac_trading - INFO - 'entropy': -0.6783928275108337
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha': -1.2234485149383545
+2025-05-15 16:01:57 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:57 - sac_trading - INFO - 'actor_loss': -1.175943374633789
+2025-05-15 16:01:57 - sac_trading - INFO - 'critic_loss': 0.05910273641347885
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha_loss': -0.005013293586671352
+2025-05-15 16:01:57 - sac_trading - INFO - 'entropy': -0.6707444787025452
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha': -1.175943374633789
+2025-05-15 16:01:57 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:57 - sac_trading - INFO - 'actor_loss': -1.1778881549835205
+2025-05-15 16:01:57 - sac_trading - INFO - 'critic_loss': 0.0924118310213089
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha_loss': -0.005567764863371849
+2025-05-15 16:01:57 - sac_trading - INFO - 'entropy': -0.6869013905525208
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha': -1.1778881549835205
+2025-05-15 16:01:57 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:57 - sac_trading - INFO - 'actor_loss': -1.1688084602355957
+2025-05-15 16:01:57 - sac_trading - INFO - 'critic_loss': 0.09407398849725723
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha_loss': -0.006048942916095257
+2025-05-15 16:01:57 - sac_trading - INFO - 'entropy': -0.6799519658088684
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha': -1.1688084602355957
+2025-05-15 16:01:57 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:57 - sac_trading - INFO - 'actor_loss': -1.1858241558074951
+2025-05-15 16:01:57 - sac_trading - INFO - 'critic_loss': 0.0881485641002655
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha_loss': -0.006545308977365494
+2025-05-15 16:01:57 - sac_trading - INFO - 'entropy': -0.6779524683952332
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha': -1.1858241558074951
+2025-05-15 16:01:57 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:57 - sac_trading - INFO - 'actor_loss': -1.212457537651062
+2025-05-15 16:01:57 - sac_trading - INFO - 'critic_loss': 0.09172458201646805
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha_loss': -0.007021554745733738
+2025-05-15 16:01:57 - sac_trading - INFO - 'entropy': -0.6714478731155396
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha': -1.212457537651062
+2025-05-15 16:01:57 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:57 - sac_trading - INFO - 'actor_loss': -1.2508442401885986
+2025-05-15 16:01:57 - sac_trading - INFO - 'critic_loss': 0.06662017852067947
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha_loss': -0.007501233369112015
+2025-05-15 16:01:57 - sac_trading - INFO - 'entropy': -0.6665977239608765
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha': -1.2508442401885986
+2025-05-15 16:01:57 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:57 - sac_trading - INFO - 'actor_loss': -1.3312149047851562
+2025-05-15 16:01:57 - sac_trading - INFO - 'critic_loss': 0.07699570059776306
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha_loss': -0.008141681551933289
+2025-05-15 16:01:57 - sac_trading - INFO - 'entropy': -0.6958787441253662
+2025-05-15 16:01:57 - sac_trading - INFO - 'alpha': -1.3312149047851562
+2025-05-15 16:01:57 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:58 - sac_trading - INFO - 'actor_loss': -1.3545193672180176
+2025-05-15 16:01:58 - sac_trading - INFO - 'critic_loss': 0.04194365441799164
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha_loss': -0.008511622436344624
+2025-05-15 16:01:58 - sac_trading - INFO - 'entropy': -0.6686092615127563
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha': -1.3545193672180176
+2025-05-15 16:01:58 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:58 - sac_trading - INFO - 'actor_loss': -1.3996984958648682
+2025-05-15 16:01:58 - sac_trading - INFO - 'critic_loss': 0.03486252203583717
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha_loss': -0.009021980687975883
+2025-05-15 16:01:58 - sac_trading - INFO - 'entropy': -0.6704016923904419
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha': -1.3996984958648682
+2025-05-15 16:01:58 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:58 - sac_trading - INFO - 'actor_loss': -1.4200730323791504
+2025-05-15 16:01:58 - sac_trading - INFO - 'critic_loss': 0.05067151412367821
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha_loss': -0.009585746563971043
+2025-05-15 16:01:58 - sac_trading - INFO - 'entropy': -0.6813944578170776
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha': -1.4200730323791504
+2025-05-15 16:01:58 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:58 - sac_trading - INFO - 'actor_loss': -1.3979547023773193
+2025-05-15 16:01:58 - sac_trading - INFO - 'critic_loss': 0.05735991522669792
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha_loss': -0.01002707239240408
+2025-05-15 16:01:58 - sac_trading - INFO - 'entropy': -0.6708676815032959
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha': -1.3979547023773193
+2025-05-15 16:01:58 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:58 - sac_trading - INFO - 'actor_loss': -1.3817996978759766
+2025-05-15 16:01:58 - sac_trading - INFO - 'critic_loss': 0.05926748365163803
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha_loss': -0.010570980608463287
+2025-05-15 16:01:58 - sac_trading - INFO - 'entropy': -0.6776409149169922
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha': -1.3817996978759766
+2025-05-15 16:01:58 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:58 - sac_trading - INFO - 'actor_loss': -1.3626093864440918
+2025-05-15 16:01:58 - sac_trading - INFO - 'critic_loss': 0.07036837190389633
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha_loss': -0.011132885701954365
+2025-05-15 16:01:58 - sac_trading - INFO - 'entropy': -0.6865195035934448
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha': -1.3626093864440918
+2025-05-15 16:01:58 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:58 - sac_trading - INFO - 'actor_loss': -1.338331699371338
+2025-05-15 16:01:58 - sac_trading - INFO - 'critic_loss': 0.05129048973321915
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha_loss': -0.011639940552413464
+2025-05-15 16:01:58 - sac_trading - INFO - 'entropy': -0.6866480112075806
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha': -1.338331699371338
+2025-05-15 16:01:58 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:58 - sac_trading - INFO - 'actor_loss': -1.3047987222671509
+2025-05-15 16:01:58 - sac_trading - INFO - 'critic_loss': 0.04043133556842804
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha_loss': -0.012022120878100395
+2025-05-15 16:01:58 - sac_trading - INFO - 'entropy': -0.6694005131721497
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha': -1.3047987222671509
+2025-05-15 16:01:58 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:58 - sac_trading - INFO - 'actor_loss': -1.3130964040756226
+2025-05-15 16:01:58 - sac_trading - INFO - 'critic_loss': 0.06304304301738739
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha_loss': -0.012603888288140297
+2025-05-15 16:01:58 - sac_trading - INFO - 'entropy': -0.6801650524139404
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha': -1.3130964040756226
+2025-05-15 16:01:58 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:58 - sac_trading - INFO - 'actor_loss': -1.3168773651123047
+2025-05-15 16:01:58 - sac_trading - INFO - 'critic_loss': 0.051165781915187836
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha_loss': -0.013139765709638596
+2025-05-15 16:01:58 - sac_trading - INFO - 'entropy': -0.6842129826545715
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha': -1.3168773651123047
+2025-05-15 16:01:58 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:58 - sac_trading - INFO - 'actor_loss': -1.329282283782959
+2025-05-15 16:01:58 - sac_trading - INFO - 'critic_loss': 0.07466849684715271
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha_loss': -0.013616773299872875
+2025-05-15 16:01:58 - sac_trading - INFO - 'entropy': -0.6806789636611938
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha': -1.329282283782959
+2025-05-15 16:01:58 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:58 - sac_trading - INFO - 'actor_loss': -1.338355541229248
+2025-05-15 16:01:58 - sac_trading - INFO - 'critic_loss': 0.031557392328977585
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha_loss': -0.01407068595290184
+2025-05-15 16:01:58 - sac_trading - INFO - 'entropy': -0.6746444702148438
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha': -1.338355541229248
+2025-05-15 16:01:58 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:58 - sac_trading - INFO - 'actor_loss': -1.3731882572174072
+2025-05-15 16:01:58 - sac_trading - INFO - 'critic_loss': 0.03887983411550522
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha_loss': -0.01466359943151474
+2025-05-15 16:01:58 - sac_trading - INFO - 'entropy': -0.6850101351737976
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha': -1.3731882572174072
+2025-05-15 16:01:58 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:58 - sac_trading - INFO - 'actor_loss': -1.3850618600845337
+2025-05-15 16:01:58 - sac_trading - INFO - 'critic_loss': 0.04465367645025253
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha_loss': -0.015040474012494087
+2025-05-15 16:01:58 - sac_trading - INFO - 'entropy': -0.6706722974777222
+2025-05-15 16:01:58 - sac_trading - INFO - 'alpha': -1.3850618600845337
+2025-05-15 16:01:58 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:59 - sac_trading - INFO - 'actor_loss': -1.4090416431427002
+2025-05-15 16:01:59 - sac_trading - INFO - 'critic_loss': 0.027862627059221268
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha_loss': -0.015603041276335716
+2025-05-15 16:01:59 - sac_trading - INFO - 'entropy': -0.6772408485412598
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha': -1.4090416431427002
+2025-05-15 16:01:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:59 - sac_trading - INFO - 'actor_loss': -1.4288506507873535
+2025-05-15 16:01:59 - sac_trading - INFO - 'critic_loss': 0.04164453595876694
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha_loss': -0.01620691455900669
+2025-05-15 16:01:59 - sac_trading - INFO - 'entropy': -0.6877027153968811
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha': -1.4288506507873535
+2025-05-15 16:01:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:59 - sac_trading - INFO - 'actor_loss': -1.428985357284546
+2025-05-15 16:01:59 - sac_trading - INFO - 'critic_loss': 0.03898312896490097
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha_loss': -0.016725007444620132
+2025-05-15 16:01:59 - sac_trading - INFO - 'entropy': -0.6888477206230164
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha': -1.428985357284546
+2025-05-15 16:01:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:59 - sac_trading - INFO - 'actor_loss': -1.4191174507141113
+2025-05-15 16:01:59 - sac_trading - INFO - 'critic_loss': 0.018225979059934616
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha_loss': -0.01725177653133869
+2025-05-15 16:01:59 - sac_trading - INFO - 'entropy': -0.6907556056976318
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha': -1.4191174507141113
+2025-05-15 16:01:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:59 - sac_trading - INFO - 'actor_loss': -1.40409255027771
+2025-05-15 16:01:59 - sac_trading - INFO - 'critic_loss': 0.027326220646500587
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha_loss': -0.017683925107121468
+2025-05-15 16:01:59 - sac_trading - INFO - 'entropy': -0.6835252046585083
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha': -1.40409255027771
+2025-05-15 16:01:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:59 - sac_trading - INFO - 'actor_loss': -1.4024392366409302
+2025-05-15 16:01:59 - sac_trading - INFO - 'critic_loss': 0.02942093461751938
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha_loss': -0.018277525901794434
+2025-05-15 16:01:59 - sac_trading - INFO - 'entropy': -0.691637396812439
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha': -1.4024392366409302
+2025-05-15 16:01:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:59 - sac_trading - INFO - 'actor_loss': -1.3820096254348755
+2025-05-15 16:01:59 - sac_trading - INFO - 'critic_loss': 0.03001023828983307
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha_loss': -0.01866009645164013
+2025-05-15 16:01:59 - sac_trading - INFO - 'entropy': -0.6802887916564941
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha': -1.3820096254348755
+2025-05-15 16:01:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:59 - sac_trading - INFO - 'actor_loss': -1.3696904182434082
+2025-05-15 16:01:59 - sac_trading - INFO - 'critic_loss': 0.03517068922519684
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha_loss': -0.01906047947704792
+2025-05-15 16:01:59 - sac_trading - INFO - 'entropy': -0.6711069941520691
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha': -1.3696904182434082
+2025-05-15 16:01:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:59 - sac_trading - INFO - 'actor_loss': -1.3910295963287354
+2025-05-15 16:01:59 - sac_trading - INFO - 'critic_loss': 0.04202306270599365
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha_loss': -0.01973320171236992
+2025-05-15 16:01:59 - sac_trading - INFO - 'entropy': -0.6856840252876282
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha': -1.3910295963287354
+2025-05-15 16:01:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:59 - sac_trading - INFO - 'actor_loss': -1.3956184387207031
+2025-05-15 16:01:59 - sac_trading - INFO - 'critic_loss': 0.0508909597992897
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha_loss': -0.020164724439382553
+2025-05-15 16:01:59 - sac_trading - INFO - 'entropy': -0.6794362664222717
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha': -1.3956184387207031
+2025-05-15 16:01:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:59 - sac_trading - INFO - 'actor_loss': -1.4203193187713623
+2025-05-15 16:01:59 - sac_trading - INFO - 'critic_loss': 0.03382891044020653
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha_loss': -0.020717637613415718
+2025-05-15 16:01:59 - sac_trading - INFO - 'entropy': -0.6833621263504028
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha': -1.4203193187713623
+2025-05-15 16:01:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:59 - sac_trading - INFO - 'actor_loss': -1.4369964599609375
+2025-05-15 16:01:59 - sac_trading - INFO - 'critic_loss': 0.030914906412363052
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha_loss': -0.0212261900305748
+2025-05-15 16:01:59 - sac_trading - INFO - 'entropy': -0.6835799813270569
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha': -1.4369964599609375
+2025-05-15 16:01:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:59 - sac_trading - INFO - 'actor_loss': -1.4641804695129395
+2025-05-15 16:01:59 - sac_trading - INFO - 'critic_loss': 0.03998658433556557
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha_loss': -0.021919317543506622
+2025-05-15 16:01:59 - sac_trading - INFO - 'entropy': -0.6980845928192139
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha': -1.4641804695129395
+2025-05-15 16:01:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:01:59 - sac_trading - INFO - 'actor_loss': -1.4544727802276611
+2025-05-15 16:01:59 - sac_trading - INFO - 'critic_loss': 0.04006904363632202
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha_loss': -0.022233223542571068
+2025-05-15 16:01:59 - sac_trading - INFO - 'entropy': -0.6831919550895691
+2025-05-15 16:01:59 - sac_trading - INFO - 'alpha': -1.4544727802276611
+2025-05-15 16:01:59 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:00 - sac_trading - INFO - 'actor_loss': -1.4630147218704224
+2025-05-15 16:02:00 - sac_trading - INFO - 'critic_loss': 0.03619714453816414
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha_loss': -0.022818394005298615
+2025-05-15 16:02:00 - sac_trading - INFO - 'entropy': -0.6890435218811035
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha': -1.4630147218704224
+2025-05-15 16:02:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:00 - sac_trading - INFO - 'actor_loss': -1.4603321552276611
+2025-05-15 16:02:00 - sac_trading - INFO - 'critic_loss': 0.03239466995000839
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha_loss': -0.023310134187340736
+2025-05-15 16:02:00 - sac_trading - INFO - 'entropy': -0.6878675222396851
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha': -1.4603321552276611
+2025-05-15 16:02:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:00 - sac_trading - INFO - 'actor_loss': -1.4540023803710938
+2025-05-15 16:02:00 - sac_trading - INFO - 'critic_loss': 0.027082189917564392
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha_loss': -0.02375844120979309
+2025-05-15 16:02:00 - sac_trading - INFO - 'entropy': -0.6836588978767395
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha': -1.4540023803710938
+2025-05-15 16:02:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:00 - sac_trading - INFO - 'actor_loss': -1.4457600116729736
+2025-05-15 16:02:00 - sac_trading - INFO - 'critic_loss': 0.026800507679581642
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha_loss': -0.024190185591578484
+2025-05-15 16:02:00 - sac_trading - INFO - 'entropy': -0.6784797310829163
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha': -1.4457600116729736
+2025-05-15 16:02:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:00 - sac_trading - INFO - 'actor_loss': -1.4537603855133057
+2025-05-15 16:02:00 - sac_trading - INFO - 'critic_loss': 0.024193840101361275
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha_loss': -0.024883801117539406
+2025-05-15 16:02:00 - sac_trading - INFO - 'entropy': -0.6913226246833801
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha': -1.4537603855133057
+2025-05-15 16:02:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:00 - sac_trading - INFO - 'actor_loss': -1.4332358837127686
+2025-05-15 16:02:00 - sac_trading - INFO - 'critic_loss': 0.026250310242176056
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha_loss': -0.0251467265188694
+2025-05-15 16:02:00 - sac_trading - INFO - 'entropy': -0.674953281879425
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha': -1.4332358837127686
+2025-05-15 16:02:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:00 - sac_trading - INFO - 'actor_loss': -1.4424517154693604
+2025-05-15 16:02:00 - sac_trading - INFO - 'critic_loss': 0.02921956405043602
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha_loss': -0.025749467313289642
+2025-05-15 16:02:00 - sac_trading - INFO - 'entropy': -0.6814330816268921
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha': -1.4424517154693604
+2025-05-15 16:02:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:00 - sac_trading - INFO - 'actor_loss': -1.4402230978012085
+2025-05-15 16:02:00 - sac_trading - INFO - 'critic_loss': 0.01884014531970024
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha_loss': -0.026194609701633453
+2025-05-15 16:02:00 - sac_trading - INFO - 'entropy': -0.6775749325752258
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha': -1.4402230978012085
+2025-05-15 16:02:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:00 - sac_trading - INFO - 'actor_loss': -1.4353671073913574
+2025-05-15 16:02:00 - sac_trading - INFO - 'critic_loss': 0.02647218108177185
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha_loss': -0.02663251757621765
+2025-05-15 16:02:00 - sac_trading - INFO - 'entropy': -0.6734178066253662
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha': -1.4353671073913574
+2025-05-15 16:02:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:00 - sac_trading - INFO - 'actor_loss': -1.456545114517212
+2025-05-15 16:02:00 - sac_trading - INFO - 'critic_loss': 0.08420230448246002
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha_loss': -0.02727806195616722
+2025-05-15 16:02:00 - sac_trading - INFO - 'entropy': -0.6822344660758972
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha': -1.456545114517212
+2025-05-15 16:02:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:00 - sac_trading - INFO - 'actor_loss': -1.4458763599395752
+2025-05-15 16:02:00 - sac_trading - INFO - 'critic_loss': 0.025771766901016235
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha_loss': -0.02751452848315239
+2025-05-15 16:02:00 - sac_trading - INFO - 'entropy': -0.665961503982544
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha': -1.4458763599395752
+2025-05-15 16:02:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:00 - sac_trading - INFO - 'actor_loss': -1.477577805519104
+2025-05-15 16:02:00 - sac_trading - INFO - 'critic_loss': 0.02776571922004223
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha_loss': -0.028424451127648354
+2025-05-15 16:02:00 - sac_trading - INFO - 'entropy': -0.6903420090675354
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha': -1.477577805519104
+2025-05-15 16:02:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:00 - sac_trading - INFO - 'actor_loss': -1.4730035066604614
+2025-05-15 16:02:00 - sac_trading - INFO - 'critic_loss': 0.03563576564192772
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha_loss': -0.02865057997405529
+2025-05-15 16:02:00 - sac_trading - INFO - 'entropy': -0.6739026308059692
+2025-05-15 16:02:00 - sac_trading - INFO - 'alpha': -1.4730035066604614
+2025-05-15 16:02:00 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:01 - sac_trading - INFO - 'actor_loss': -1.4744536876678467
+2025-05-15 16:02:01 - sac_trading - INFO - 'critic_loss': 0.03356758505105972
+2025-05-15 16:02:01 - sac_trading - INFO - 'alpha_loss': -0.029129575937986374
+2025-05-15 16:02:01 - sac_trading - INFO - 'entropy': -0.6725596189498901
+2025-05-15 16:02:01 - sac_trading - INFO - 'alpha': -1.4744536876678467
+2025-05-15 16:02:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:01 - sac_trading - INFO - 'actor_loss': -1.4879016876220703
+2025-05-15 16:02:01 - sac_trading - INFO - 'critic_loss': 0.02227650210261345
+2025-05-15 16:02:01 - sac_trading - INFO - 'alpha_loss': -0.02985362336039543
+2025-05-15 16:02:01 - sac_trading - INFO - 'entropy': -0.6851056814193726
+2025-05-15 16:02:01 - sac_trading - INFO - 'alpha': -1.4879016876220703
+2025-05-15 16:02:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:01 - sac_trading - INFO - 'actor_loss': -1.4714703559875488
+2025-05-15 16:02:01 - sac_trading - INFO - 'critic_loss': 0.02238546311855316
+2025-05-15 16:02:01 - sac_trading - INFO - 'alpha_loss': -0.030144842341542244
+2025-05-15 16:02:01 - sac_trading - INFO - 'entropy': -0.6732020378112793
+2025-05-15 16:02:01 - sac_trading - INFO - 'alpha': -1.4714703559875488
+2025-05-15 16:02:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:01 - sac_trading - INFO - 'actor_loss': -1.4837737083435059
+2025-05-15 16:02:01 - sac_trading - INFO - 'critic_loss': 0.02691049687564373
+2025-05-15 16:02:01 - sac_trading - INFO - 'alpha_loss': -0.030959224328398705
+2025-05-15 16:02:01 - sac_trading - INFO - 'entropy': -0.6902607679367065
+2025-05-15 16:02:01 - sac_trading - INFO - 'alpha': -1.4837737083435059
+2025-05-15 16:02:01 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:01 - sac_trading - INFO - 'actor_loss': -1.465040683746338
+2025-05-15 16:02:03 - sac_trading - INFO - 'critic_loss': 0.02479279786348343
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha_loss': -0.031083572655916214
+2025-05-15 16:02:03 - sac_trading - INFO - 'entropy': -0.6696892380714417
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha': -1.465040683746338
+2025-05-15 16:02:03 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:03 - sac_trading - INFO - 'actor_loss': -1.4739547967910767
+2025-05-15 16:02:03 - sac_trading - INFO - 'critic_loss': 0.03276708349585533
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha_loss': -0.031685322523117065
+2025-05-15 16:02:03 - sac_trading - INFO - 'entropy': -0.6750222444534302
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha': -1.4739547967910767
+2025-05-15 16:02:03 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:03 - sac_trading - INFO - 'actor_loss': -1.4912946224212646
+2025-05-15 16:02:03 - sac_trading - INFO - 'critic_loss': 0.026266057044267654
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha_loss': -0.032344117760658264
+2025-05-15 16:02:03 - sac_trading - INFO - 'entropy': -0.6831635236740112
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha': -1.4912946224212646
+2025-05-15 16:02:03 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:03 - sac_trading - INFO - 'actor_loss': -1.498464584350586
+2025-05-15 16:02:03 - sac_trading - INFO - 'critic_loss': 0.0679788738489151
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha_loss': -0.03272517770528793
+2025-05-15 16:02:03 - sac_trading - INFO - 'entropy': -0.6768181324005127
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha': -1.498464584350586
+2025-05-15 16:02:03 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:03 - sac_trading - INFO - 'actor_loss': -1.5196254253387451
+2025-05-15 16:02:03 - sac_trading - INFO - 'critic_loss': 0.02923457697033882
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha_loss': -0.03344891220331192
+2025-05-15 16:02:03 - sac_trading - INFO - 'entropy': -0.6879606246948242
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha': -1.5196254253387451
+2025-05-15 16:02:03 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:03 - sac_trading - INFO - 'actor_loss': -1.4987422227859497
+2025-05-15 16:02:03 - sac_trading - INFO - 'critic_loss': 0.01910189911723137
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha_loss': -0.03345852345228195
+2025-05-15 16:02:03 - sac_trading - INFO - 'entropy': -0.6632598638534546
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha': -1.4987422227859497
+2025-05-15 16:02:03 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:03 - sac_trading - INFO - 'actor_loss': -1.5078258514404297
+2025-05-15 16:02:03 - sac_trading - INFO - 'critic_loss': 0.030771736055612564
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha_loss': -0.034312617033720016
+2025-05-15 16:02:03 - sac_trading - INFO - 'entropy': -0.6806695461273193
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha': -1.5078258514404297
+2025-05-15 16:02:03 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:03 - sac_trading - INFO - 'actor_loss': -1.505537986755371
+2025-05-15 16:02:03 - sac_trading - INFO - 'critic_loss': 0.03401178494095802
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha_loss': -0.03500571846961975
+2025-05-15 16:02:03 - sac_trading - INFO - 'entropy': -0.6898008584976196
+2025-05-15 16:02:03 - sac_trading - INFO - 'alpha': -1.505537986755371
+2025-05-15 16:02:03 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:04 - sac_trading - INFO - 'actor_loss': -1.507079839706421
+2025-05-15 16:02:04 - sac_trading - INFO - 'critic_loss': 0.021380381658673286
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha_loss': -0.03576269745826721
+2025-05-15 16:02:04 - sac_trading - INFO - 'entropy': -0.7016968131065369
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha': -1.507079839706421
+2025-05-15 16:02:04 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:04 - sac_trading - INFO - 'actor_loss': -1.4752790927886963
+2025-05-15 16:02:04 - sac_trading - INFO - 'critic_loss': 0.030618581920862198
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha_loss': -0.035639841109514236
+2025-05-15 16:02:04 - sac_trading - INFO - 'entropy': -0.6719560623168945
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha': -1.4752790927886963
+2025-05-15 16:02:04 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:04 - sac_trading - INFO - 'actor_loss': -1.4886088371276855
+2025-05-15 16:02:04 - sac_trading - INFO - 'critic_loss': 0.02185899205505848
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha_loss': -0.036362890154123306
+2025-05-15 16:02:04 - sac_trading - INFO - 'entropy': -0.6821861267089844
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha': -1.4886088371276855
+2025-05-15 16:02:04 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:04 - sac_trading - INFO - 'actor_loss': -1.484243392944336
+2025-05-15 16:02:04 - sac_trading - INFO - 'critic_loss': 0.024353913962841034
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha_loss': -0.036558009684085846
+2025-05-15 16:02:04 - sac_trading - INFO - 'entropy': -0.6680467128753662
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha': -1.484243392944336
+2025-05-15 16:02:04 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:04 - sac_trading - INFO - 'actor_loss': -1.5134913921356201
+2025-05-15 16:02:04 - sac_trading - INFO - 'critic_loss': 0.047399718314409256
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha_loss': -0.037266455590724945
+2025-05-15 16:02:04 - sac_trading - INFO - 'entropy': -0.6774100065231323
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha': -1.5134913921356201
+2025-05-15 16:02:04 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:04 - sac_trading - INFO - 'actor_loss': -1.5356013774871826
+2025-05-15 16:02:04 - sac_trading - INFO - 'critic_loss': 0.02092466875910759
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha_loss': -0.03791782259941101
+2025-05-15 16:02:04 - sac_trading - INFO - 'entropy': -0.6839911937713623
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha': -1.5356013774871826
+2025-05-15 16:02:04 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:04 - sac_trading - INFO - 'actor_loss': -1.557928204536438
+2025-05-15 16:02:04 - sac_trading - INFO - 'critic_loss': 0.022681288421154022
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha_loss': -0.03866451978683472
+2025-05-15 16:02:04 - sac_trading - INFO - 'entropy': -0.6945727467536926
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha': -1.557928204536438
+2025-05-15 16:02:04 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:04 - sac_trading - INFO - 'actor_loss': -1.5648298263549805
+2025-05-15 16:02:04 - sac_trading - INFO - 'critic_loss': 0.024633143097162247
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha_loss': -0.03932804614305496
+2025-05-15 16:02:04 - sac_trading - INFO - 'entropy': -0.7012651562690735
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha': -1.5648298263549805
+2025-05-15 16:02:04 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:04 - sac_trading - INFO - 'actor_loss': -1.542311191558838
+2025-05-15 16:02:04 - sac_trading - INFO - 'critic_loss': 0.03095337748527527
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha_loss': -0.03948039561510086
+2025-05-15 16:02:04 - sac_trading - INFO - 'entropy': -0.6859349012374878
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha': -1.542311191558838
+2025-05-15 16:02:04 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:04 - sac_trading - INFO - 'actor_loss': -1.524621605873108
+2025-05-15 16:02:04 - sac_trading - INFO - 'critic_loss': 0.030091971158981323
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha_loss': -0.039853535592556
+2025-05-15 16:02:04 - sac_trading - INFO - 'entropy': -0.6802998185157776
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha': -1.524621605873108
+2025-05-15 16:02:04 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:04 - sac_trading - INFO - 'actor_loss': -1.501206874847412
+2025-05-15 16:02:04 - sac_trading - INFO - 'critic_loss': 0.03318101167678833
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha_loss': -0.04013980180025101
+2025-05-15 16:02:04 - sac_trading - INFO - 'entropy': -0.6711932420730591
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha': -1.501206874847412
+2025-05-15 16:02:04 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:04 - sac_trading - INFO - 'actor_loss': -1.5060880184173584
+2025-05-15 16:02:04 - sac_trading - INFO - 'critic_loss': 0.03593270480632782
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha_loss': -0.04082077369093895
+2025-05-15 16:02:04 - sac_trading - INFO - 'entropy': -0.6785552501678467
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha': -1.5060880184173584
+2025-05-15 16:02:04 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:04 - sac_trading - INFO - 'actor_loss': -1.4982119798660278
+2025-05-15 16:02:04 - sac_trading - INFO - 'critic_loss': 0.055599793791770935
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha_loss': -0.04105406254529953
+2025-05-15 16:02:04 - sac_trading - INFO - 'entropy': -0.6675575375556946
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha': -1.4982119798660278
+2025-05-15 16:02:04 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:04 - sac_trading - INFO - 'actor_loss': -1.5306893587112427
+2025-05-15 16:02:04 - sac_trading - INFO - 'critic_loss': 0.06017136946320534
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha_loss': -0.04194064065814018
+2025-05-15 16:02:04 - sac_trading - INFO - 'entropy': -0.6830563545227051
+2025-05-15 16:02:04 - sac_trading - INFO - 'alpha': -1.5306893587112427
+2025-05-15 16:02:04 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:05 - sac_trading - INFO - 'actor_loss': -1.551207184791565
+2025-05-15 16:02:05 - sac_trading - INFO - 'critic_loss': 0.032738108187913895
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha_loss': -0.04254293069243431
+2025-05-15 16:02:05 - sac_trading - INFO - 'entropy': -0.6869107484817505
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha': -1.551207184791565
+2025-05-15 16:02:05 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:05 - sac_trading - INFO - 'actor_loss': -1.5471121072769165
+2025-05-15 16:02:05 - sac_trading - INFO - 'critic_loss': 0.01742420345544815
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha_loss': -0.04267747327685356
+2025-05-15 16:02:05 - sac_trading - INFO - 'entropy': -0.6723390221595764
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha': -1.5471121072769165
+2025-05-15 16:02:05 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:05 - sac_trading - INFO - 'actor_loss': -1.5618679523468018
+2025-05-15 16:02:05 - sac_trading - INFO - 'critic_loss': 0.02111002802848816
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha_loss': -0.04338185489177704
+2025-05-15 16:02:05 - sac_trading - INFO - 'entropy': -0.6801851987838745
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha': -1.5618679523468018
+2025-05-15 16:02:05 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:05 - sac_trading - INFO - 'actor_loss': -1.5504908561706543
+2025-05-15 16:02:05 - sac_trading - INFO - 'critic_loss': 0.02169181779026985
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha_loss': -0.04364560544490814
+2025-05-15 16:02:05 - sac_trading - INFO - 'entropy': -0.670981764793396
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha': -1.5504908561706543
+2025-05-15 16:02:05 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:05 - sac_trading - INFO - 'actor_loss': -1.5570805072784424
+2025-05-15 16:02:05 - sac_trading - INFO - 'critic_loss': 0.020503032952547073
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha_loss': -0.0444301962852478
+2025-05-15 16:02:05 - sac_trading - INFO - 'entropy': -0.6817108392715454
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha': -1.5570805072784424
+2025-05-15 16:02:05 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:05 - sac_trading - INFO - 'actor_loss': -1.5390350818634033
+2025-05-15 16:02:05 - sac_trading - INFO - 'critic_loss': 0.02333996072411537
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha_loss': -0.04482027143239975
+2025-05-15 16:02:05 - sac_trading - INFO - 'entropy': -0.677431583404541
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha': -1.5390350818634033
+2025-05-15 16:02:05 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:05 - sac_trading - INFO - 'actor_loss': -1.5225557088851929
+2025-05-15 16:02:05 - sac_trading - INFO - 'critic_loss': 0.018296945840120316
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha_loss': -0.045147594064474106
+2025-05-15 16:02:05 - sac_trading - INFO - 'entropy': -0.670927107334137
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha': -1.5225557088851929
+2025-05-15 16:02:05 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:05 - sac_trading - INFO - 'actor_loss': -1.519587755203247
+2025-05-15 16:02:05 - sac_trading - INFO - 'critic_loss': 0.03687586635351181
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha_loss': -0.045714907348155975
+2025-05-15 16:02:05 - sac_trading - INFO - 'entropy': -0.6733580827713013
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha': -1.519587755203247
+2025-05-15 16:02:05 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:05 - sac_trading - INFO - 'actor_loss': -1.547870397567749
+2025-05-15 16:02:05 - sac_trading - INFO - 'critic_loss': 0.05547482520341873
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha_loss': -0.04669427126646042
+2025-05-15 16:02:05 - sac_trading - INFO - 'entropy': -0.6906602382659912
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha': -1.547870397567749
+2025-05-15 16:02:05 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:05 - sac_trading - INFO - 'actor_loss': -1.559395432472229
+2025-05-15 16:02:05 - sac_trading - INFO - 'critic_loss': 0.044034380465745926
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha_loss': -0.04695446044206619
+2025-05-15 16:02:05 - sac_trading - INFO - 'entropy': -0.6818190813064575
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha': -1.559395432472229
+2025-05-15 16:02:05 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:05 - sac_trading - INFO - 'actor_loss': -1.5704550743103027
+2025-05-15 16:02:05 - sac_trading - INFO - 'critic_loss': 0.025653518736362457
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha_loss': -0.04722679778933525
+2025-05-15 16:02:05 - sac_trading - INFO - 'entropy': -0.6735939979553223
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha': -1.5704550743103027
+2025-05-15 16:02:05 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:05 - sac_trading - INFO - 'actor_loss': -1.579174518585205
+2025-05-15 16:02:05 - sac_trading - INFO - 'critic_loss': 0.031145263463258743
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha_loss': -0.048006653785705566
+2025-05-15 16:02:05 - sac_trading - INFO - 'entropy': -0.6833431720733643
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha': -1.579174518585205
+2025-05-15 16:02:05 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:05 - sac_trading - INFO - 'actor_loss': -1.5658866167068481
+2025-05-15 16:02:05 - sac_trading - INFO - 'critic_loss': 0.024429235607385635
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha_loss': -0.04834122583270073
+2025-05-15 16:02:05 - sac_trading - INFO - 'entropy': -0.6774343252182007
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha': -1.5658866167068481
+2025-05-15 16:02:05 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:05 - sac_trading - INFO - 'actor_loss': -1.5594667196273804
+2025-05-15 16:02:05 - sac_trading - INFO - 'critic_loss': 0.02921321988105774
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha_loss': -0.04890945553779602
+2025-05-15 16:02:05 - sac_trading - INFO - 'entropy': -0.6796730756759644
+2025-05-15 16:02:05 - sac_trading - INFO - 'alpha': -1.5594667196273804
+2025-05-15 16:02:05 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:06 - sac_trading - INFO - 'actor_loss': -1.5408177375793457
+2025-05-15 16:02:06 - sac_trading - INFO - 'critic_loss': 0.020285002887248993
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha_loss': -0.04910386726260185
+2025-05-15 16:02:06 - sac_trading - INFO - 'entropy': -0.669158935546875
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha': -1.5408177375793457
+2025-05-15 16:02:06 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:06 - sac_trading - INFO - 'actor_loss': -1.5523781776428223
+2025-05-15 16:02:06 - sac_trading - INFO - 'critic_loss': 0.0577843114733696
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha_loss': -0.04977015405893326
+2025-05-15 16:02:06 - sac_trading - INFO - 'entropy': -0.6747442483901978
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha': -1.5523781776428223
+2025-05-15 16:02:06 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:06 - sac_trading - INFO - 'actor_loss': -1.572024941444397
+2025-05-15 16:02:06 - sac_trading - INFO - 'critic_loss': 0.022876808419823647
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha_loss': -0.05044539272785187
+2025-05-15 16:02:06 - sac_trading - INFO - 'entropy': -0.6805191040039062
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha': -1.572024941444397
+2025-05-15 16:02:06 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:06 - sac_trading - INFO - 'actor_loss': -1.5911200046539307
+2025-05-15 16:02:06 - sac_trading - INFO - 'critic_loss': 0.01749459095299244
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha_loss': -0.05131381005048752
+2025-05-15 16:02:06 - sac_trading - INFO - 'entropy': -0.6925491690635681
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha': -1.5911200046539307
+2025-05-15 16:02:06 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:06 - sac_trading - INFO - 'actor_loss': -1.585220456123352
+2025-05-15 16:02:06 - sac_trading - INFO - 'critic_loss': 0.025236625224351883
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha_loss': -0.05167319253087044
+2025-05-15 16:02:06 - sac_trading - INFO - 'entropy': -0.6877050995826721
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha': -1.585220456123352
+2025-05-15 16:02:06 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:06 - sac_trading - INFO - 'actor_loss': -1.5758612155914307
+2025-05-15 16:02:06 - sac_trading - INFO - 'critic_loss': 0.026294754818081856
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha_loss': -0.05178258195519447
+2025-05-15 16:02:06 - sac_trading - INFO - 'entropy': -0.6748620271682739
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha': -1.5758612155914307
+2025-05-15 16:02:06 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:06 - sac_trading - INFO - 'actor_loss': -1.5894038677215576
+2025-05-15 16:02:06 - sac_trading - INFO - 'critic_loss': 0.023488016799092293
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha_loss': -0.05270683020353317
+2025-05-15 16:02:06 - sac_trading - INFO - 'entropy': -0.6883734464645386
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha': -1.5894038677215576
+2025-05-15 16:02:06 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:06 - sac_trading - INFO - 'actor_loss': -1.5765026807785034
+2025-05-15 16:02:06 - sac_trading - INFO - 'critic_loss': 0.01956014893949032
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha_loss': -0.05289729684591293
+2025-05-15 16:02:06 - sac_trading - INFO - 'entropy': -0.6783384680747986
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha': -1.5765026807785034
+2025-05-15 16:02:06 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:06 - sac_trading - INFO - 'actor_loss': -1.5745834112167358
+2025-05-15 16:02:06 - sac_trading - INFO - 'critic_loss': 0.026799190789461136
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha_loss': -0.053428590297698975
+2025-05-15 16:02:06 - sac_trading - INFO - 'entropy': -0.6792066097259521
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha': -1.5745834112167358
+2025-05-15 16:02:06 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394
+2025-05-15 16:02:06 - sac_trading - INFO - 'actor_loss': -1.5691797733306885
+2025-05-15 16:02:06 - sac_trading - INFO - 'critic_loss': 0.020405400544404984
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha_loss': -0.05363484472036362
+2025-05-15 16:02:06 - sac_trading - INFO - 'entropy': -0.6699397563934326
+2025-05-15 16:02:06 - sac_trading - INFO - 'alpha': -1.5691797733306885
+2025-05-15 16:02:06 - sac_trading - WARNING - 현재 가격이 0 이하입니다: -1.281196534480394

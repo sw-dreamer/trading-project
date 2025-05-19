@@ -1,0 +1,134 @@
+@startuml
+title SAC 트레이딩 모델 학습 프로세스
+
+start
+
+:모델 설정 로드;
+note right
+  * 학습률
+  * 배치 크기
+  * 감마(할인율)
+  * 엔트로피 계수(알파)
+  * 타겟 네트워크 업데이트 비율(타우)
+end note
+
+:시장 데이터 로드;
+note right
+  * 심볼별 시계열 데이터
+  * 정규화 및 특성 추가
+end note
+
+:학습 환경 초기화;
+note right
+  * 트레이딩 환경(Gym 인터페이스)
+  * 초기 자본금 설정
+  * 리워드 함수 설정
+end note
+
+:SAC 모델 초기화;
+note right
+  * Actor 네트워크
+  * Critic 네트워크
+  * Target 네트워크
+  * Replay 버퍼
+end note
+
+:에피소드 루프 시작;
+
+repeat
+  :환경 리셋;
+  :초기 상태(Observation) 획득;
+  
+  repeat
+    :액션 샘플링;
+    note right
+      Actor 네트워크로부터 
+      확률적 액션 샘플링
+    end note
+    
+    :환경에 액션 적용;
+    note right
+      * 매수/매도/홀딩 액션
+      * 포지션 크기
+    end note
+    
+    :다음 상태, 리워드, 종료 여부 획득;
+    note right
+      리워드 구성:
+      * 수익률
+      * 위험 조정
+      * 거래 비용 패널티
+    end note
+    
+    :경험(Experience) 저장;
+    note right
+      (상태, 액션, 리워드, 다음 상태, 종료 여부)를
+      Replay 버퍼에 저장
+    end note
+    
+    if (Replay 버퍼 크기 > 배치 크기) then (yes)
+      :배치 샘플링;
+      
+      :Critic 네트워크 업데이트;
+      note right
+        Q-값 예측 및 타겟 계산으로
+        Temporal Difference(TD) 오차 최소화
+      end note
+      
+      :Actor 네트워크 업데이트;
+      note right
+        예상 리워드 최대화 및
+        엔트로피 보너스 적용
+      end note
+      
+      :Target 네트워크 점진적 업데이트;
+      note left
+        soft update:
+        target = tau * critic + (1-tau) * target
+      end note
+    endif
+    
+    :현재 상태 업데이트;
+    
+  repeat while (에피소드 종료?) is (no)
+  
+  :에피소드 결과 기록;
+  note right
+    * 총 리워드
+    * 최종 포트폴리오 가치
+    * 샤프 비율
+    * 최대 낙폭
+  end note
+  
+  if (평가 구간?) then (yes)
+    :모델 검증(Validation);
+    note right
+      학습에 사용되지 않은
+      기간 데이터로 성능 평가
+    end note
+    
+    if (최고 성능?) then (yes)
+      :모델 저장;
+    else (no)
+    endif
+  endif
+  
+repeat while (최대 에피소드 도달?) is (no)
+
+:최종 모델 평가;
+note right
+  * 백테스트 수행
+  * 성능 지표 계산
+  * 거래 시각화
+end note
+
+:최종 모델 저장;
+note right
+  * 모델 가중치
+  * 학습 설정
+  * 성능 지표
+end note
+
+stop
+
+@enduml 

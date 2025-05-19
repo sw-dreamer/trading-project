@@ -1,0 +1,167 @@
+2025-05-16 11:13:05 - sac_trading - INFO - run_training 시작
+2025-05-16 11:13:05 - sac_trading - INFO - 학습 시작: 대상 심볼 ['AAPL', 'TSLA', 'VALE', 'NEM', 'FCX', 'T', 'NFLX', 'WBD', 'AMZN', 'NKE', 'PEP', 'KVUE', 'PM', 'PBR', 'KMI', 'SHEL', 'ITUB', 'USB', 'MUFG', 'AZN', 'ABT', 'UNH', 'CSX', 'BA', 'RTX', 'NVDA', 'ERIC', 'YMM', 'NEE']
+2025-05-16 11:13:05 - sac_trading - INFO - DB 엔진 생성 성공
+2025-05-16 11:13:05 - sac_trading - INFO - DataCollector 초기화 완료: 29개 종목 대상
+2025-05-16 11:13:05 - sac_trading - INFO - 저장된 데이터 로드 중...
+2025-05-16 11:13:05 - sac_trading - INFO - AAPL 데이터 로드 시작...
+2025-05-16 11:13:07 - sac_trading - INFO - AAPL 데이터 로드 완료: 283683 행
+2025-05-16 11:13:07 - sac_trading - INFO - TSLA 데이터 로드 시작...
+2025-05-16 11:13:08 - sac_trading - INFO - TSLA 데이터 로드 완료: 160774 행
+2025-05-16 11:13:08 - sac_trading - INFO - VALE 데이터 로드 시작...
+2025-05-16 11:13:09 - sac_trading - INFO - VALE 데이터 로드 완료: 156397 행
+2025-05-16 11:13:09 - sac_trading - INFO - NEM 데이터 로드 시작...
+2025-05-16 11:13:10 - sac_trading - INFO - NEM 데이터 로드 완료: 157023 행
+2025-05-16 11:13:10 - sac_trading - INFO - FCX 데이터 로드 시작...
+2025-05-16 11:13:11 - sac_trading - INFO - FCX 데이터 로드 완료: 153750 행
+2025-05-16 11:13:11 - sac_trading - INFO - T 데이터 로드 시작...
+2025-05-16 11:13:13 - sac_trading - INFO - T 데이터 로드 완료: 156929 행
+2025-05-16 11:13:13 - sac_trading - INFO - NFLX 데이터 로드 시작...
+2025-05-16 11:13:14 - sac_trading - INFO - NFLX 데이터 로드 완료: 147013 행
+2025-05-16 11:13:14 - sac_trading - INFO - WBD 데이터 로드 시작...
+2025-05-16 11:13:15 - sac_trading - INFO - WBD 데이터 로드 완료: 155384 행
+2025-05-16 11:13:15 - sac_trading - INFO - AMZN 데이터 로드 시작...
+2025-05-16 11:13:16 - sac_trading - INFO - AMZN 데이터 로드 완료: 160347 행
+2025-05-16 11:13:16 - sac_trading - INFO - NKE 데이터 로드 시작...
+2025-05-16 11:13:17 - sac_trading - INFO - NKE 데이터 로드 완료: 156537 행
+2025-05-16 11:13:17 - sac_trading - INFO - PEP 데이터 로드 시작...
+2025-05-16 11:13:18 - sac_trading - INFO - PEP 데이터 로드 완료: 139617 행
+2025-05-16 11:13:18 - sac_trading - INFO - KVUE 데이터 로드 시작...
+2025-05-16 11:13:19 - sac_trading - INFO - KVUE 데이터 로드 완료: 126812 행
+2025-05-16 11:13:19 - sac_trading - INFO - PM 데이터 로드 시작...
+2025-05-16 11:13:20 - sac_trading - INFO - PM 데이터 로드 완료: 132043 행
+2025-05-16 11:13:20 - sac_trading - INFO - PBR 데이터 로드 시작...
+2025-05-16 11:13:21 - sac_trading - INFO - PBR 데이터 로드 완료: 154953 행
+2025-05-16 11:13:21 - sac_trading - INFO - KMI 데이터 로드 시작...
+2025-05-16 11:13:21 - sac_trading - INFO - KMI 데이터 로드 완료: 141095 행
+2025-05-16 11:13:21 - sac_trading - INFO - SHEL 데이터 로드 시작...
+2025-05-16 11:13:23 - sac_trading - INFO - SHEL 데이터 로드 완료: 158256 행
+2025-05-16 11:13:23 - sac_trading - INFO - ITUB 데이터 로드 시작...
+2025-05-16 11:13:23 - sac_trading - INFO - ITUB 데이터 로드 완료: 124623 행
+2025-05-16 11:13:23 - sac_trading - INFO - USB 데이터 로드 시작...
+2025-05-16 11:13:25 - sac_trading - INFO - USB 데이터 로드 완료: 130234 행
+2025-05-16 11:13:25 - sac_trading - INFO - MUFG 데이터 로드 시작...
+2025-05-16 11:13:26 - sac_trading - INFO - MUFG 데이터 로드 완료: 136033 행
+2025-05-16 11:13:26 - sac_trading - INFO - AZN 데이터 로드 시작...
+2025-05-16 11:13:26 - sac_trading - INFO - AZN 데이터 로드 완료: 156967 행
+2025-05-16 11:13:26 - sac_trading - INFO - ABT 데이터 로드 시작...
+2025-05-16 11:13:27 - sac_trading - INFO - ABT 데이터 로드 완료: 124887 행
+2025-05-16 11:13:27 - sac_trading - INFO - UNH 데이터 로드 시작...
+2025-05-16 11:13:28 - sac_trading - INFO - UNH 데이터 로드 완료: 127841 행
+2025-05-16 11:13:28 - sac_trading - INFO - CSX 데이터 로드 시작...
+2025-05-16 11:13:29 - sac_trading - INFO - CSX 데이터 로드 완료: 130883 행
+2025-05-16 11:13:29 - sac_trading - INFO - BA 데이터 로드 시작...
+2025-05-16 11:13:30 - sac_trading - INFO - BA 데이터 로드 완료: 154960 행
+2025-05-16 11:13:30 - sac_trading - INFO - RTX 데이터 로드 시작...
+2025-05-16 11:13:32 - sac_trading - INFO - RTX 데이터 로드 완료: 135220 행
+2025-05-16 11:13:32 - sac_trading - INFO - NVDA 데이터 로드 시작...
+2025-05-16 11:13:33 - sac_trading - INFO - NVDA 데이터 로드 완료: 160763 행
+2025-05-16 11:13:33 - sac_trading - INFO - ERIC 데이터 로드 시작...
+2025-05-16 11:13:34 - sac_trading - INFO - ERIC 데이터 로드 완료: 155394 행
+2025-05-16 11:13:34 - sac_trading - INFO - YMM 데이터 로드 시작...
+2025-05-16 11:13:35 - sac_trading - INFO - YMM 데이터 로드 완료: 133075 행
+2025-05-16 11:13:35 - sac_trading - INFO - NEE 데이터 로드 시작...
+2025-05-16 11:13:36 - sac_trading - INFO - NEE 데이터 로드 완료: 143268 행
+2025-05-16 11:13:36 - sac_trading - INFO - 총 29/29 종목 데이터 로드 완료
+2025-05-16 11:13:36 - sac_trading - INFO - 데이터 전처리 중...
+2025-05-16 11:13:36 - sac_trading - INFO - DataProcessor 초기화 완료: 윈도우 크기 1
+2025-05-16 11:13:36 - sac_trading - INFO - AAPL 데이터 전처리 시작
+2025-05-16 11:13:36 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:36 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:36 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:36 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:36 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:36 - sac_trading - INFO - 데이터 전처리 완료: 277935 행
+2025-05-16 11:13:36 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-16 11:13:37 - sac_trading - INFO - AAPL 데이터 정규화 완료
+2025-05-16 11:13:46 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (277934, 1, 40), y 형태 (277934,)
+2025-05-16 11:13:46 - sac_trading - INFO - 데이터 분할 완료: 학습 194553개, 검증 41690개, 테스트 41691개
+2025-05-16 11:13:46 - sac_trading - INFO - AAPL 데이터 전처리 완료
+2025-05-16 11:13:46 - sac_trading - INFO - TSLA 데이터 전처리 시작
+2025-05-16 11:13:46 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:46 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:46 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:46 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:46 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:46 - sac_trading - INFO - 데이터 전처리 완료: 159814 행
+2025-05-16 11:13:47 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-16 11:13:47 - sac_trading - INFO - TSLA 데이터 정규화 완료
+2025-05-16 11:13:52 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (159813, 1, 40), y 형태 (159813,)
+2025-05-16 11:13:52 - sac_trading - INFO - 데이터 분할 완료: 학습 111869개, 검증 23972개, 테스트 23972개
+2025-05-16 11:13:52 - sac_trading - INFO - TSLA 데이터 전처리 완료
+2025-05-16 11:13:52 - sac_trading - INFO - VALE 데이터 전처리 시작
+2025-05-16 11:13:52 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:52 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:52 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:52 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:52 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:52 - sac_trading - INFO - 데이터 전처리 완료: 155468 행
+2025-05-16 11:13:52 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-16 11:13:52 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-16 11:13:53 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-16 11:13:53 - sac_trading - INFO - VALE 데이터 정규화 완료
+2025-05-16 11:13:58 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (155467, 1, 40), y 형태 (155467,)
+2025-05-16 11:13:58 - sac_trading - INFO - 데이터 분할 완료: 학습 108826개, 검증 23320개, 테스트 23321개
+2025-05-16 11:13:58 - sac_trading - INFO - VALE 데이터 전처리 완료
+2025-05-16 11:13:58 - sac_trading - INFO - NEM 데이터 전처리 시작
+2025-05-16 11:13:58 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:58 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:58 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:58 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:58 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:13:58 - sac_trading - INFO - 데이터 전처리 완료: 156078 행
+2025-05-16 11:13:59 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-16 11:13:59 - sac_trading - INFO - NEM 데이터 정규화 완료
+2025-05-16 11:14:04 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (156077, 1, 40), y 형태 (156077,)
+2025-05-16 11:14:04 - sac_trading - INFO - 데이터 분할 완료: 학습 109253개, 검증 23412개, 테스트 23412개
+2025-05-16 11:14:04 - sac_trading - INFO - NEM 데이터 전처리 완료
+2025-05-16 11:14:04 - sac_trading - INFO - FCX 데이터 전처리 시작
+2025-05-16 11:14:04 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:04 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:04 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:04 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:04 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:04 - sac_trading - INFO - 데이터 전처리 완료: 152955 행
+2025-05-16 11:14:04 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-16 11:14:04 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-16 11:14:05 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-16 11:14:05 - sac_trading - INFO - FCX 데이터 정규화 완료
+2025-05-16 11:14:10 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (152954, 1, 40), y 형태 (152954,)
+2025-05-16 11:14:10 - sac_trading - INFO - 데이터 분할 완료: 학습 107067개, 검증 22943개, 테스트 22944개
+2025-05-16 11:14:10 - sac_trading - INFO - FCX 데이터 전처리 완료
+2025-05-16 11:14:10 - sac_trading - INFO - T 데이터 전처리 시작
+2025-05-16 11:14:10 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:10 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:10 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:10 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:10 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:10 - sac_trading - INFO - 데이터 전처리 완료: 155993 행
+2025-05-16 11:14:11 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-16 11:14:11 - sac_trading - INFO - T 데이터 정규화 완료
+2025-05-16 11:14:16 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (155992, 1, 40), y 형태 (155992,)
+2025-05-16 11:14:16 - sac_trading - INFO - 데이터 분할 완료: 학습 109194개, 검증 23399개, 테스트 23399개
+2025-05-16 11:14:16 - sac_trading - INFO - T 데이터 전처리 완료
+2025-05-16 11:14:16 - sac_trading - INFO - NFLX 데이터 전처리 시작
+2025-05-16 11:14:16 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:16 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:16 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:16 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:16 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:16 - sac_trading - INFO - 데이터 전처리 완료: 146120 행
+2025-05-16 11:14:16 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-16 11:14:16 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-16 11:14:17 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-16 11:14:17 - sac_trading - INFO - NFLX 데이터 정규화 완료
+2025-05-16 11:14:21 - sac_trading - INFO - 윈도우 샘플 생성 완료: X 형태 (146119, 1, 40), y 형태 (146119,)
+2025-05-16 11:14:21 - sac_trading - INFO - 데이터 분할 완료: 학습 102283개, 검증 21918개, 테스트 21918개
+2025-05-16 11:14:21 - sac_trading - INFO - NFLX 데이터 전처리 완료
+2025-05-16 11:14:21 - sac_trading - INFO - WBD 데이터 전처리 시작
+2025-05-16 11:14:21 - sac_trading - INFO - open 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:21 - sac_trading - INFO - high 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:21 - sac_trading - INFO - low 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:21 - sac_trading - INFO - close 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:21 - sac_trading - INFO - volume 컬럼을 float64 타입으로 변환했습니다
+2025-05-16 11:14:21 - sac_trading - INFO - 데이터 전처리 완료: 154472 행
+2025-05-16 11:14:21 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-16 11:14:21 - sac_trading - INFO - 배열 타입 int64를 float64로 변환 시도
+2025-05-16 11:14:22 - sac_trading - INFO - 특성 추출 완료: 40개 특성
+2025-05-16 11:14:22 - sac_trading - INFO - WBD 데이터 정규화 완료
