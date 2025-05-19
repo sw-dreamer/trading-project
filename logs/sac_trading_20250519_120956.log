@@ -1,6 +1,0 @@
-2025-05-19 12:09:56 - sac_trading - INFO - DB 엔진 생성 성공
-2025-05-19 12:09:56 - sac_trading - INFO - DataCollector 초기화 완료: 1개 종목 대상
-2025-05-19 12:09:56 - sac_trading - INFO - tsla 데이터 로드 시작...
-2025-05-19 12:09:58 - sac_trading - INFO - tsla 데이터 로드 완료: 162694 행
-2025-05-19 12:09:58 - sac_trading - INFO - 총 1/1 종목 데이터 로드 완료
-2025-05-19 12:09:58 - sac_trading - INFO - UNKNOWN 트레이딩 환경 초기화 완료: 데이터 길이 162694
