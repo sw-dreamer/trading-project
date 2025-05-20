@@ -95,6 +95,11 @@ class DashboardApp:
         def models():
             return render_template('models.html')
         
+        # 기사 페이지
+        @self.app.route('/news')
+        def news():
+            return render_template('news.html')
+        
         # 설정 페이지
         @self.app.route('/settings')
         def settings():
