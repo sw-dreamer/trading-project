@@ -6,14 +6,14 @@ import os
 import warnings
 
 from src.utils.logger import Logger
-from src.utils.database import DatabaseManager, HAS_POSTGRES
+from src.utils.database import DatabaseManager, HAS_MYSQL
 from src.dashboard.data_manager import DataManager
 
 # PostgreSQL 라이브러리가 설치된 경우에만 DBDataManager 임포트
-if HAS_POSTGRES:
+if HAS_MYSQL:
     from src.dashboard.data_manager_db import DBDataManager
 else:
-    warnings.warn("PostgreSQL이 설치되지 않았습니다. 데이터베이스 기반 데이터 관리자를 사용할 수 없습니다.")
+    warnings.warn("MySQL이 설치되지 않았습니다. 데이터베이스 기반 데이터 관리자를 사용할 수 없습니다.")
     # 테스트용 더미 클래스 정의
     class DBDataManager:
         def __init__(self, *args, **kwargs):
@@ -24,7 +24,7 @@ class DataManagerFactory:
     """
     데이터 관리자 생성 팩토리 클래스
     단위 테스트에서는 파일 기반 DataManager를,
-    운영 환경에서는 PostgreSQL 기반 DBDataManager를 선택적으로 생성
+    운영 환경에서는 MySQL 기반 DBDataManager를 선택적으로 생성
     """
     
     @classmethod
