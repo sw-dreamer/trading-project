@@ -16,6 +16,9 @@ from src.dashboard.visualization import Visualizer
 from src.utils.logger import Logger
 
 
+# <라우팅 설정>
+# 라우팅 : "어떤 url이 들어왔을 때 어떤 함수를 실행할지 정하는 것"
+
 class DashboardApp:
     """
     SAC 트레이딩 시스템 웹 대시보드 애플리케이션
