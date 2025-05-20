@@ -1,5 +1,5 @@
 """
-MySQL 데이터베이스 기반 대시보드 데이터 관리 모듈
+PostgreSQL 데이터베이스 기반 대시보드 데이터 관리 모듈
 """
 import os
 import json
@@ -14,7 +14,7 @@ from src.utils.database import DatabaseManager
 
 class DBDataManager:
     """
-    MySQL 데이터베이스를 사용하는 대시보드 데이터 관리 클래스
+    PostgreSQL 데이터베이스를 사용하는 대시보드 데이터 관리 클래스
     """
     
     def __init__(

@@ -6,14 +6,14 @@ import os
 import warnings
 
 from src.utils.logger import Logger
-from src.utils.database import DatabaseManager, HAS_MYSQL
+from src.utils.database import DatabaseManager, HAS_POSTGRES
 from src.dashboard.data_manager import DataManager
 
-# MySQL 라이브러리가 설치된 경우에만 DBDataManager 임포트
-if HAS_MYSQL:
+# PostgreSQL 라이브러리가 설치된 경우에만 DBDataManager 임포트
+if HAS_POSTGRES:
     from src.dashboard.data_manager_db import DBDataManager
 else:
-    warnings.warn("MySQL이 설치되지 않았습니다. 데이터베이스 기반 데이터 관리자를 사용할 수 없습니다.")
+    warnings.warn("PostgreSQL이 설치되지 않았습니다. 데이터베이스 기반 데이터 관리자를 사용할 수 없습니다.")
     # 테스트용 더미 클래스 정의
     class DBDataManager:
         def __init__(self, *args, **kwargs):
@@ -24,11 +24,18 @@ class DataManagerFactory:
     """
     데이터 관리자 생성 팩토리 클래스
     단위 테스트에서는 파일 기반 DataManager를,
-    운영 환경에서는 MySQL 기반 DBDataManager를 선택적으로 생성
+    운영 환경에서는 PostgreSQL 기반 DBDataManager를 선택적으로 생성
     """
     
     @classmethod
-    def create_manager(cls, manager_type: str, data_dir: str, db_config: Optional[Dict[str, Any]] = None, logger: Optional[Logger] = None) -> Union[DataManager, 'DBDataManager']:
+    def create_manager(
+        cls,                                                    # 클래스 메서드의 클래스 참조
+        manager_type: str,                                      # 관리자 유형 ('file' 또는 'db')
+        data_dir: str,                                          # 데이터 디렉토리 경로
+        db_config: Optional[Dict[str, Any]] = None,             # 데이터베이스 설정 정보 (호스트, 포트, 사용자 등)
+        logger: Optional[Logger] = None                         # 로깅을 위한 Logger 인스턴스
+    ) -> Union[DataManager, 'DBDataManager']:                   
+        # DataManager 또는 DBDataManager 인스턴스 반환
         """
         데이터 관리자 생성 팩토리 메서드
         
