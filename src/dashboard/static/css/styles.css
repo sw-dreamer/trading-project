@@ -81,3 +81,14 @@ body {
         font-size: 0.9rem;
     }
 } 
+
+/* 네비게이션 바 색상 덮어쓰기 */
+.navbar {
+    background-color: #0b1a35 !important;  /* 진한 네이비색 */
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link,
+.navbar-toggler {
+    color: white !important;  /* 글씨는 흰색으로 */
+}
