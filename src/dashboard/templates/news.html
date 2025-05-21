@@ -1,124 +1,243 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>관련 뉴스 - SAC 트레이딩 시스템</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/static/css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>관련 뉴스 - SAC 트레이딩 시스템</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+  <style>
+    body {
+      background-color: #111827;
+      color: #e5e7eb;
+    }
+
+    .navbar {
+      background-color: #0b1a35;
+    }
+    .navbar .nav-link {
+      color: white !important;
+      margin-right: 10px;
+    }
+    .navbar .nav-link.active {
+      font-weight: bold;
+      border-bottom: 2px solid #60a5fa;
+      color: #60a5fa !important;
+    }
+
+    .nav-tabs .nav-link {
+      border: none;
+      color: white;
+      border-radius: 999px;
+      margin-right: 5px;
+    }
+    .nav-tabs .nav-link.active {
+      background: linear-gradient(to right, #3b82f6, #9333ea);
+      color: white !important;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .news-container-wrapper {
+      background-color: #1e293b;
+      border-radius: 1rem;
+      padding: 2rem;
+      margin-top: 1.5rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .news-card {
+      background-color: #ffffff;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #d1d5db;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .news-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+    }
+
+    .news-card h5 a {
+      color: #111111;
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .news-card p {
+      color: #333333;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .news-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    .news-meta a {
+      color: #4b5563;
+      text-decoration: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 300px;
+      display: inline-block;
+    }
+
+    .news-meta a:hover {
+      color: #2563eb;
+    }
+
+    .sentiment-tag {
+      font-weight: 600;
+      padding: 0.3rem 0.8rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      display: inline-block;
+    }
+    .sentiment-positive {
+      background-color: #22c55e;
+      color: white;
+    }
+    .sentiment-neutral {
+      background-color: #facc15;
+      color: black;
+    }
+    .sentiment-negative {
+      background-color: #ef4444;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">SAC 트레이딩 시스템</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="background-color:#001f3f;">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">대시보드</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/live-trading">실시간 트레이딩</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/backtest">백테스트 결과</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/models">모델 관리</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/news">관련 기사</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/settings">설정</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container mt-4">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">📌 Polygon 뉴스</h5>
-            </div>
-            <div class="card-body" id="polygon-news">
-                <p>불러오는 중...</p>
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">📌 Yahoo 뉴스</h5>
-            </div>
-            <div class="card-body" id="yahoo-news">
-                <p>불러오는 중...</p>
-            </div>
-        </div>
+  <!-- 네비게이션 바 -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">SAC 트레이딩 시스템</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="/">대시보드</a></li>
+          <li class="nav-item"><a class="nav-link" href="/live-trading">실시간 트레이딩</a></li>
+          <li class="nav-item"><a class="nav-link" href="/backtest">백테스트 결과</a></li>
+          <li class="nav-item"><a class="nav-link" href="/models">모델 관리</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/news">관련 기사</a></li>
+          <li class="nav-item"><a class="nav-link" href="/settings">설정</a></li>
+        </ul>
+      </div>
     </div>
+  </nav>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch('/api/news')
-                .then(res => res.json())
-                .then(data => {
-                    const polygonNews = data.polygon || [];
-                    const yahooNews = data.yahoo || [];
+  <div class="container mt-4">
+    <!-- 탭 메뉴 -->
+    <ul class="nav nav-tabs mb-3" id="newsTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="polygon-tab" data-bs-toggle="tab" data-bs-target="#polygon" type="button" role="tab">Polygon 뉴스</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="yahoo-tab" data-bs-toggle="tab" data-bs-target="#yahoo" type="button" role="tab">Yahoo 뉴스</button>
+      </li>
+    </ul>
 
-                    const polygonContainer = document.getElementById('polygon-news');
-                    const yahooContainer = document.getElementById('yahoo-news');
+    <!-- 탭 콘텐츠 -->
+    <div class="tab-content">
+      <!-- Polygon -->
+      <div class="tab-pane fade show active" id="polygon" role="tabpanel">
+        <div class="news-container-wrapper">
+          <div id="polygon-news">불러오는 중...</div>
+          <div class="d-grid gap-2 col-6 mx-auto my-3">
+            <button id="polygon-load-more" class="btn btn-outline-primary">더보기</button>
+          </div>
+        </div>
+      </div>
+      <!-- Yahoo -->
+      <div class="tab-pane fade" id="yahoo" role="tabpanel">
+        <div class="news-container-wrapper">
+          <div id="yahoo-news">불러오는 중...</div>
+          <div class="d-grid gap-2 col-6 mx-auto my-3">
+            <button id="yahoo-load-more" class="btn btn-outline-primary">더보기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-                    // polygon 뉴스 렌더링
-                    polygonContainer.innerHTML = '';
-                    if (polygonNews.length === 0) {
-                        polygonContainer.innerHTML = '<p>데이터가 없습니다.</p>';
-                    } else {
-                        polygonNews.forEach(news => {
-                            const div = document.createElement('div');
-                            div.className = 'mb-3 p-3 border rounded';
-                            div.innerHTML = `
-                                <h6>${news.title}</h6>
-                                <p>${news.content}</p>
-                                <small class="text-muted">${news.published_at}</small>
-                            `;
-                            polygonContainer.appendChild(div);
-                        });
-                    }
-
-                    // yahoo 뉴스 렌더링
-                    yahooContainer.innerHTML = '';
-                    if (yahooNews.length === 0) {
-                        yahooContainer.innerHTML = '<p>데이터가 없습니다.</p>';
-                    } else {
-                        yahooNews.forEach(news => {
-                            const div = document.createElement('div');
-                            div.className = 'mb-3 p-3 border rounded';
-                            div.innerHTML = `
-                                <h6>${news.title}</h6>
-                                <p>${news.content}</p>
-                                <small class="text-muted">${news.published_at}</small>
-                            `;
-                            yahooContainer.appendChild(div);
-                        });
-                    }
-                })
-                .catch(err => {
-                    console.error('뉴스 로딩 오류:', err);
-                    document.getElementById('polygon-news').innerHTML = '<p>오류 발생</p>';
-                    document.getElementById('yahoo-news').innerHTML = '<p>오류 발생</p>';
-                });
+  <!-- JS -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      fetch('/api/news')
+        .then(res => res.json())
+        .then(data => {
+          renderNews(data.polygon || [], 'polygon');
+          renderNews(data.yahoo || [], 'yahoo');
+        })
+        .catch(() => {
+          document.getElementById('polygon-news').innerHTML = '<p>오류 발생</p>';
+          document.getElementById('yahoo-news').innerHTML = '<p>오류 발생</p>';
         });
-    </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+      function renderNews(newsList, type) {
+        const container = document.getElementById(`${type}-news`);
+        const loadMoreBtn = document.getElementById(`${type}-load-more`);
+        let currentIndex = 0;
+        const perPage = 10;
+
+        function showNext() {
+          const end = currentIndex + perPage;
+          const pageItems = newsList.slice(currentIndex, end);
+
+          if (pageItems.length === 0 && currentIndex === 0) {
+            container.innerHTML = '<p>데이터가 없습니다.</p>';
+            loadMoreBtn.style.display = 'none';
+            return;
+          }
+
+          pageItems.forEach(news => {
+            const title = news.title || '(제목 없음)';
+            const summary = news.summary || '';
+            const sentiment = (news.sentiment || 'neutral').toLowerCase();
+            const date = news.date || '-';
+            const url = news.url || '#';
+
+            let sentimentClass = 'sentiment-neutral';
+            if (sentiment === 'positive') sentimentClass = 'sentiment-positive';
+            else if (sentiment === 'negative') sentimentClass = 'sentiment-negative';
+
+            const div = document.createElement('div');
+            div.className = 'news-card';
+            div.innerHTML = `
+              <h5><a href="${url}" target="_blank">${title}</a></h5>
+              <p>${summary}</p>
+              <div class="news-meta">
+                <span class="sentiment-tag ${sentimentClass}">${sentiment.charAt(0).toUpperCase() + sentiment.slice(1)}</span>
+                <span>${date}</span>
+                <a href="${url}" target="_blank"><i class="bi bi-link-45deg"></i> ${url}</a>
+              </div>
+            `;
+            container.appendChild(div);
+          });
+
+          currentIndex += perPage;
+          if (currentIndex >= newsList.length) {
+            loadMoreBtn.style.display = 'none';
+          }
+        }
+
+        loadMoreBtn.addEventListener('click', showNext);
+        showNext();
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-            
-   
- 
-      

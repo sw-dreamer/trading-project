@@ -2,6 +2,7 @@
 Flask==2.3.2
 Werkzeug==2.3.6
 Jinja2==3.1.2
+pymongo==4.13.0
 
 # 데이터 처리 및 분석
 pandas==2.0.3

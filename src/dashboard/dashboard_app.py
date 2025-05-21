@@ -141,28 +141,45 @@ class DashboardApp:
         @self.app.route('/api/news')
         def get_news():
             try:
-                # polygon DB에서 news, articles 가져오기
                 polygon_news_data = list(polygon_news.find({}, {
-                    '_id': 0, 'title': 1, 'content': 1, 'published_at': 1
+                    '_id': 0,
+                    'title': 1,
+                    'summary': 1,
+                    'sentiment': 1,
+                    'date': 1,
+                    'url': 1
                 }))
                 polygon_articles_data = list(polygon_articles.find({}, {
-                    '_id': 0, 'title': 1, 'content': 1, 'published_at': 1
+                    '_id': 0,
+                    'title': 1,
+                    'summary': 1,
+                    'sentiment': 1,
+                    'date': 1,
+                    'url': 1
                 }))
-
-                # yahoo DB에서 news, articles 가져오기
                 yahoo_news_data = list(yahoo_news.find({}, {
-                    '_id': 0, 'title': 1, 'content': 1, 'published_at': 1
+                    '_id': 0,
+                    'title': 1,
+                    'summary': 1,
+                    'sentiment': 1,
+                    'date': 1,
+                    'url': 1
                 }))
                 yahoo_articles_data = list(yahoo_articles.find({}, {
-                    '_id': 0, 'title': 1, 'content': 1, 'published_at': 1
+                    '_id': 0,
+                    'title': 1,
+                    'summary': 1,
+                    'sentiment': 1,
+                    'date': 1,
+                    'url': 1
                 }))
-                
-                all_news = polygon_news_data + polygon_articles_data + yahoo_news_data + yahoo_articles_data
 
-                return jsonify(all_news)
+                return jsonify({
+                    'polygon': polygon_news_data + polygon_articles_data,
+                    'yahoo': yahoo_news_data + yahoo_articles_data
+                })
             except Exception as e:
                 return jsonify({'error': str(e)})
-
         
         # 백테스트 결과 API
         @self.app.route('/api/backtest-results')
