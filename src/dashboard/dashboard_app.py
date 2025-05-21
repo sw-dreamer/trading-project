@@ -25,13 +25,11 @@ mongo_client = MongoClient('mongodb://192.168.40.192/')   #localhost 주소
 
 # polygon DB 접속
 polygon_db = mongo_client['polygon']                        #DB 이름
-polygon_news =polygon_db['news']                            #컬렉션 이름
 polygon_articles =polygon_db['articles']                    #컬렉션 이름
 
 # yahoo DB 접속
 yahoo_db = mongo_client['yahoo']                           #DB 이름
 yahoo_news =yahoo_db['news']                               #컬렉션 이름
-yahoo_articles =yahoo_db['articles']                       #컬렉션 이름
 
 class DashboardApp:
     """
@@ -141,14 +139,6 @@ class DashboardApp:
         @self.app.route('/api/news')
         def get_news():
             try:
-                polygon_news_data = list(polygon_news.find({}, {
-                    '_id': 0,
-                    'title': 1,
-                    'summary': 1,
-                    'sentiment': 1,
-                    'date': 1,
-                    'url': 1
-                }))
                 polygon_articles_data = list(polygon_articles.find({}, {
                     '_id': 0,
                     'title': 1,
@@ -165,18 +155,10 @@ class DashboardApp:
                     'date': 1,
                     'url': 1
                 }))
-                yahoo_articles_data = list(yahoo_articles.find({}, {
-                    '_id': 0,
-                    'title': 1,
-                    'summary': 1,
-                    'sentiment': 1,
-                    'date': 1,
-                    'url': 1
-                }))
 
                 return jsonify({
-                    'polygon': polygon_news_data + polygon_articles_data,
-                    'yahoo': yahoo_news_data + yahoo_articles_data
+                    'polygon': polygon_articles_data,
+                    'yahoo': yahoo_news_data 
                 })
             except Exception as e:
                 return jsonify({'error': str(e)})

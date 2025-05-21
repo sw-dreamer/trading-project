@@ -25,12 +25,31 @@
       color: #60a5fa !important;
     }
 
+    /* ✅ 전체 섹션 박스 */
+    .news-section-wrapper {
+      background-color: #f8f9fa;
+      border-radius: 1rem;
+      padding: 2rem;
+      margin-top: 1.5rem;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    /* ✅ 탭 버튼 둥글게 감싸기 */
+    .tab-header-box {
+      background-color: #f3f4f6;
+      border-radius: 50px;
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1rem;
+    }
+
     .nav-tabs .nav-link {
       border: none;
-      color: white;
+      color: #333;
       border-radius: 999px;
       margin-right: 5px;
     }
+
     .nav-tabs .nav-link.active {
       background: linear-gradient(to right, #3b82f6, #9333ea);
       color: white !important;
@@ -39,38 +58,37 @@
     }
 
     .news-container-wrapper {
-      background-color: #1e293b;
+      background-color: #ffffff;
       border-radius: 1rem;
       padding: 2rem;
-      margin-top: 1.5rem;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      margin-top: 1rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     }
 
     .news-card {
       background-color: #ffffff;
       border-radius: 0.75rem;
-      padding: 1.5rem;
+      padding: 1.25rem 1.5rem;
       margin-bottom: 1.5rem;
-      border: 1px solid #d1d5db;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
-    .news-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+      border: none;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: none;
     }
 
     .news-card h5 a {
       color: #111111;
-      font-weight: 800;
-      font-size: 1.1rem;
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 0.5rem;
     }
 
     .news-card p {
-      color: #333333;
-      font-size: 0.95rem;
+      color: #444;
+      font-size: 0.92rem;
       margin-bottom: 1rem;
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
     .news-meta {
@@ -79,6 +97,10 @@
       align-items: center;
       font-size: 0.85rem;
       color: #6b7280;
+      border-top: 1px solid #f0f0f0;
+      padding-top: 0.75rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
     .news-meta a {
@@ -87,12 +109,65 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      max-width: 300px;
+      max-width: 280px;
       display: inline-block;
     }
 
     .news-meta a:hover {
       color: #2563eb;
+    }
+
+    /* 검색창 전체 박스 */
+    .search-box-container {
+    width: 100%;
+    }
+
+    /* 검색창 input + 버튼 감싸는 부분 */
+    .search-input-group {
+    display: flex;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: linear-gradient(to right, #3b82f6, #9333ea);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* 검색창 input */
+    .search-input {
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 0;
+    flex: 1;
+    font-size: 0.95rem;
+    }
+
+    /* 검색 버튼 */
+    .search-btn {
+    background-color: white;
+    color: #4b5563;
+    border: none;
+    padding: 0 1rem;
+    font-size: 1.1rem;
+    }
+
+    .search-btn:hover {
+    background-color: #f3f4f6;
+    }
+
+    /* 더보기 버튼 색 지정 */
+    .custom-more-btn {
+    background: linear-gradient(to right, #3b82f6, #9333ea);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .custom-more-btn:hover {
+    background: linear-gradient(to right, #4f46e5, #7c3aed);
     }
 
     .sentiment-tag {
@@ -138,37 +213,51 @@
     </div>
   </nav>
 
+  <!-- 뉴스 전체 박스 시작 -->
   <div class="container mt-4">
-    <!-- 탭 메뉴 -->
-    <ul class="nav nav-tabs mb-3" id="newsTab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="polygon-tab" data-bs-toggle="tab" data-bs-target="#polygon" type="button" role="tab">Polygon 뉴스</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="yahoo-tab" data-bs-toggle="tab" data-bs-target="#yahoo" type="button" role="tab">Yahoo 뉴스</button>
-      </li>
-    </ul>
+    <div class="news-section-wrapper">
+      
+      <!-- 탭 버튼을 둥근 박스로 -->
+      <div class="tab-header-box">
+        <ul class="nav nav-tabs" id="newsTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="polygon-tab" data-bs-toggle="tab" data-bs-target="#polygon" type="button" role="tab">Polygon 뉴스</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="yahoo-tab" data-bs-toggle="tab" data-bs-target="#yahoo" type="button" role="tab">Yahoo 뉴스</button>
+          </li>
+        </ul>
+      </div>
 
-    <!-- 탭 콘텐츠 -->
-    <div class="tab-content">
-      <!-- Polygon -->
-      <div class="tab-pane fade show active" id="polygon" role="tabpanel">
-        <div class="news-container-wrapper">
-          <div id="polygon-news">불러오는 중...</div>
-          <div class="d-grid gap-2 col-6 mx-auto my-3">
-            <button id="polygon-load-more" class="btn btn-outline-primary">더보기</button>
+      <!-- 검색창 -->
+     <div class="search-box-container mb-4 d-flex justify-content-center">
+        <div class="search-input-group">
+        <input type="text" class="form-control search-input" placeholder="검색할 종목명을 입력하세요" />
+        <button class="btn search-btn"><i class="bi bi-search"></i></button>
+        </div>
+     </div>
+
+      <!-- 카드 내부 내용 -->
+      <div class="news-container-wrapper">
+        <div class="tab-content">
+          <!-- Polygon 뉴스 -->
+          <div class="tab-pane fade show active" id="polygon" role="tabpanel">
+            <div id="polygon-news"></div>
+            <div class="d-grid gap-2 col-6 mx-auto my-3">
+              <button id="polygon-load-more" class="btn custom-more-btn">더보기</button>
+            </div>
+          </div>
+
+          <!-- Yahoo 뉴스 -->
+          <div class="tab-pane fade" id="yahoo" role="tabpanel">
+            <div id="yahoo-news"></div>
+            <div class="d-grid gap-2 col-6 mx-auto my-3">
+              <button id="yahoo-load-more" class="btn custom-more-btn">더보기</button>
+            </div>
           </div>
         </div>
       </div>
-      <!-- Yahoo -->
-      <div class="tab-pane fade" id="yahoo" role="tabpanel">
-        <div class="news-container-wrapper">
-          <div id="yahoo-news">불러오는 중...</div>
-          <div class="d-grid gap-2 col-6 mx-auto my-3">
-            <button id="yahoo-load-more" class="btn btn-outline-primary">더보기</button>
-          </div>
-        </div>
-      </div>
+
     </div>
   </div>
 

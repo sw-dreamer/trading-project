@@ -1,201 +1,258 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAC 트레이딩 시스템 - 백테스트 결과</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAC 트레이딩 시스템 - 백테스트 결과</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="/static/css/style.css">
+  
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <a class="navbar-brand" href="/">SAC 트레이딩 시스템</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" href="/">대시보드</a></li>
-                <li class="nav-item"><a class="nav-link" href="/live-trading">실시간 트레이딩</a></li>
-                <li class="nav-item"><a class="nav-link active" href="/backtest">백테스트 결과</a></li>
-                <li class="nav-item"><a class="nav-link" href="/models">모델 관리</a></li>
-                <li class="nav-item"><a class="nav-link" href="/news">관련 기사</a></li>
-                <li class="nav-item"><a class="nav-link" href="/settings">설정</a></li>
-            </ul>
-        </div>
-    </nav>
+  <!-- 네비게이션 바 -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">SAC 트레이딩 시스템</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="/">대시보드</a></li>
+          <li class="nav-item"><a class="nav-link" href="/live-trading">실시간 트레이딩</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/backtest">백테스트 결과</a></li>
+          <li class="nav-item"><a class="nav-link" href="/models">모델 관리</a></li>
+          <li class="nav-item"><a class="nav-link" href="/news">관련 기사</a></li>
+          <li class="nav-item"><a class="nav-link" href="/settings">설정</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-    <div class="container-fluid mt-4 container-card">
-        <h1 class="mb-4">백테스트 결과</h1>
+  <div class="container-fluid mt-4">
 
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="section-card">
-                    <div class="section-title">모델 선택</div>
-                    <select id="modelSelect" class="form-control">
-                        <option value="">모델을 선택하세요</option>
-                    </select>
-                </div>
+    <!-- 시스템 개요 -->
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">백테스트 결과</h5>
             </div>
-            <div class="col-md-9">
-                <div class="section-card">
-                    <div class="section-title">성능 요약</div>
-                    <div class="row">
-                        <div class="col-md-3">\                            <h5>총 수익률</h5>
-                            <p id="totalReturn">-</p>
-                        </div>
-                        <div class="col-md-3">
-                            <h5>샤프 비율</h5>
-                            <p id="sharpeRatio">-</p>
-                        </div>
-                        <div class="col-md-3">
-                            <h5>최대 낙폭</h5>
-                            <p id="maxDrawdown">-</p>
-                        </div>
-                        <div class="col-md-3">
-                            <h5>승률</h5>
-                            <p id="winRate">-</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="card-body">
+            <p>SAC 트레이딩 시스템을 백테스트하고 결과를 확인할 수 있습니다.</p>
+          </div>
         </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="section-card">
-                    <div class="section-title">포트폴리오 가치 변화</div>
-                    <div id="portfolioChart" style="height: 400px;"></div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="section-card">
-                    <div class="section-title">낙폭 변화</div>
-                    <div id="drawdownChart" style="height: 400px;"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="section-card">
-                    <div class="section-title">거래 분포</div>
-                    <div id="tradeDistributionChart" style="height: 400px;"></div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="section-card">
-                    <div class="section-title">모델 비교</div>
-                    <div id="modelComparisonChart" style="height: 400px;"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="section-card">
-            <div class="section-title">거래 내역</div>
-            <table class="table table-striped" id="tradesTable">
-                <thead>
-                    <tr>
-                        <th>날짜/시간</th>
-                        <th>종류</th>
-                        <th>가격</th>
-                        <th>수량</th>
-                        <th>비용</th>
-                        <th>포트폴리오 가치</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+      </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        function loadModels() {
-            fetch('/api/models')
-                .then(response => response.json())
-                .then(data => {
-                    const modelSelect = document.getElementById('modelSelect');
-                    for (const modelId in data) {
-                        const option = document.createElement('option');
-                        option.value = modelId;
-                        option.textContent = modelId;
-                        modelSelect.appendChild(option);
-                    }
-                });
-        }
+    <!-- 모델 선택 & 성능 요약 -->
+    <div class="row mb-3">
+        <!-- 모델 선택 -->
+        <div class="col-md-3">
+          <div class="card h-100">
+            <div class="card-header">
+              <h5 class="mb-0">모델 선택</h5>
+              <button class="btn btn-light btn-sm" onclick="refreshModelList()" title="모델 새로고침">
+                <i class="bi bi-arrow-clockwise"></i>
+              </button>
+            </div>
+            <div class="card-body">
+              <select id="modelSelect" class="form-control">
+                <option value="">모델을 선택하세요</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      
+        <!-- 성능 요약 -->
+        <div class="col-md-9">
+          <div class="card h-100">
+            <div class="card-header">
+              <h5 class="mb-0">성능 요약</h5>
+            </div>
+            <div class="card-body">
+              <div class="row text-center">
+                <div class="col-md-3">
+                  <h6>총 수익률</h6>
+                  <p id="totalReturn">-</p>
+                </div>
+                <div class="col-md-3">
+                  <h6>샤프 비율</h6>
+                  <p id="sharpeRatio">-</p>
+                </div>
+                <div class="col-md-3">
+                  <h6>최대 낙폭</h6>
+                  <p id="maxDrawdown">-</p>
+                </div>
+                <div class="col-md-3">
+                  <h6>승률</h6>
+                  <p id="winRate">-</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 차트 1 -->
+<div class="row mb-3">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">포트폴리오 가치 변화</h5>
+        </div>
+        <div class="card-body">
+          <div id="portfolioChart" style="height: 400px;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">낙폭 변화</h5>
+        </div>
+        <div class="card-body">
+          <div id="drawdownChart" style="height: 400px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 차트 2 -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">거래 분포</h5>
+        </div>
+        <div class="card-body">
+          <div id="tradeDistributionChart" style="height: 400px;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">모델 비교</h5>
+        </div>
+        <div class="card-body">
+          <div id="modelComparisonChart" style="height: 400px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 거래 내역 -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">거래 내역</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped text-white" id="tradesTable">
+          <thead>
+            <tr>
+              <th>날짜/시간</th>
+              <th>종류</th>
+              <th>가격</th>
+              <th>수량</th>
+              <th>비용</th>
+              <th>포트폴리오 가치</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+    
 
-        function loadBacktestResult(modelId) {
-            if (!modelId) return;
-            fetch(`/api/backtest-results?model_id=${modelId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (!data || !data[modelId]) return;
-                    const result = data[modelId];
-                    displayMetrics(result.metrics);
-                    loadCharts(modelId, result);
-                    displayTrades(result.trades);
-                });
-        }
-
-        function displayMetrics(metrics) {
-            document.getElementById('totalReturn').textContent = (metrics.cumulative_return * 100).toFixed(2) + '%';
-            document.getElementById('sharpeRatio').textContent = metrics.sharpe_ratio.toFixed(2);
-            document.getElementById('maxDrawdown').textContent = (metrics.max_drawdown * 100).toFixed(2) + '%';
-            document.getElementById('winRate').textContent = (metrics.win_rate * 100).toFixed(2) + '%';
-        }
-
-        function loadCharts(modelId, result) {
-            fetch(`/api/charts/portfolio?model_id=${modelId}`)
-                .then(response => response.json())
-                .then(data => Plotly.newPlot('portfolioChart', data.data, data.layout));
-
-            fetch(`/api/charts/drawdown?model_id=${modelId}`)
-                .then(response => response.json())
-                .then(data => Plotly.newPlot('drawdownChart', data.data, data.layout));
-
-            fetch(`/api/charts/trade-distribution?model_id=${modelId}`)
-                .then(response => response.json())
-                .then(data => Plotly.newPlot('tradeDistributionChart', data.data, data.layout));
-
-            fetch('/api/charts/model-comparison')
-                .then(response => response.json())
-                .then(data => Plotly.newPlot('modelComparisonChart', data.data, data.layout));
-        }
-
-        function displayTrades(trades) {
-            const tbody = document.querySelector('#tradesTable tbody');
-            tbody.innerHTML = '';
-            if (!trades || trades.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = '<td colspan="6" class="text-center">거래 내역이 없습니다.</td>';
-                tbody.appendChild(row);
-                return;
-            }
-            for (const trade of trades) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${trade.timestamp}</td>
-                    <td>${trade.action > 0 ? '매수' : '매도'}</td>
-                    <td>${trade.price.toFixed(2)}</td>
-                    <td>${trade.shares}</td>
-                    <td>${trade.cost ? trade.cost.toFixed(2) : '-'}</td>
-                    <td>${trade.portfolio_value.toFixed(2)}</td>
-                `;
-                tbody.appendChild(row);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            loadModels();
-            document.getElementById('modelSelect').addEventListener('change', function() {
-                loadBacktestResult(this.value);
-            });
+  <!-- 스크립트 -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script>
+    function loadModels() {
+      fetch('/api/models')
+        .then(response => response.json())
+        .then(data => {
+          const modelSelect = document.getElementById('modelSelect');
+          for (const modelId in data) {
+            const option = document.createElement('option');
+            option.value = modelId;
+            option.textContent = modelId;
+            modelSelect.appendChild(option);
+          }
         });
-    </script>
+    }
+
+    function loadBacktestResult(modelId) {
+      if (!modelId) return;
+      fetch(`/api/backtest-results?model_id=${modelId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (!data || !data[modelId]) return;
+          const result = data[modelId];
+          displayMetrics(result.metrics);
+          loadCharts(modelId);
+          displayTrades(result.trades);
+        });
+    }
+
+    function displayMetrics(metrics) {
+      document.getElementById('totalReturn').textContent = (metrics.cumulative_return * 100).toFixed(2) + '%';
+      document.getElementById('sharpeRatio').textContent = metrics.sharpe_ratio.toFixed(2);
+      document.getElementById('maxDrawdown').textContent = (metrics.max_drawdown * 100).toFixed(2) + '%';
+      document.getElementById('winRate').textContent = (metrics.win_rate * 100).toFixed(2) + '%';
+    }
+
+    function loadCharts(modelId) {
+      fetch(`/api/charts/portfolio?model_id=${modelId}`)
+        .then(res => res.json())
+        .then(data => Plotly.newPlot('portfolioChart', data.data, data.layout));
+
+      fetch(`/api/charts/drawdown?model_id=${modelId}`)
+        .then(res => res.json())
+        .then(data => Plotly.newPlot('drawdownChart', data.data, data.layout));
+
+      fetch(`/api/charts/trade-distribution?model_id=${modelId}`)
+        .then(res => res.json())
+        .then(data => Plotly.newPlot('tradeDistributionChart', data.data, data.layout));
+
+      fetch(`/api/charts/model-comparison`)
+        .then(res => res.json())
+        .then(data => Plotly.newPlot('modelComparisonChart', data.data, data.layout));
+    }
+
+    function displayTrades(trades) {
+      const tbody = document.querySelector('#tradesTable tbody');
+      tbody.innerHTML = '';
+      if (!trades || trades.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center">거래 내역이 없습니다.</td></tr>';
+        return;
+      }
+      trades.forEach(trade => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${trade.timestamp}</td>
+          <td>${trade.action > 0 ? '매수' : '매도'}</td>
+          <td>${trade.price.toFixed(2)}</td>
+          <td>${trade.shares}</td>
+          <td>${trade.cost ? trade.cost.toFixed(2) : '-'}</td>
+          <td>${trade.portfolio_value.toFixed(2)}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      loadModels();
+      document.getElementById('modelSelect').addEventListener('change', function () {
+        loadBacktestResult(this.value);
+      });
+    });
+  </script>
 </body>
 </html>
+

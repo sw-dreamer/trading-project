@@ -902,3 +902,347 @@
 2025-05-21 14:10:25 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
 2025-05-21 14:10:25 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
 2025-05-21 14:10:26 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:14:25 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 14:14:25 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 14:14:25 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 14:14:25 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 14:14:25 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 14:14:33 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 14:14:35 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:14:36 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:14:39 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:14:42 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:14:44 [INFO] 모든 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 14:14:44 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 14:14:44 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 14:14:44 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 14:15:41 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:15:41 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:15:52 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:17:49 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:17:49 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:18:09 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:19:07 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:19:07 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:19:28 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:20:07 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:21:07 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:22:27 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:22:27 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:24:06 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:24:06 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:24:39 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:25:09 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:26:19 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:32:36 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:32:36 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:33:51 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 14:33:51 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 14:33:51 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 14:33:51 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 14:33:51 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 14:33:54 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 14:34:00 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:34:00 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:34:17 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:35:07 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:35:38 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:35:41 [INFO] 모든 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 14:35:41 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 14:35:41 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 14:35:41 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 14:41:34 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 14:41:34 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 14:41:34 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 14:41:34 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 14:41:34 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 14:41:44 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 14:41:50 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:41:50 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:42:01 [INFO] 모든 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 14:42:01 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 14:42:01 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 14:42:01 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 14:42:32 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:43:33 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:45:14 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:45:14 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:46:44 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 14:46:44 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 14:46:44 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 14:46:44 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 14:46:44 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 14:46:47 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:46:47 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:47:05 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:51:48 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 14:51:48 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 14:51:48 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 14:51:48 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 14:51:48 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 14:51:58 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 14:51:58 [INFO] 모든 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 14:51:58 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 14:51:58 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 14:51:58 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 14:52:00 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:52:00 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:52:05 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:52:44 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 14:55:07 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:55:07 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:55:07 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:56:07 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:57:07 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:58:07 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 14:58:07 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:00:13 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 15:00:13 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 15:00:13 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 15:00:13 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 15:00:13 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 15:00:27 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:00:27 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 15:03:05 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:03:05 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 15:03:07 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 15:03:07 [INFO] 모든 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 15:03:07 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 15:03:07 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 15:03:07 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 15:03:10 [INFO] 모델 ID 'sac_v1'에 대한 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 15:03:10 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 15:03:10 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 15:03:10 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 15:03:13 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 15:10:55 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 15:10:55 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 15:10:55 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 15:10:55 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 15:10:55 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 15:10:57 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 15:11:00 [INFO] 모델 ID 'sac_v1'에 대한 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 15:11:00 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 15:11:00 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 15:11:00 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 15:11:00 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:11:00 [INFO] 모든 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 15:11:00 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 15:11:00 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 15:11:00 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 15:11:18 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 15:11:40 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 15:12:00 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:13:01 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:15:08 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 15:15:08 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 15:15:08 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 15:15:08 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 15:15:08 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 15:15:10 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:15:10 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 15:15:16 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 15:15:20 [INFO] 모델 ID 'sac_v1'에 대한 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 15:15:20 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 15:15:20 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 15:15:20 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 15:15:20 [INFO] 모든 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 15:15:20 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 15:15:20 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 15:15:20 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 15:28:40 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:28:40 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 15:29:33 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 15:29:33 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 15:29:33 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 15:29:33 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 15:29:33 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 15:29:35 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:29:35 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 15:29:37 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 15:29:44 [INFO] 모델 ID 'sac_v1'에 대한 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 15:29:44 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 15:29:44 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 15:29:44 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 15:29:44 [INFO] 모든 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 15:29:44 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 15:29:44 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 15:29:44 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 15:30:17 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 15:30:37 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:32:16 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:49:24 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:49:24 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 15:52:53 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:52:53 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:53:53 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:54:54 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:55:54 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:55:54 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:56:54 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:58:04 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:58:04 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 15:58:59 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 15:59:07 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 15:59:07 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 16:00:07 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:06:45 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:06:45 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 16:08:32 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:08:33 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 16:09:59 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:10:59 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:11:59 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:11:59 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:12:37 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 16:13:07 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:17:53 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:17:53 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 16:18:53 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:18:53 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:19:53 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:20:53 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:21:53 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:21:53 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:22:53 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:22:53 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:23:53 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:24:54 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:25:55 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:25:55 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:26:56 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:27:57 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:27:57 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:28:58 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:28:58 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:29:17 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 16:29:18 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 16:29:20 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 16:29:21 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 16:30:02 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:31:23 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:32:24 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 16:32:53 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 16:32:54 [INFO] 모든 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 16:32:54 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 16:32:54 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 16:32:54 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 16:33:18 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 16:42:54 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 16:42:54 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 16:42:54 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 16:42:54 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 16:42:54 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 16:42:59 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 16:53:53 [INFO] 모든 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 16:53:53 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 16:53:53 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 16:53:53 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 17:04:23 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 17:04:23 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 17:04:23 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 17:04:23 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 17:04:23 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 17:04:28 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 17:04:35 [INFO] 모델 ID 'sac_v1'에 대한 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 17:04:35 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 17:04:35 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 17:04:35 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 17:04:35 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:04:35 [INFO] 모든 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 17:04:35 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 17:04:35 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 17:04:35 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 17:06:23 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:09:37 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:10:01 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 17:16:35 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:19:14 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:20:15 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:20:15 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:22:14 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:23:27 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:24:27 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:24:27 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:26:11 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:26:11 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 17:39:19 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 17:39:19 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 17:39:19 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 17:39:19 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 17:39:19 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 17:45:33 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 17:45:33 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 17:45:33 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 17:45:33 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 17:45:33 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 17:47:26 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:47:26 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 17:49:57 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 17:50:01 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:50:01 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 17:51:02 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:52:02 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:52:45 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 17:54:00 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 17:54:00 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 17:54:00 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 17:54:00 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 17:54:00 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 17:54:14 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 17:54:14 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 17:54:16 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 17:54:24 [INFO] 모델 ID 'sac_v1'에 대한 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 17:54:24 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 17:54:24 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 17:54:24 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 17:54:24 [INFO] 모든 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 17:54:24 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 17:54:24 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 17:54:24 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 18:04:35 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 18:04:35 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 18:04:35 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 18:04:35 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 18:04:35 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 18:06:35 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 18:08:05 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 18:08:05 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 18:15:21 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 18:15:21 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 18:15:21 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 18:15:21 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 18:15:21 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 18:21:40 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 18:21:40 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 18:21:40 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 18:21:40 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 18:21:40 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 18:22:48 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 18:22:48 [INFO] 모든 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 18:22:48 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 18:22:48 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 18:22:48 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 18:22:50 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 18:22:50 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 18:22:57 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 18:23:19 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 18:34:09 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 18:34:09 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 18:34:09 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 18:34:09 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 18:34:09 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
+2025-05-21 18:34:28 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 18:34:28 [WARNING] GOOGL 시장 데이터 파일이 없습니다.
+2025-05-21 18:35:32 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 18:36:32 [INFO] 트레이딩 통계 로드 완료: C:\final_project\results\live_trading\trading_stats_20240511.json
+2025-05-21 18:36:39 [INFO] 모델 정보 로드 완료: 1개
+2025-05-21 18:36:39 [INFO] 모든 백테스트 파일: ['backtest_model_sac_v1_20240510.json']
+2025-05-21 18:36:39 [INFO] 파일 'backtest_model_sac_v1_20240510.json'에서 추출한 모델 ID: sac_v1
+2025-05-21 18:36:39 [INFO] 백테스트 결과 로드 완료: 1개
+2025-05-21 18:36:39 [INFO] 로드된 모델 ID 목록: ['sac_v1']
+2025-05-21 18:49:29 [INFO] 대시보드 시작 - 데이터 디렉토리: C:\final_project\results
+2025-05-21 18:49:29 [INFO] DataManager 초기화 완료: C:\final_project\results
+2025-05-21 18:49:29 [INFO] 대시보드 앱 초기화 완료: http://0.0.0.0:5000
+2025-05-21 18:49:29 [INFO] 대시보드 실행 - http://0.0.0.0:5000
+2025-05-21 18:49:29 [INFO] 대시보드 웹 서버 시작: http://0.0.0.0:5000
