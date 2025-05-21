@@ -9,6 +9,7 @@ from typing import Dict, List, Any, Optional, Union
 
 from flask import Flask, render_template, jsonify, request, Response
 import plotly
+from pymongo import MongoClient
 
 from src.dashboard.data_manager import DataManager
 from src.dashboard.data_manager_db import DBDataManager
@@ -18,6 +19,19 @@ from src.utils.logger import Logger
 
 # <라우팅 설정>
 # 라우팅 : "어떤 url이 들어왔을 때 어떤 함수를 실행할지 정하는 것"
+
+# 몽고DB 연동 코드 
+mongo_client = MongoClient('mongodb://192.168.40.192/')   #localhost 주소 
+
+# polygon DB 접속
+polygon_db = mongo_client['polygon']                        #DB 이름
+polygon_news =polygon_db['news']                            #컬렉션 이름
+polygon_articles =polygon_db['articles']                    #컬렉션 이름
+
+# yahoo DB 접속
+yahoo_db = mongo_client['yahoo']                           #DB 이름
+yahoo_news =yahoo_db['news']                               #컬렉션 이름
+yahoo_articles =yahoo_db['articles']                       #컬렉션 이름
 
 class DashboardApp:
     """
@@ -71,6 +85,7 @@ class DashboardApp:
         if self.logger:
             self.logger.info(f"대시보드 앱 초기화 완료: http://{host}:{port}")
     
+    # 라우트 설정 함수
     def _setup_routes(self):
         """
         Flask 라우트 설정
@@ -103,6 +118,7 @@ class DashboardApp:
         # 설정 페이지
         @self.app.route('/settings')
         def settings():
+            
             return render_template('settings.html')
         
         # API 엔드포인트 설정
@@ -120,6 +136,33 @@ class DashboardApp:
             refresh = request.args.get('refresh', 'false').lower() == 'true'
             models = self.data_manager.get_model_info(refresh=refresh)
             return jsonify(models)
+        
+        # 기사 데이터 조회 API
+        @self.app.route('/api/news')
+        def get_news():
+            try:
+                # polygon DB에서 news, articles 가져오기
+                polygon_news_data = list(polygon_news.find({}, {
+                    '_id': 0, 'title': 1, 'content': 1, 'published_at': 1
+                }))
+                polygon_articles_data = list(polygon_articles.find({}, {
+                    '_id': 0, 'title': 1, 'content': 1, 'published_at': 1
+                }))
+
+                # yahoo DB에서 news, articles 가져오기
+                yahoo_news_data = list(yahoo_news.find({}, {
+                    '_id': 0, 'title': 1, 'content': 1, 'published_at': 1
+                }))
+                yahoo_articles_data = list(yahoo_articles.find({}, {
+                    '_id': 0, 'title': 1, 'content': 1, 'published_at': 1
+                }))
+                
+                all_news = polygon_news_data + polygon_articles_data + yahoo_news_data + yahoo_articles_data
+
+                return jsonify(all_news)
+            except Exception as e:
+                return jsonify({'error': str(e)})
+
         
         # 백테스트 결과 API
         @self.app.route('/api/backtest-results')

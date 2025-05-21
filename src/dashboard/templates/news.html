@@ -40,23 +40,85 @@
         </div>
     </nav>
 
-    <div class="container-fluid mt-4">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">관련 기사</h5>
-                    </div>
-                    <div class="card-body">
-                        <p>투자에 도움이 되는 주요 기사들을 모아 보여드립니다.</p>
-                    </div>
-                </div>
+    <div class="container mt-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">📌 Polygon 뉴스</h5>
+            </div>
+            <div class="card-body" id="polygon-news">
+                <p>불러오는 중...</p>
             </div>
         </div>
-   
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">📌 Yahoo 뉴스</h5>
+            </div>
+            <div class="card-body" id="yahoo-news">
+                <p>불러오는 중...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/api/news')
+                .then(res => res.json())
+                .then(data => {
+                    const polygonNews = data.polygon || [];
+                    const yahooNews = data.yahoo || [];
+
+                    const polygonContainer = document.getElementById('polygon-news');
+                    const yahooContainer = document.getElementById('yahoo-news');
+
+                    // polygon 뉴스 렌더링
+                    polygonContainer.innerHTML = '';
+                    if (polygonNews.length === 0) {
+                        polygonContainer.innerHTML = '<p>데이터가 없습니다.</p>';
+                    } else {
+                        polygonNews.forEach(news => {
+                            const div = document.createElement('div');
+                            div.className = 'mb-3 p-3 border rounded';
+                            div.innerHTML = `
+                                <h6>${news.title}</h6>
+                                <p>${news.content}</p>
+                                <small class="text-muted">${news.published_at}</small>
+                            `;
+                            polygonContainer.appendChild(div);
+                        });
+                    }
+
+                    // yahoo 뉴스 렌더링
+                    yahooContainer.innerHTML = '';
+                    if (yahooNews.length === 0) {
+                        yahooContainer.innerHTML = '<p>데이터가 없습니다.</p>';
+                    } else {
+                        yahooNews.forEach(news => {
+                            const div = document.createElement('div');
+                            div.className = 'mb-3 p-3 border rounded';
+                            div.innerHTML = `
+                                <h6>${news.title}</h6>
+                                <p>${news.content}</p>
+                                <small class="text-muted">${news.published_at}</small>
+                            `;
+                            yahooContainer.appendChild(div);
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error('뉴스 로딩 오류:', err);
+                    document.getElementById('polygon-news').innerHTML = '<p>오류 발생</p>';
+                    document.getElementById('yahoo-news').innerHTML = '<p>오류 발생</p>';
+                });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</body>
+</html>
+            
    
  
       
-
-</body>
-</html>
