@@ -101,15 +101,16 @@ class Backtester:
             self.results["positions"].append(info["position"])
             self.results["rewards"].append(reward)
             self.results["timestamps"].append(info["timestamps"])
-            
+            print(f'info\n{info}')
             # 거래 기록 저장
             if info["trade_executed"]:
                 self.results["trades"].append({
-                    "timestamp": info["timestamp"],
+                    "step":info["step"],
+                    "timestamps": info["timestamps"],
                     "action": action,
                     "price": info["current_price"],
-                    "shares": info["trade_shares"],
-                    "cost": info["trade_cost"],
+                    "shares": info["shares_held"],
+                    "cost": info["cost_basis"],
                     "position": info["position"],
                     "portfolio_value": info["portfolio_value"]
                 })
