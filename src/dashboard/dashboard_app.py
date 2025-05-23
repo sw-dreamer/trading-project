@@ -98,6 +98,11 @@ class DashboardApp:
         def live_trading():
             return render_template('live_trading.html')
         
+        # 실시간 차트 페이지
+        @self.app.route('/live-chart')
+        def live_chart():
+            return render_template('live_chart.html')
+        
         # 백테스트 결과 페이지
         @self.app.route('/backtest')
         def backtest():
