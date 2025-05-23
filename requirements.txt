@@ -25,3 +25,4 @@ requests==2.31.0
 
 # 금융 라이브러리
 # ta-lib 별도 설치 필요
+mkmkmkmko
