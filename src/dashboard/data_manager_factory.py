@@ -7,9 +7,10 @@ import warnings
 
 from src.utils.logger import Logger
 from src.utils.database import DatabaseManager, HAS_MYSQL
-from src.dashboard.data_manager import DataManager
+from src.dashboard.data_manager_file import FileDataManager
 
-# PostgreSQL 라이브러리가 설치된 경우에만 DBDataManager 임포트
+
+# MYSQL 라이브러리가 설치된 경우에만 DBDataManager 임포트
 if HAS_MYSQL:
     from src.dashboard.data_manager_db import DBDataManager
 else:
@@ -32,9 +33,9 @@ class DataManagerFactory:
         cls,                                                    # 클래스 메서드의 클래스 참조
         manager_type: str,                                      # 관리자 유형 ('file' 또는 'db')
         data_dir: str,                                          # 데이터 디렉토리 경로
-        db_config: Optional[Dict[str, Any]] = None,             # 데이터베이스 설정 정보 (호스트, 포트, 사용자 등)
+        db_manager: Optional['DatabaseManager'] = None,          # 데이터베이스 설정 정보 (호스트, 포트, 사용자 등)
         logger: Optional[Logger] = None                         # 로깅을 위한 Logger 인스턴스
-    ) -> Union[DataManager, 'DBDataManager']:                   
+    ) -> Union['FileDataManager', 'DBDataManager']:                   
         # DataManager 또는 DBDataManager 인스턴스 반환
         """
         데이터 관리자 생성 팩토리 메서드
@@ -48,43 +49,27 @@ class DataManagerFactory:
         Returns:
             DataManager 또는 DBDataManager 인스턴스
         """
-        if manager_type == 'file':
-            # 파일 기반 데이터 관리자 생성
-            return DataManager(data_dir=data_dir, logger=logger)
-        elif manager_type == 'db':
-            # MySQL이 설치되었는지 확인
-            if not HAS_MYSQL:
-                warnings.warn("MySQL이 설치되지 않았습니다. 데이터베이스 기반 데이터 관리자를 사용할 수 없습니다.")
-                logger.warning("MySQL이 설치되지 않아 파일 기반 데이터 관리자로 대체합니다.")
-                return DataManager(data_dir=data_dir, logger=logger)
+        # 데이터베이스 구성 유효성 검사
+        if manager_type == 'db':
+            if not db_manager:
+                raise ValueError("db_manager 구성이 제공되지 않았습니다.")
             
-            # 데이터베이스 구성 유효성 검사
-            if not db_config:
-                raise ValueError("데이터베이스 구성이 제공되지 않았습니다.")
-            
-            # 필수 필드 확인
-            required_fields = ['host', 'port', 'user', 'database']
-            for field in required_fields:
-                if field not in db_config:
-                    raise ValueError(f"데이터베이스 구성에 필수 필드가 누락되었습니다: {field}")
-            
-            # 패스워드 필드 기본값 설정
-            if 'password' not in db_config:
-                db_config['password'] = ''
-            
-            # DB 데이터 관리자 동적 임포트 및 생성
-            from src.dashboard.data_manager_db import DBDataManager
             return DBDataManager(
-                db_config=db_config,
+                db_manager=db_manager,
                 data_dir=data_dir,
                 logger=logger
             )
+        elif manager_type == 'file':
+            return FileDataManager(
+                data_dir=data_dir,
+                logger=logger
+            )
+            
         else:
             raise ValueError(f"지원되지 않는 관리자 유형입니다: {manager_type}")
-    
     @staticmethod
     def sync_file_to_db(
-        file_data_manager: DataManager,
+        file_data_manager: 'FileDataManager',
         db_data_manager: 'DBDataManager',
         sync_types: Optional[list] = None
     ) -> Dict[str, int]:

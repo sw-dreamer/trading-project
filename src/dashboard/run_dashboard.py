@@ -21,7 +21,9 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from src.dashboard.dashboard_app import DashboardApp
+from src.dashboard.data_manager_file import FileDataManager
 from src.dashboard.data_manager_factory import DataManagerFactory
+from src.utils.database import DatabaseManager
 from src.utils.logger import Logger
 
 # 스크랩트를 실행 할 때 여러 옵션을 줄 수 있게 만드는 함수 
@@ -42,18 +44,18 @@ def parse_args():
                         help='데이터 디렉토리 경로 (기본값: results)')
     
     # 데이터베이스 설정(DB 접속 설정 값들)
-    parser.add_argument('--db-mode', action='store_true',
+    parser.add_argument('--db-mode', action='store_true', 
                         help='데이터베이스 모드 활성화')
-    parser.add_argument('--db-host', type=str, default='localhost',
-                        help='데이터베이스 호스트 (기본값: localhost)')
+    parser.add_argument('--db-host', type=str, default='192.168.40.199',
+                        help='데이터베이스 호스트')
     parser.add_argument('--db-port', type=int, default=3306,
-                        help='데이터베이스 포트 (기본값: 3306)')
+                        help='데이터베이스 포트 ')
     parser.add_argument('--db-user', type=str, default='root',
-                        help='데이터베이스 사용자 (기본값: root)')
-    parser.add_argument('--db-password', type=str, default='',
+                        help='데이터베이스 사용자')
+    parser.add_argument('--db-password', type=str, default='mysecretpassword',
                         help='데이터베이스 비밀번호')
-    parser.add_argument('--db-name', type=str, default='sac_trading',
-                        help='데이터베이스 이름 (기본값: sac_trading)')
+    parser.add_argument('--db-name', type=str, default='trading',
+                        help='데이터베이스 이름')
     
     # 동기화 설정
     parser.add_argument('--sync-to-db', action='store_true',
@@ -85,6 +87,7 @@ def main():
         manager_type = 'db' if args.db_mode else 'file'
         
         # 데이터베이스 구성 설정 (데이터베이스 모드인 경우)
+        # db_config: 데이터베이스 설정 정보를 저장하는 딕셔너리
         db_config = None
         if args.db_mode:
             db_config = {
@@ -97,10 +100,12 @@ def main():
             logger.info(f"데이터베이스 설정: {args.db_host}:{args.db_port}/{args.db_name}")
         
         # 데이터 관리자 생성
+        db_manager = DatabaseManager(**db_config, logger=logger)
+        
         data_manager = DataManagerFactory.create_manager(
             manager_type=manager_type,
             data_dir=data_dir,
-            db_config=db_config,
+            db_manager=db_manager,
             logger=logger
         )
         
