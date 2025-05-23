@@ -1,10 +1,9 @@
-/* SAC 트레이딩 시스템 대시보드 스타일 */
+/* SAC 트레이딩 시스템 - 다크 테마 + 화이트 카드 UI */
 
-/* 기본 스타일 */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
-    color: #333;
+    background-color: #111827;
+    color: #e5e7eb;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -15,107 +14,192 @@ body {
 }
 
 /* 네비게이션 바 */
-.navbar-brand {
-    font-weight: 600;
+.navbar {
+    background-color: #0b1a35 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+.navbar .navbar-brand,
+.navbar .nav-link,
+.navbar-toggler {
+    color: white !important;
+}
+.navbar .nav-link.active {
+    color: #60a5fa !important;
+    border-bottom: 2px solid #60a5fa;
 }
 
-/* 카드 스타일 */
-.card {
-    border-radius: 0.5rem;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+/* 탭 버튼 */
+.nav-tabs .nav-link {
+    color: white;
+    background: none;
     border: none;
+    padding: 8px 16px;
+    border-radius: 999px;
+    transition: all 0.3s ease;
+}
+.nav-tabs .nav-link.active {
+    background: linear-gradient(to right, #3b82f6, #9333ea);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* 전체 뉴스 박스 감싸는 wrapper */
+.news-container-wrapper {
+    background-color: #1e293b;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-top: 1.5rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* 뉴스 카드 */
+.news-card {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    padding: 1.25rem 1.5rem;
     margin-bottom: 1.5rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .news-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+  }
+  
+/* 제목: 검정색 + 굵게 */
+.news-card h5 a {
+    color: #111111;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 0.6rem;
+    display: inline-block;
+  }
+  
+  .news-card p {
+    color: #444;
+    font-size: 0.93rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+  
+.news-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #6b7280;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 0.75rem;
 }
-
-.card-header {
-    background-color: #fff;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    font-weight: 600;
-}
-
-/* 차트 컨테이너 */
-.chart-container {
-    height: 300px;
-    width: 100%;
-}
-
-/* 통계 카드 */
-.stat-card {
-    padding: 1rem;
-    border-radius: 0.5rem;
-    background-color: #fff;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
-    text-align: center;
-    transition: transform 0.2s ease-in-out;
-}
-
-.stat-card:hover {
-    transform: translateY(-5px);
-}
-
-.stat-card h6 {
-    color: #6c757d;
-    font-size: 0.875rem;
-    margin-bottom: 0.5rem;
-}
-
-.stat-card h3 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.stat-card p {
-    font-size: 0.875rem;
-    color: #6c757d;
-}
-
-/* 테이블 스타일 */
-.table-responsive {
-    border-radius: 0.5rem;
+  
+.news-meta a {
+    color: #4b5563;
+    text-decoration: none;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 300px;
+    display: inline-block;
+}
+.news-meta a:hover {
+    color: #2563eb;
+}
+/* 감성 배지 스타일 */
+.sentiment-tag {
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    display: inline-block;
+}
+.sentiment-positive {
+    background-color: #22c55e; /* 초록 */
+    color: white;
+}
+.sentiment-neutral {
+    background-color: #facc15; /* 주황 */
+    color: black;
+}
+.sentiment-negative {
+    background-color: #ef4444; /* 빨강 */
+    color: white;
 }
 
+/* 공통 카드 스타일 (모델 관리 등 다른 카드도 동일하게) */
+.section-card, .form-section, .model-box, .upload-box, .activation-box, .card, .stat-card {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #111111;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.section-card:hover, .form-section:hover, .model-box:hover, .upload-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+}
+
+/* 테이블 */
 .table {
     margin-bottom: 0;
+    font-size: 0.9rem;
+    background-color: #ffffff;
 }
-
+.table th, .table td {
+    color: #111827;
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
+}
 .table th {
     font-weight: 600;
-    background-color: #f8f9fa;
 }
 
-/* 버튼 스타일 */
-.refresh-btn {
+/* 입력창 */
+input.form-control, select.form-control, textarea.form-control {
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #111827;
+    border-radius: 0.5rem;
+}
+input.form-control:focus, textarea.form-control:focus, select.form-control:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.4);
+}
+
+/* 카드 내부 타이틀 */
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111111;
+    margin-bottom: 0.75rem;
+}
+
+/* 버튼 */
+.refresh-btn,
+.btn-outline-primary {
     font-size: 0.875rem;
+    border-color: #60a5fa;
+    color: #60a5fa;
+    border-radius: 0.5rem;
+}
+.btn-outline-primary:hover {
+    background-color: #60a5fa;
+    color: white;
 }
 
-.refresh-btn i {
-    margin-right: 0.25rem;
+/* 링크 */
+a {
+    color: #60a5fa;
+    text-decoration: none;
 }
-
-/* 상태 색상 */
-.text-success {
-    color: #28a745 !important;
-}
-
-.text-danger {
-    color: #dc3545 !important;
-}
-
-.text-warning {
-    color: #ffc107 !important;
-}
-
-/* 반응형 디자인을 위한 미디어 쿼리 */
-@media (max-width: 768px) {
-    .stat-card {
-        margin-bottom: 1rem;
-    }
-    
-    .chart-container {
-        height: 250px;
-    }
+a:hover {
+    color: #93c5fd;
 }
 
 /* 로딩 애니메이션 */
@@ -125,139 +209,44 @@ body {
     align-items: center;
     min-height: 200px;
 }
-
 .loading::after {
     content: "";
     width: 30px;
     height: 30px;
     border: 5px solid #f3f3f3;
-    border-top: 5px solid #3498db;
+    border-top: 5px solid #60a5fa;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
-
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
 
-/* 데이터 없음 메시지 */
+/* 데이터 없음 */
 .no-data {
     text-align: center;
     padding: 2rem;
-    color: #6c757d;
+    color: #94a3b8;
 }
 
-/* 백테스트 결과 페이지 스타일 */
-.model-card {
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-}
+/* 상태 색상 */
+.text-success { color: #22c55e !important; }
+.text-danger { color: #ef4444 !important; }
+.text-warning { color: #facc15 !important; }
 
-.model-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-}
-
+/* 모델 카드 active */
 .model-card.active {
-    border-left: 4px solid #007bff;
+    background-color: #f8fafc;
+    border-left: 4px solid #60a5fa;
 }
 
-/* 비교 차트 섹션 */
-.comparison-chart-container {
-    height: 400px;
-}
-
-/* 설정 페이지 스타일 */
-.settings-section {
-    margin-bottom: 2rem;
-}
-
-.settings-section h5 {
-    border-bottom: 1px solid #dee2e6;
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-/* 포지션 배지 */
-.position-badge {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-}
-
-.badge-long {
-    background-color: #28a745;
-    color: white;
-}
-
-.badge-short {
-    background-color: #dc3545;
-    color: white;
-}
-
-/* 실시간 트레이딩 페이지 */
-.live-indicator {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: #28a745;
-    margin-right: 0.5rem;
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        opacity: 1;
+/* 반응형 */
+@media (max-width: 768px) {
+    .stat-card {
+        margin-bottom: 1rem;
     }
-    50% {
-        opacity: 0.5;
-    }
-    100% {
-        opacity: 1;
+    .chart-container {
+        height: 250px;
     }
 }
-
-/* 다크 모드 지원 */
-@media (prefers-color-scheme: dark) {
-    body {
-        background-color: #212529;
-        color: #f8f9fa;
-    }
-    
-    .card, .stat-card {
-        background-color: #2c3034;
-        color: #f8f9fa;
-    }
-    
-    .card-header {
-        background-color: #2c3034;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .table th {
-        background-color: #212529;
-        color: #f8f9fa;
-    }
-    
-    .table {
-        color: #f8f9fa;
-    }
-    
-    .text-muted, .stat-card h6, .stat-card p {
-        color: #adb5bd !important;
-    }
-    
-    .no-data {
-        color: #adb5bd;
-    }
-    
-    .footer {
-        background-color: #212529 !important;
-    }
-    
-    .footer .text-muted {
-        color: #adb5bd !important;
-    }
-} 

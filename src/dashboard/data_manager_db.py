@@ -1,5 +1,5 @@
 """
-MySQL 데이터베이스 기반 대시보드 데이터 관리 모듈
+PostgreSQL 데이터베이스 기반 대시보드 데이터 관리 모듈
 """
 import os
 import json
@@ -14,7 +14,7 @@ from src.utils.database import DatabaseManager
 
 class DBDataManager:
     """
-    MySQL 데이터베이스를 사용하는 대시보드 데이터 관리 클래스
+    PostgreSQL 데이터베이스를 사용하는 대시보드 데이터 관리 클래스
     """
     
     def __init__(
@@ -194,6 +194,7 @@ class DBDataManager:
             
             for result in results:
                 model_id_val = result['model_id']
+                
                 
                 # 첫 번째 결과만 사용 (가장 최근 백테스트)
                 if model_id_val not in backtest_results:

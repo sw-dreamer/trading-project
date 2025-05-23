@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# <서버 실행, 설정, 데이터 관리 프로세스 전체 실행 로직>
+
+
 """
 SAC 트레이딩 시스템 웹 대시보드 실행 스크립트
 """
@@ -21,14 +24,14 @@ from src.dashboard.dashboard_app import DashboardApp
 from src.dashboard.data_manager_factory import DataManagerFactory
 from src.utils.logger import Logger
 
-
+# 스크랩트를 실행 할 때 여러 옵션을 줄 수 있게 만드는 함수 
 def parse_args():
     """
     명령행 인자 파싱
     """
     parser = argparse.ArgumentParser(description='SAC 트레이딩 시스템 웹 대시보드')
     
-    # 일반 설정
+    # 일반 설정 (서버를 어떤 주소, 어떤 포트로 열지 지정)
     parser.add_argument('--host', type=str, default='0.0.0.0',
                         help='호스트 주소 (기본값: 0.0.0.0)')
     parser.add_argument('--port', type=int, default=5000,
@@ -38,7 +41,7 @@ def parse_args():
     parser.add_argument('--data-dir', type=str, default='results',
                         help='데이터 디렉토리 경로 (기본값: results)')
     
-    # 데이터베이스 설정
+    # 데이터베이스 설정(DB 접속 설정 값들)
     parser.add_argument('--db-mode', action='store_true',
                         help='데이터베이스 모드 활성화')
     parser.add_argument('--db-host', type=str, default='localhost',
@@ -58,7 +61,7 @@ def parse_args():
     
     return parser.parse_args()
 
-
+# 전체 실행 로직 
 def main():
     """
     메인 함수
@@ -78,7 +81,7 @@ def main():
     logger.info(f"대시보드 시작 - 데이터 디렉토리: {data_dir}")
     
     try:
-        # 관리자 유형 및 구성 설정
+        # 데이터 관리자 유형 설정(DB 관리자 or 파일 관리자)
         manager_type = 'db' if args.db_mode else 'file'
         
         # 데이터베이스 구성 설정 (데이터베이스 모드인 경우)
@@ -123,7 +126,7 @@ def main():
             except Exception as e:
                 logger.error(f"동기화 중 오류 발생: {e}")
         
-        # 대시보드 앱 생성 및 실행
+        # 대시보드 앱 생성 및 실행(서버 실행)
         app = DashboardApp(
             data_manager=data_manager,
             host=args.host,
