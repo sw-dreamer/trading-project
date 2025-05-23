@@ -111,8 +111,25 @@ class DashboardApp:
         # 기사 페이지
         @self.app.route('/news')
         def news():
-            return render_template('news.html')
-        
+            ticker = request.args.get('name')  
+
+            query_filter = {}
+            if ticker:
+                query_filter = {"name": ticker}
+
+            # polygon_articles 컬렉션에서 데이터 가져오기
+            news_data = list(polygon_articles.find(query_filter, {
+                '_id': 0,
+                'name': 1,
+                'title': 1,
+                'summary': 1,
+                'sentiment': 1,
+                'date': 1,
+                'url': 1
+            }))
+
+            return render_template('news.html', news=news_data)
+
         # 설정 페이지
         @self.app.route('/settings')
         def settings():
@@ -138,17 +155,15 @@ class DashboardApp:
         # 기사 데이터 조회 API
         @self.app.route('/api/news')
         def get_news():
+            ticker = request.args.get('name')  # JS에서 보내는 ticker
             try:
-                polygon_articles_data = list(polygon_articles.find({}, {
+                query = {}
+                if ticker:
+                    query = {"name": ticker}
+
+                polygon_articles_data = list(polygon_articles.find(query, {
                     '_id': 0,
-                    'title': 1,
-                    'summary': 1,
-                    'sentiment': 1,
-                    'date': 1,
-                    'url': 1
-                }))
-                yahoo_news_data = list(yahoo_news.find({}, {
-                    '_id': 0,
+                    'name': 1,
                     'title': 1,
                     'summary': 1,
                     'sentiment': 1,
@@ -156,13 +171,23 @@ class DashboardApp:
                     'url': 1
                 }))
 
+                yahoo_news_data = list(yahoo_news.find(query, {
+                    '_id': 0,
+                    'name': 1,
+                    'title': 1,
+                    'summary': 1,
+                    'sentiment': 1,
+                    'date': 1,
+                    'url': 1
+                }))
+                
                 return jsonify({
                     'polygon': polygon_articles_data,
-                    'yahoo': yahoo_news_data 
+                    'yahoo': yahoo_news_data
                 })
             except Exception as e:
                 return jsonify({'error': str(e)})
-        
+                
         # 백테스트 결과 API
         @self.app.route('/api/backtest-results')
         def get_backtest_results():
