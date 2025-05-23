@@ -117,44 +117,6 @@
       color: #2563eb;
     }
 
-    /* 검색창 전체 박스 */
-    .search-box-container {
-    width: 100%;
-    }
-
-    /* 검색창 input + 버튼 감싸는 부분 */
-    .search-input-group {
-    display: flex;
-    width: 100%;
-    max-width: 500px;
-    border-radius: 999px;
-    overflow: hidden;
-    background: linear-gradient(to right, #3b82f6, #9333ea);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    /* 검색창 input */
-    .search-input {
-    border: none;
-    padding: 0.75rem 1rem;
-    border-radius: 0;
-    flex: 1;
-    font-size: 0.95rem;
-    }
-
-    /* 검색 버튼 */
-    .search-btn {
-    background-color: white;
-    color: #4b5563;
-    border: none;
-    padding: 0 1rem;
-    font-size: 1.1rem;
-    }
-
-    .search-btn:hover {
-    background-color: #f3f4f6;
-    }
-
     /* 더보기 버튼 색 지정 */
     .custom-more-btn {
     background: linear-gradient(to right, #3b82f6, #9333ea);
@@ -189,6 +151,24 @@
       background-color: #ef4444;
       color: white;
     }
+
+    /* 티커 버튼 스타일 */
+    .ticker-btn {
+    background-color: #eef2ff;
+    color: #4f46e5;
+    border: 1px solid #c7d2fe;
+    padding: 0.4rem 1rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    }
+
+    .ticker-btn:hover {
+      background-color: #dbeafe;
+      color: #1e3a8a;
+    }
+
   </style>
 </head>
 <body>
@@ -229,13 +209,17 @@
         </ul>
       </div>
 
-      <!-- 검색창 -->
-     <div class="search-box-container mb-4 d-flex justify-content-center">
-        <div class="search-input-group">
-        <input type="text" class="form-control search-input" placeholder="검색할 종목명을 입력하세요" />
-        <button class="btn search-btn"><i class="bi bi-search"></i></button>
-        </div>
-     </div>
+      <!-- 티커 검색 박스 -->
+      <div class="ticker-button-group my-3 d-flex flex-wrap gap-2 justify-content-center">
+        <button class="ticker-btn" onclick="filterNews('AAPL')">AAPL</button>
+        <button class="ticker-btn" onclick="filterNews('MSFT')">MSFT</button>
+        <button class="ticker-btn" onclick="filterNews('AMZN')">AMZN</button>
+        <button class="ticker-btn" onclick="filterNews('GOOGL')">GOOGL</button>
+        <button class="ticker-btn" onclick="filterNews('GOOG')">GOOG</button>
+        <button class="ticker-btn" onclick="filterNews('META')">META</button>
+        <button class="ticker-btn" onclick="filterNews('NVDA')">NVDA</button>
+        <button class="ticker-btn" onclick="filterNews('TSLA')">TSLA</button>
+      </div>
 
       <!-- 카드 내부 내용 -->
       <div class="news-container-wrapper">
@@ -290,6 +274,11 @@
             loadMoreBtn.style.display = 'none';
             return;
           }
+
+      function filterNews(ticker) {
+        window.location.href = `/news?ticker=${ticker}`;
+          }
+
 
           pageItems.forEach(news => {
             const title = news.title || '(제목 없음)';
