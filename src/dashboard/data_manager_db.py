@@ -195,6 +195,7 @@ class DBDataManager:
             for result in results:
                 model_id_val = result['model_id']
                 
+                
                 # 첫 번째 결과만 사용 (가장 최근 백테스트)
                 if model_id_val not in backtest_results:
                     # JSON 파라미터 파싱
