@@ -101,16 +101,15 @@ class Backtester:
             self.results["positions"].append(info["position"])
             self.results["rewards"].append(reward)
             self.results["timestamps"].append(info["timestamps"])
-            print(f'info\n{info}')
+            
             # 거래 기록 저장
             if info["trade_executed"]:
                 self.results["trades"].append({
-                    "step":info["step"],
-                    "timestamps": info["timestamps"],
+                    "timestamp": info["timestamp"],
                     "action": action,
                     "price": info["current_price"],
-                    "shares": info["shares_held"],
-                    "cost": info["cost_basis"],
+                    "shares": info["trade_shares"],
+                    "cost": info["trade_cost"],
                     "position": info["position"],
                     "portfolio_value": info["portfolio_value"]
                 })
@@ -210,17 +209,27 @@ class Backtester:
             "trades": self.results["trades"],
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
-        
+            
+        def convert_timestamps(obj):
+            if isinstance(obj, dict):
+                return {k: convert_timestamps(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [convert_timestamps(i) for i in obj]
+            elif isinstance(obj, pd.Timestamp):
+                return obj.isoformat()
+            else:
+                return obj
+
         # 디렉토리가 없으면 생성
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
         
-        # JSON 파일로 저장
+        json_data = convert_timestamps(save_data)
+         # JSON 파일로 저장
         with open(filepath, 'w') as f:
-            json.dump(save_data, f, indent=4)
-            
+            json.dump(json_data, f, indent=4)
         if self.logger:
             self.logger.info(f"Backtest results saved to {filepath}")
-    
+        
     def plot_portfolio_performance(self, save_path: Optional[str] = None) -> None:
         """
         포트폴리오 성능 시각화

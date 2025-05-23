@@ -366,67 +366,25 @@ class DataProcessor:
         
         LOGGER.info(f"{symbol} 데이터 정규화 완료")
         return normalized_df
-    
-    def create_window_samples(self, data: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        시계열 윈도우 샘플 생성
-        
-        Args:
-            data: 정규화된 데이터프레임
-            
-        Returns:
-            (X, y) 튜플: X는 윈도우 샘플, y는 다음 날 종가 변화율
-        """
-        if len(data) < self.window_size + 1:
-            LOGGER.warning(f"데이터가 너무 적습니다. 최소 {self.window_size + 1}개 필요")
-            return np.array([]), np.array([])
-        
-        # 다음 날 종가 변화율을 타겟으로 사용
-        if 'daily_return' in data.columns:
-            y = data['daily_return'].shift(-1).values[:-1]
-        else:
-            # daily_return이 없는 경우 계산
-            y = (data['close'].shift(-1) / data['close'] - 1).values[:-1]
-        
-        # 윈도우 샘플 생성
-        X = []
-        for i in range(len(data) - self.window_size):
-            X.append(data.iloc[i:i+self.window_size].values)
-        
-        X = np.array(X)
-        y = y[-len(X):]  # X와 y의 길이 맞추기
-        
-        LOGGER.info(f"윈도우 샘플 생성 완료: X 형태 {X.shape}, y 형태 {y.shape}")
-        return X, y
-    
-    def split_data(self, X: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-        """
-        데이터를 학습/검증/테스트 세트로 분할
-        
-        Args:
-            X: 특성 데이터
-            y: 타겟 데이터
-            
-        Returns:
-            (X_train, X_valid, X_test, y_train, y_valid, y_test) 튜플
-        """
-        if len(X) == 0 or len(y) == 0:
+
+    def split_data(self, data : pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+        if data.empty:
             LOGGER.warning("빈 데이터가 입력되었습니다.")
-            return np.array([]), np.array([]), np.array([]), np.array([]), np.array([]), np.array([])
-        
-        # 데이터 분할 인덱스 계산
-        train_idx = int(len(X) * TRAIN_RATIO)
-        valid_idx = int(len(X) * (TRAIN_RATIO + VALID_RATIO))
-        
-        # 시간 순서대로 분할 (미래 데이터 누수 방지)
-        X_train, y_train = X[:train_idx], y[:train_idx]
-        X_valid, y_valid = X[train_idx:valid_idx], y[train_idx:valid_idx]
-        X_test, y_test = X[valid_idx:], y[valid_idx:]
-        
-        LOGGER.info(f"데이터 분할 완료: 학습 {len(X_train)}개, 검증 {len(X_valid)}개, 테스트 {len(X_test)}개")
-        return X_train, X_valid, X_test, y_train, y_valid, y_test
+            return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
     
-    def process_symbol_data(self, data: pd.DataFrame, symbol: str) -> Dict[str, Any]:
+        # 데이터 분할 인덱스 계산
+        train_idx = int(len(data) * TRAIN_RATIO)
+        valid_idx = int(len(data) * (TRAIN_RATIO + VALID_RATIO))
+    
+        # 시간 순서대로 분할 (미래 데이터 누수 방지)
+        train = data.iloc[:train_idx].copy()
+        valid = data.iloc[train_idx:valid_idx].copy()
+        test = data.iloc[valid_idx:].copy()
+    
+        LOGGER.info(f"데이터 분할 완료: 학습 {len(train)}개, 검증 {len(valid)}개, 테스트 {len(test)}개")
+        return train, valid, test
+    
+    def process_symbol_data(self, data: pd.DataFrame, symbol: str, use_windows: bool = False) -> Dict[str, Any]:
         """
         단일 심볼 데이터에 대한 전체 전처리 과정 수행
         
@@ -451,32 +409,23 @@ class DataProcessor:
         # 3. 특성 정규화
         normalized_data = self.normalize_features(featured_data, symbol, is_training=True)
         
-        # 4. 윈도우 샘플 생성
-        X, y = self.create_window_samples(normalized_data)
-        if len(X) == 0:
-            LOGGER.error(f"{symbol} 윈도우 샘플 생성 실패")
-            return {}
-        
-        # 5. 데이터 분할
-        X_train, X_valid, X_test, y_train, y_valid, y_test = self.split_data(X, y)
+        # 4. 데이터 분할
+        train, valid, test = self.split_data(normalized_data)
         
         # 결과 반환
         result = {
             'processed_data': processed_data,
             'featured_data': featured_data,
             'normalized_data': normalized_data,
-            'X_train': X_train,
-            'X_valid': X_valid,
-            'X_test': X_test,
-            'y_train': y_train,
-            'y_valid': y_valid,
-            'y_test': y_test
+            'train': train,
+            'valid': valid,
+            'test': test
         }
         
         LOGGER.info(f"{symbol} 데이터 전처리 완료")
         return result
     
-    def process_all_symbols(self, data_dict: Dict[str, pd.DataFrame]) -> Dict[str, Dict[str, Any]]:
+    def process_all_symbols(self, data_dict: Dict[str, pd.DataFrame], use_windows: bool = False) -> Dict[str, Dict[str, Any]]:
         """
         모든 심볼 데이터에 대한 전처리 수행
         
@@ -514,7 +463,7 @@ class DataProcessor:
         
         for symbol, result in results.items():
             # 데이터프레임만 저장
-            for key in ['processed_data', 'featured_data', 'normalized_data']:
+            for key in ['processed_data', 'featured_data', 'normalized_data', 'train', 'valid', 'test']:
                 if key in result and isinstance(result[key], pd.DataFrame):
                     save_dir = base_dir / symbol
                     create_directory(save_dir)
@@ -534,7 +483,7 @@ if __name__ == "__main__":
     
     # 데이터 전처리
     processor = DataProcessor(window_size=30)
-    results = processor.process_all_symbols(data)
+    results = processor.process_all_symbols(data, use_windows=False)
     processor.save_processed_data(results)
     
     # 첫 번째 종목의 결과 확인
@@ -544,6 +493,12 @@ if __name__ == "__main__":
         print(f"원본 데이터 크기: {data[symbol].shape}")
         print(f"전처리 데이터 크기: {results[symbol]['processed_data'].shape}")
         print(f"특성 추출 데이터 크기: {results[symbol]['featured_data'].shape}")
-        print(f"학습 데이터 크기: {results[symbol]['X_train'].shape}")
-        print(f"검증 데이터 크기: {results[symbol]['X_valid'].shape}")
-        print(f"테스트 데이터 크기: {results[symbol]['X_test'].shape}")
+        print(f"학습 데이터 크기: {results[symbol]['train'].shape}")
+        print(f"검증 데이터 크기: {results[symbol]['valid'].shape}")
+        print(f"테스트 데이터 크기: {results[symbol]['test'].shape}")
+
+        
+        
+        
+
+        

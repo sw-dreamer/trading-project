@@ -40,6 +40,9 @@ class Trainer:
         self,
         agent: SACAgent,
         env: Union[TradingEnvironment, MultiAssetTradingEnvironment],
+        train_env: Optional[Union[TradingEnvironment, MultiAssetTradingEnvironment]] = None,
+        valid_env: Optional[Union[TradingEnvironment, MultiAssetTradingEnvironment]] = None,
+        test_env: Optional[Union[TradingEnvironment, MultiAssetTradingEnvironment]] = None,
         batch_size: int = BATCH_SIZE,
         num_episodes: int = NUM_EPISODES,
         evaluate_interval: int = EVALUATE_INTERVAL,
@@ -72,6 +75,9 @@ class Trainer:
         self.models_dir = Path(models_dir)
         self.results_dir = Path(results_dir)
         
+        self.train_env=train_env
+        self.valid_env=valid_env
+        self.test_env=test_env
         # 디렉토리 생성
         create_directory(self.models_dir)
         create_directory(self.results_dir)
@@ -154,17 +160,18 @@ class Trainer:
             if episode % self.save_interval == 0:
                 model_path = self.agent.save_model(self.models_dir, f"episode_{episode}_")
                 LOGGER.info(f"모델 저장 완료: {model_path}")
+                LOGGER.info(f"[저장 완료] 에피소드 {episode} 모델 저장: {model_path}")
             
-            # 학습 곡선 업데이트
-            if episode % 10 == 0:
-                self._plot_training_curves(timestamp)
+            # # 학습 곡선 업데이트
+            # if episode % 10 == 0:
+            #     self._plot_training_curves(timestamp)
         
         # 최종 모델 저장
         final_model_path = self.agent.save_model(self.models_dir, "final_")
         LOGGER.info(f"최종 모델 저장 완료: {final_model_path}")
         
         # 최종 학습 곡선 저장
-        self._plot_training_curves(timestamp)
+        # self._plot_training_curves(timestamp)
         
         # 학습 시간 계산
         total_time = time.time() - start_time
@@ -184,33 +191,31 @@ class Trainer:
     def evaluate(self, num_episodes: int = 1) -> float:
         """
         현재 정책 평가
-        
+
         Args:
             num_episodes: 평가할 에피소드 수
-            
+
         Returns:
             평균 에피소드 보상
         """
         total_reward = 0
-        
+        env = self.train_env if self.train_env is not None else self.env
+
         for _ in range(num_episodes):
-            state = self.env.reset()
+            state = env.reset()
             episode_reward = 0
             done = False
-            
+
             while not done:
-                # 평가 모드에서 행동 선택
                 action = self.agent.select_action(state, evaluate=True)
-                
-                # 환경에서 한 스텝 진행
-                next_state, reward, done, _ = self.env.step(action)
-                
+                next_state, reward, done, _ = env.step(action)
                 state = next_state
                 episode_reward += reward
-            
+
             total_reward += episode_reward
-        
+
         return total_reward / num_episodes
+
     
     def _plot_training_curves(self, timestamp: str) -> None:
         """
@@ -292,3 +297,4 @@ class Trainer:
         plt.grid(True, alpha=0.3)
         plt.savefig(result_dir / "eval_rewards.png", dpi=300, bbox_inches='tight')
         plt.close()
+        

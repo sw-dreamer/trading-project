@@ -18,10 +18,9 @@ RESULTS_DIR = ROOT_DIR / "results"
 
 # 대상 주식 종목 (미국 빅테크 기업)
 TARGET_SYMBOLS = [
-    "AAPL",  # Apple Inc.
-    "TSLA"
-    ,'VALE', 'NEM', 'FCX', 'T', 'NFLX', 'WBD', 'AMZN', 'NKE', 'PEP', 'KVUE', 'PM', 'PBR', 'KMI', 'SHEL', 'ITUB', 'USB', 'MUFG', 'AZN', 'ABT', 'UNH', 'CSX', 'BA', 'RTX', 'NVDA', 'ERIC', 'YMM', 'NEE'
+    'AAPL','MSFT','GOOGL','GOOG','AMZN','NVDA','META','TSLA'
     ]
+
 
 # TimescaleDB 데이터베이스 설정
 DB_USER = "postgres"
@@ -67,7 +66,7 @@ REPLAY_BUFFER_SIZE = 10000000
 BATCH_SIZE = 256
 NUM_EPISODES = 1000
 EVALUATE_INTERVAL = 10
-SAVE_MODEL_INTERVAL = 50
+SAVE_MODEL_INTERVAL = 10
 MAX_STEPS_PER_EPISODE = 1000
 
 # 장치 설정

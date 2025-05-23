@@ -35,7 +35,8 @@ class Evaluator:
         self,
         agent: SACAgent,
         env: Union[TradingEnvironment, MultiAssetTradingEnvironment],
-        results_dir: Union[str, Path] = RESULTS_DIR
+        results_dir: Union[str, Path] = RESULTS_DIR,
+        data_type: str = "test"  # 'train', 'valid', 'test' 중 선택
     ):
         """
         Evaluator 클래스 초기화
@@ -44,15 +45,17 @@ class Evaluator:
             agent: 평가할 SAC 에이전트
             env: 평가에 사용할 트레이딩 환경
             results_dir: 결과 저장 디렉토리
+            data_type: 평가에 사용할 데이터 유형 ('train', 'valid', 'test')
         """
         self.agent = agent
         self.env = env
         self.results_dir = Path(results_dir)
+        self.data_type = data_type
         
         # 디렉토리 생성
         create_directory(self.results_dir)
         
-        LOGGER.info(f"Evaluator 초기화 완료")
+        LOGGER.info(f"Evaluator 초기화 완료 (데이터 유형: {data_type})")
     
     def evaluate(self, num_episodes: int = 1, render: bool = False) -> Dict[str, Any]:
         """
@@ -71,7 +74,7 @@ class Evaluator:
         all_actions = []
         all_rewards = []
         
-        LOGGER.info(f"평가 시작: {num_episodes}개 에피소드")
+        LOGGER.info(f"평가 시작: {num_episodes}개 에피소드 ({self.data_type} 데이터)")
         
         for episode in range(1, num_episodes + 1):
             state = self.env.reset()
@@ -130,10 +133,11 @@ class Evaluator:
         # 최대 낙폭 계산
         mdd = calculate_max_drawdown(all_portfolio_values)
         
-        LOGGER.info(f"평가 완료: 평균 보상 {avg_reward:.2f}, 총 수익률 {total_return:.2f}%, 샤프 비율 {sharpe:.2f}, MDD {mdd:.2f}%")
+        LOGGER.info(f"평가 완료 ({self.data_type} 데이터): 평균 보상 {avg_reward:.2f}, 총 수익률 {total_return:.2f}%, 샤프 비율 {sharpe:.2f}, MDD {mdd:.2f}%")
         
         # 결과 딕셔너리 반환
         return {
+            'data_type': self.data_type,
             'avg_reward': avg_reward,
             'avg_steps': avg_steps,
             'final_portfolio_value': final_portfolio_value,
@@ -157,7 +161,7 @@ class Evaluator:
             결과 저장 디렉토리 경로
         """
         timestamp = get_timestamp()
-        result_dir = self.results_dir / f"{prefix}evaluation_{timestamp}"
+        result_dir = self.results_dir / f"{prefix}evaluation_{self.data_type}_{timestamp}"
         create_directory(result_dir)
         
         # 포트폴리오 가치 곡선 저장
@@ -171,6 +175,7 @@ class Evaluator:
         
         # 성능 지표 저장
         metrics = {
+            '데이터 유형': results['data_type'],
             '평균 보상': results['avg_reward'],
             '평균 스텝': results['avg_steps'],
             '최종 포트폴리오 가치': results['final_portfolio_value'],
@@ -250,8 +255,7 @@ class Evaluator:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
         
         plt.close()
-
-
+        
 if __name__ == "__main__":
     # 모듈 테스트 코드
     from src.data_collection.data_collector import DataCollector

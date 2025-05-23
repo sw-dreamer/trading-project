@@ -1,0 +1,32 @@
+2025-05-22 03:43:40 [INFO] 백테스트 시작
+2025-05-22 03:43:40 [INFO] 설정: Namespace(model_path='C:\\big19\\final_project\\v05_sac-trading\\models\\episode_10_sac_model_20250522_025459', config_path=None, data_path=None, use_db=True, db_user='postgres', db_password='mysecretpassword', db_host='192.168.40.193', db_port=5432, db_name='mydb', symbol='AAPL', results_dir='results/backtest', initial_balance=10000.0, transaction_fee_percent=0.0025, benchmark_data_path=None, window_size=None, override_window_size=False, feature_selection=None)
+2025-05-22 03:43:40 [INFO] 설정을 성공적으로 로드했습니다.
+2025-05-22 03:43:40 [INFO] 사용할 장치: cuda
+2025-05-22 03:43:40 [INFO] 데이터베이스에서 데이터 로드 중...
+2025-05-22 03:43:43 [INFO] 데이터베이스에서 AAPL 데이터 로드 완료: 306767 행
+2025-05-22 03:43:46 [INFO] 백테스트 실행 중...
+2025-05-22 04:35:57 [INFO] Backtest completed with final portfolio value: 15859.24
+2025-05-22 04:35:57 [INFO] Total reward: 121.94
+2025-05-22 04:35:57 [INFO] Performance metrics: {'cumulative_return': 0.5859237250000002, 'annual_return': 0.0003789438813064372, 'annual_volatility': 0.0, 'sharpe_ratio': 0, 'max_drawdown': -0.35150852080707506, 'win_rate': 0.0, 'total_trades': 2}
+2025-05-22 04:35:57 [ERROR] 백테스트 실행 중 오류 발생: Object of type Timestamp is not JSON serializable
+2025-05-22 04:35:57 [ERROR] Traceback (most recent call last):
+  File "C:\big19\final_project\v05_sac-trading\src\backtesting\run_backtest.py", line 457, in main
+    backtester.save_results(results_file)
+  File "C:\big19\final_project\v05_sac-trading\src\backtesting\backtester.py", line 218, in save_results
+    json.dump(save_data, f, indent=4)
+  File "C:\ProgramData\anaconda3\envs\finalproject\lib\json\__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "C:\ProgramData\anaconda3\envs\finalproject\lib\json\encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "C:\ProgramData\anaconda3\envs\finalproject\lib\json\encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "C:\ProgramData\anaconda3\envs\finalproject\lib\json\encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "C:\ProgramData\anaconda3\envs\finalproject\lib\json\encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "C:\ProgramData\anaconda3\envs\finalproject\lib\json\encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "C:\ProgramData\anaconda3\envs\finalproject\lib\json\encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Timestamp is not JSON serializable
+

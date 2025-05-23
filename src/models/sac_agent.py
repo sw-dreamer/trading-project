@@ -124,7 +124,6 @@ class SACAgent:
     SAC 알고리즘 에이전트
     """
         
-        # Fix in the __init__ method of SACAgent class
     def __init__(
         self,
         state_dim: int = None,
@@ -163,7 +162,7 @@ class SACAgent:
             input_shape: 입력 데이터 형태 (CNN 사용 시 (window_size, feature_dim))
             use_cnn: CNN 모델 사용 여부
         """
-        # Store all attributes
+        # 속성 저장
         self.state_dim = state_dim
         self.action_dim = action_dim
         self.hidden_dim = hidden_dim
@@ -178,6 +177,15 @@ class SACAgent:
         self.device = device
         self.use_cnn = use_cnn
         self.input_shape = input_shape
+        
+        # TradingEnvironment를 위한 상태 차원 자동 계산
+        if not use_cnn and state_dim is None:
+            # TradingEnvironment의 기본 구조: market_data (30, 40) + portfolio_state (2,)
+            if input_shape is None:
+                input_shape = (30, 40)  # 기본값
+            self.state_dim = input_shape[0] * input_shape[1] + 2  # 1200 + 2 = 1202
+            state_dim = self.state_dim  # 네트워크 생성을 위해 local 변수도 업데이트
+            LOGGER.info(f"TradingEnvironment를 위한 상태 차원 자동 계산: {self.state_dim}")
         
         # 네트워크 초기화
         if use_cnn:
@@ -204,14 +212,9 @@ class SACAgent:
                 hidden_dim=hidden_dim,
                 device=device
             )
-            
-            # 현재 정책을 타겟 정책으로 복사
-            for target_param, param in zip(self.critic_target.parameters(), self.critic.parameters()):
-                print(f'target_param : {target_param}')
-                print(f'param : {param}')
-                target_param.data.copy_(param.data)
                 
         else:
+            # state_dim이 None인 경우는 이미 위에서 처리됨
             if state_dim is None:
                 raise ValueError("일반 모델을 사용할 때는 state_dim이 필요합니다.")
             
@@ -265,132 +268,101 @@ class SACAgent:
         self.alpha_losses = []
         self.entropy_values = []
         
-        LOGGER.info(f"SAC 에이전트 초기화 완료: 행동 차원 {action_dim}, {'CNN 사용' if use_cnn else '일반 모델 사용'}")
+        LOGGER.info(f"SAC 에이전트 초기화 완료: 행동 차원 {action_dim}, {'CNN 사용' if use_cnn else 'MLP 사용'}")
+        LOGGER.info(f"상태 차원: {self.state_dim if not use_cnn else input_shape}")
     
-    def debug_state_format(state):
+    def select_action(self, state: Dict[str, np.ndarray], evaluate: bool = False) -> float:
         """
-        상태 객체의 형태를 자세히 출력하여 디버깅
+        TradingEnvironment 상태에 따른 행동 선택
         
         Args:
-            state: 디버깅할 상태 객체
-        """
-        if isinstance(state, dict):
-            print("State is a dictionary with keys:", list(state.keys()))
-            for key, value in state.items():
-                if isinstance(value, np.ndarray):
-                    print(f"  {key} shape: {value.shape}, dtype: {value.dtype}")
-                    print(f"  {key} min: {value.min()}, max: {value.max()}, mean: {value.mean()}")
-                    # 첫 몇 개 값 출력
-                    print(f"  {key} first few values: {value.flatten()[:5]}")
-                else:
-                    print(f"  {key} type: {type(value)}")
-        elif isinstance(state, np.ndarray):
-            print(f"State is an ndarray with shape: {state.shape}, dtype: {state.dtype}")
-            print(f"State min: {state.min()}, max: {state.max()}, mean: {state.mean()}")
-            print(f"First few values: {state.flatten()[:5]}")
-        else:
-            print(f"State is of type: {type(state)}")
-            
-    def select_action(self, state: Any, evaluate: bool = False) -> np.ndarray:
-        """
-        상태에 따른 행동 선택
-        
-        Args:
-            state: 현재 상태
+            state: TradingEnvironment의 상태 {'market_data': array, 'portfolio_state': array}
             evaluate: 평가 모드 여부 (True일 경우 탐색 없이 평균 행동 선택)
             
         Returns:
-            선택된 행동
+            선택된 행동 (단일 float 값)
         """
         # 상태를 텐서로 변환
-        if self.use_cnn:
-            # Dictionary 형태의 상태 처리
-            state_tensor = {key: torch.FloatTensor(value).unsqueeze(0).to(self.device) 
-                            if isinstance(value, np.ndarray) else value.unsqueeze(0).to(self.device) 
-                            for key, value in state.items()}
-        else:
-            # 일반 배열 형태의 상태 처리
-            if isinstance(state, np.ndarray):
-                state_tensor = torch.FloatTensor(state).unsqueeze(0).to(self.device)
-            else:
-                market_data = state['market_data']            # shape: (30, 40)
-                portfolio_state = state['portfolio_state']    # shape: (2,)
-
-                # Convert to tensors
-                market_data_tensor = torch.tensor(market_data).float().to(self.device)     # (30, 40)
-                portfolio_state_tensor = torch.tensor(portfolio_state).float().to(self.device)  # (2,)
-
-                # Flatten market_data to (1200,) and concatenate with portfolio_state (2,) → (1202,)
-                market_data_flat = market_data_tensor.reshape(-1)
-                state_tensor = torch.cat([market_data_flat, portfolio_state_tensor], dim=0).unsqueeze(0)  # (1, 1202)
-
-
-        # Evaluate mode: Choose average action (exploitative)
-        if evaluate:
-            _, _, action = self.actor.sample(state_tensor)
-        else:
-            # Training mode: Sample action from policy (exploratory)
-            action, _, _ = self.actor.sample(state_tensor)
+        state_tensor = self._process_state_for_network(state)
         
-        # Return the action as a numpy array
-        return action.detach().cpu().numpy()[0]
-
+        with torch.no_grad():
+            if evaluate:
+                # 평가 모드: 평균 행동 선택 (탐색 없음)
+                _, _, action = self.actor.sample(state_tensor)
+            else:
+                # 학습 모드: 탐색이 포함된 행동 선택
+                action, _, _ = self.actor.sample(state_tensor)
+        
+        # 단일 float 값으로 반환
+        return action.detach().cpu().numpy()[0][0]
     
-    def process_state_for_network(self, state: Any) -> Any:
+    def _process_state_for_network(self, state: Dict[str, np.ndarray]) -> torch.Tensor:
         """
-        네트워크 입력을 위한 상태 처리
+        TradingEnvironment 상태를 네트워크 입력으로 변환
         
         Args:
-            state: 원본 상태
+            state: TradingEnvironment의 상태
             
         Returns:
-            처리된 상태
+            네트워크 입력용 텐서
         """
         if self.use_cnn:
-            if isinstance(state, dict):
-                state_dict = {}
-                LOGGER.debug(f"[CNN] Received state dict keys: {list(state.keys())}")
-                for key, value in state.items():
-                    if isinstance(value, np.ndarray):
-                        state_dict[key] = torch.FloatTensor(value).to(self.device)
-                    else:
-                        state_dict[key] = value.to(self.device)
-                return state_dict
-            else:
-                LOGGER.error("CNN 모델을 사용할 때는 상태가 딕셔너리 형태여야 합니다.")
-                return None
-
+            # CNN 모델용 처리 (추후 구현)
+            # 현재는 MLP 모드만 지원
+            raise NotImplementedError("CNN 모드는 현재 구현 중입니다.")
         else:
-            if isinstance(state, dict):
-                LOGGER.debug(f"[MLP] Received state dict keys: {list(state.keys())}")
-                
-                # 'market_data'와 'portfolio_state'를 합침
-                if 'market_data' in state and 'portfolio_state' in state:
-                    market_data = state['market_data']  # shape: (30, N)
-                    portfolio_state = state['portfolio_state']  # shape: (2,)
-                    
-                    # market_data 형태 확인 및 평탄화
-                    if len(market_data.shape) == 2:
-                        # market_data를 1차원으로 평탄화 (flatten)
-                        flattened_market_data = market_data.flatten()
-                        
-                        # portfolio_state와 concatenate
-                        combined = np.concatenate([flattened_market_data, portfolio_state])
-                        return torch.FloatTensor(combined).unsqueeze(0).to(self.device)
-                    else:
-                        LOGGER.error(f"[MLP] market_data 형식이 예상과 다릅니다: {market_data.shape}")
-                        return None
-                else:
-                    LOGGER.error(f"[MLP] dict 상태에 'market_data'와 'portfolio_state' 키가 없습니다: {list(state.keys())}")
-                    return None
-
-            elif isinstance(state, np.ndarray):
-                return torch.FloatTensor(state).to(self.device)
-            else:
-                return state.to(self.device)
-
-
-
+            # MLP 모델용 처리: market_data를 평탄화하고 portfolio_state와 결합
+            market_data = state['market_data']  # shape: (30, 40)
+            portfolio_state = state['portfolio_state']  # shape: (2,)
+            
+            # market_data를 1차원으로 평탄화
+            market_data_flat = market_data.flatten()  # shape: (1200,)
+            
+            # portfolio_state와 결합
+            combined_state = np.concatenate([market_data_flat, portfolio_state])  # shape: (1202,)
+            
+            # 텐서로 변환하고 배치 차원 추가
+            state_tensor = torch.FloatTensor(combined_state).unsqueeze(0).to(self.device)  # shape: (1, 1202)
+            
+            return state_tensor
+    
+    def _process_batch_states(self, states: List[Dict[str, np.ndarray]]) -> torch.Tensor:
+        """
+        배치 상태들을 네트워크 입력으로 변환
+        
+        Args:
+            states: TradingEnvironment 상태들의 리스트
+            
+        Returns:
+            배치 텐서
+        """
+        if self.use_cnn:
+            # CNN 모델용 배치 처리 (추후 구현)
+            raise NotImplementedError("CNN 모드는 현재 구현 중입니다.")
+        else:
+            # MLP 모델용 배치 처리
+            batch_states = []
+            for state in states:
+                # 각 상태를 처리하여 1차원 벡터로 변환
+                processed_state = self._process_state_for_network(state)
+                batch_states.append(processed_state)
+            
+            # 배치로 결합
+            return torch.cat(batch_states, dim=0)
+    
+    def add_experience(self, state: Dict[str, np.ndarray], action: float, reward: float, 
+                      next_state: Dict[str, np.ndarray], done: bool) -> None:
+        """
+        경험을 리플레이 버퍼에 추가
+        
+        Args:
+            state: 현재 상태
+            action: 수행한 행동
+            reward: 받은 보상
+            next_state: 다음 상태
+            done: 종료 여부
+        """
+        self.replay_buffer.push(state, action, reward, next_state, done)
     
     def update_parameters(self, batch_size: int = BATCH_SIZE) -> Dict[str, float]:
         """
@@ -408,32 +380,21 @@ class SACAgent:
                 'actor_loss': 0.0,
                 'critic_loss': 0.0,
                 'alpha_loss': 0.0,
-                'entropy': 0.0
+                'entropy': 0.0,
+                'alpha': self.alpha.item() if isinstance(self.alpha, torch.Tensor) else self.alpha
             }
         
         # 리플레이 버퍼에서 미니배치 샘플링
         states, actions, rewards, next_states, dones = self.replay_buffer.sample(batch_size)
         
-        # 상태 및 행동 처리
-        if self.use_cnn:
-            # CNN 모델을 위한 배치 처리
-            batched_states = {
-                'market_data': torch.cat([torch.FloatTensor(s['market_data']) if isinstance(s['market_data'], np.ndarray) else s['market_data'] for s in states], dim=0).to(self.device),
-                'portfolio_state': torch.cat([torch.FloatTensor(s['portfolio_state']) if isinstance(s['portfolio_state'], np.ndarray) else s['portfolio_state'] for s in states], dim=0).to(self.device)
-            }
-            
-            batched_next_states = {
-                'market_data': torch.cat([torch.FloatTensor(s['market_data']) if isinstance(s['market_data'], np.ndarray) else s['market_data'] for s in next_states], dim=0).to(self.device),
-                'portfolio_state': torch.cat([torch.FloatTensor(s['portfolio_state']) if isinstance(s['portfolio_state'], np.ndarray) else s['portfolio_state'] for s in next_states], dim=0).to(self.device)
-            }
-        else:
-            # 일반 모델을 위한 배치 처리
-            batched_states = torch.cat([self.process_state_for_network(s) for s in states], dim=0)
-            batched_next_states = torch.cat([self.process_state_for_network(s) for s in next_states], dim=0)
+        # 상태들을 배치 텐서로 변환
+        batched_states = self._process_batch_states(states)
+        batched_next_states = self._process_batch_states(next_states)
         
-        batched_actions = torch.FloatTensor(np.vstack(actions)).to(self.device)
-        batched_rewards = torch.FloatTensor(np.vstack(rewards)).to(self.device)
-        batched_dones = torch.FloatTensor(np.vstack(dones)).to(self.device)
+        # 행동, 보상, 완료 플래그를 텐서로 변환
+        batched_actions = torch.FloatTensor(actions).unsqueeze(1).to(self.device)  # (batch_size, 1)
+        batched_rewards = torch.FloatTensor(rewards).unsqueeze(1).to(self.device)  # (batch_size, 1)
+        batched_dones = torch.FloatTensor(dones).unsqueeze(1).to(self.device)     # (batch_size, 1)
         
         # 현재 정책에서 다음 행동 샘플링
         next_actions, next_log_probs, _ = self.actor.sample(batched_next_states)
@@ -481,25 +442,28 @@ class SACAgent:
             soft_update(self.critic_target, self.critic, self.tau)
         
         # 학습 통계 기록
-        self.actor_losses.append(actor_loss.item())
-        self.critic_losses.append(critic_loss.item())
-        self.alpha_losses.append(alpha_loss.item() if self.use_automatic_entropy_tuning else 0.0)
-        self.entropy_values.append(-log_probs.mean().item())
-        LOGGER.info(f"'actor_loss': {actor_loss.item()}")
-        LOGGER.info(f"'critic_loss': {critic_loss.item()}")
-        LOGGER.info(f"'alpha_loss': {alpha_loss.item() if self.use_automatic_entropy_tuning else 0.0}")
-        LOGGER.info(f"'entropy': {log_probs.mean().item()}")
-        LOGGER.info(f"'alpha': {actor_loss.item()}")
-        
-        return {
+        stats = {
             'actor_loss': actor_loss.item(),
             'critic_loss': critic_loss.item(),
             'alpha_loss': alpha_loss.item() if self.use_automatic_entropy_tuning else 0.0,
             'entropy': -log_probs.mean().item(),
             'alpha': self.alpha.item()
         }
+        
+        self.actor_losses.append(stats['actor_loss'])
+        self.critic_losses.append(stats['critic_loss'])
+        self.alpha_losses.append(stats['alpha_loss'])
+        self.entropy_values.append(stats['entropy'])
+        
+        # 학습 통계 로깅 (DEBUG 레벨로 변경)
+        LOGGER.debug(f"Actor Loss: {stats['actor_loss']:.6f}")
+        LOGGER.debug(f"Critic Loss: {stats['critic_loss']:.6f}")
+        LOGGER.debug(f"Alpha Loss: {stats['alpha_loss']:.6f}")
+        LOGGER.debug(f"Entropy: {stats['entropy']:.6f}")
+        LOGGER.debug(f"Alpha: {stats['alpha']:.6f}")
+        
+        return stats
     
-    # Fix in the save_model method of SACAgent
     def save_model(self, save_dir: Union[str, Path] = None, prefix: str = '') -> None:
         """
         모델 저장
@@ -554,22 +518,12 @@ class SACAgent:
             'use_cnn': self.use_cnn,
             'input_shape': self.input_shape
         }
-        torch.save(config, model_path / "config.pth")
-        
-        # Remove the incorrect save operations that reference critic1, critic2, etc.
-        # These lines should be deleted:
-        # torch.save(self.actor.state_dict(), model_path / "actor.pth")
-        # torch.save(self.critic1.state_dict(), model_path / "critic1.pth")
-        # torch.save(self.critic2.state_dict(), model_path / "critic2.pth")
-        # torch.save(self.target_critic1.state_dict(), model_path / "target_critic1.pth")
-        # torch.save(self.target_critic2.state_dict(), model_path / "target_critic2.pth")
-            
+        torch.save(config, model_path / "config.pth")        
         LOGGER.info(f"모델 저장 완료: {model_path}")
         
         return model_path
     
     def load_model(self, model_path: Union[str, Path]) -> None:
-       
         """
         모델 로드
         
@@ -612,9 +566,8 @@ class SACAgent:
             LOGGER.info(f"모델 로드 완료: {model_path}")
         except RuntimeError as e:
             # 크기 불일치 오류 발생 시 크기 조정 로드 메서드 사용
-            LOGGER.warning(f"기본 로드 실패, 크기 조정 방식으로 로드 시도: {e}")
+            LOGGER.error(f"모델 로드 실패: {e}")
             self.load_model_with_resize(model_path)
-    
     
     def get_latest_model_path(self, save_dir: Union[str, Path] = None, prefix: str = '') -> Optional[Path]:
         """
@@ -643,6 +596,12 @@ class SACAgent:
         return model_dirs[0]
     
     def load_model_with_resize(self, model_path):
+        """
+        크기가 다른 모델을 부분적으로 로드
+        
+        Args:
+            model_path: 모델 디렉토리 경로
+        """
         model_path = Path(model_path)
         
         # 저장된 상태 사전 로드
@@ -703,73 +662,155 @@ class SACAgent:
         
         LOGGER.info(f"모델 로드 완료(일부 파라미터 크기 불일치로 무시됨): {model_path}")
 
+
+def train_sac_agent(env, agent, num_episodes: int = 1000, 
+                   max_steps_per_episode: int = 1000, update_frequency: int = 1,
+                   log_frequency: int = 100):
+    """
+    SAC 에이전트 학습 함수
+
+    Args:
+        env: TradingEnvironment 인스턴스
+        agent: SAC 에이전트
+        num_episodes: 학습할 에피소드 수
+        max_steps_per_episode: 에피소드당 최대 스텝 수
+        update_frequency: 업데이트 빈도
+        log_frequency: 로그 출력 빈도
+    
+    Returns:
+        학습된 SAC 에이전트
+    """
+    LOGGER.info(f"SAC 에이전트 학습 시작: {num_episodes} 에피소드")
+    
+    episode_rewards = []
+    episode_lengths = []
+    
+    for episode in range(num_episodes):
+        state = env.reset()
+        episode_reward = 0
+        episode_length = 0
+        
+        for step in range(max_steps_per_episode):
+            # 행동 선택
+            action = agent.select_action(state, evaluate=False)
+            
+            # 환경에서 스텝 실행
+            next_state, reward, done, info = env.step(action)
+            
+            # 경험 저장
+            agent.add_experience(state, action, reward, next_state, done)
+            
+            # 네트워크 업데이트
+            if step % update_frequency == 0:
+                stats = agent.update_parameters()
+            
+            episode_reward += reward
+            episode_length += 1
+            state = next_state
+            
+            if done:
+                break
+        
+        episode_rewards.append(episode_reward)
+        episode_lengths.append(episode_length)
+        
+        # 로그 출력
+        if episode % log_frequency == 0:
+            avg_reward = np.mean(episode_rewards[-log_frequency:])
+            avg_length = np.mean(episode_lengths[-log_frequency:])
+            
+            LOGGER.info(f"Episode {episode}")
+            LOGGER.info(f"  평균 보상: {avg_reward:.2f}")
+            LOGGER.info(f"  평균 길이: {avg_length:.1f}")
+            LOGGER.info(f"  포트폴리오 가치: ${info['portfolio_value']:.2f}")
+            LOGGER.info(f"  총 수익률: {info['total_return'] * 100:.2f}%")
+            
+            if len(agent.actor_losses) > 0:
+                LOGGER.info(f"  Actor Loss: {agent.actor_losses[-1]:.6f}")
+                LOGGER.info(f"  Critic Loss: {agent.critic_losses[-1]:.6f}")
+                LOGGER.info(f"  Alpha: {agent.alpha.item():.6f}")
+    
+    LOGGER.info("SAC 에이전트 학습 완료!")
+    return agent
+
+
 if __name__ == "__main__":
     # 모듈 테스트 코드
-    # 일반 SAC 에이전트 테스트
-    state_dim = 10
+    print("SAC 에이전트 테스트 시작...")
+    
+    # TradingEnvironment 스타일의 MLP SAC 에이전트 테스트
+    print("\n=== MLP SAC 에이전트 테스트 ===")
+    
+    # TradingEnvironment 상태 구조: market_data (30, 40) + portfolio_state (2,)
+    window_size = 30
+    feature_dim = 40
     action_dim = 1
     batch_size = 4
     
-    # 에이전트 초기화
-    agent = SACAgent(state_dim=state_dim, action_dim=action_dim)
-    
-    # 리플레이 버퍼에 샘플 추가
-    for _ in range(batch_size * 2):
-        state = np.random.randn(state_dim)
-        action = np.random.randn(action_dim)
-        reward = np.random.randn(1)
-        next_state = np.random.randn(state_dim)
-        done = np.random.randint(0, 2, (1,))
-        
-        agent.replay_buffer.push(
-            torch.FloatTensor(state).to(agent.device),
-            torch.FloatTensor(action).to(agent.device),
-            reward,
-            torch.FloatTensor(next_state).to(agent.device),
-            done
-        )
-    
-    # 학습 테스트
-    for _ in range(5):
-        stats = agent.update_parameters()
-        print(f"Learning stats: {stats}")
-    
-    # 모델 저장 및 로드 테스트
-    model_path = agent.save_model()
-    agent.load_model(model_path)
-    
-    # CNN SAC 에이전트 테스트
-    window_size = 30
-    feature_dim = 5
-    
-    # CNN 에이전트 초기화
-    cnn_agent = SACAgent(
+    # MLP 에이전트 초기화 (TradingEnvironment용)
+    agent = SACAgent(
+        state_dim=None,  # 자동 계산됨 (30*40 + 2 = 1202)
         action_dim=action_dim,
-        input_shape=(window_size, feature_dim),
-        use_cnn=True
+        input_shape=(window_size, feature_dim),  # 자동 계산을 위한 힌트
+        use_cnn=False
     )
     
-    # 리플레이 버퍼에 샘플 추가
-    for _ in range(batch_size * 2):
+    print(f"MLP 에이전트 초기화 완료 - 상태 차원: {agent.state_dim}")
+    
+    # TradingEnvironment 스타일의 상태로 테스트
+    for i in range(batch_size * 2):
+        # TradingEnvironment 상태 형식
         state = {
-            'market_data': torch.FloatTensor(np.random.randn(window_size, feature_dim)).to(cnn_agent.device),
-            'portfolio_state': torch.FloatTensor(np.random.randn(2)).to(cnn_agent.device)
+            'market_data': np.random.randn(window_size, feature_dim),
+            'portfolio_state': np.random.randn(2)
         }
-        action = np.random.randn(action_dim)
-        reward = np.random.randn(1)
         next_state = {
-            'market_data': torch.FloatTensor(np.random.randn(window_size, feature_dim)).to(cnn_agent.device),
-            'portfolio_state': torch.FloatTensor(np.random.randn(2)).to(cnn_agent.device)
+            'market_data': np.random.randn(window_size, feature_dim),
+            'portfolio_state': np.random.randn(2)
         }
-        done = np.random.randint(0, 2, (1,))
         
-        cnn_agent.replay_buffer.push(state, torch.FloatTensor(action).to(cnn_agent.device), reward, next_state, done)
+        action = np.random.uniform(-1.0, 1.0)  # TradingEnvironment 행동 범위
+        reward = np.random.randn()
+        done = np.random.choice([True, False])
+        
+        # 경험 추가
+        agent.add_experience(state, action, reward, next_state, done)
+        
+        # 행동 선택 테스트
+        if i == 0:
+            selected_action = agent.select_action(state, evaluate=False)
+            print(f"선택된 행동: {selected_action}")
+    
+    print(f"리플레이 버퍼 크기: {len(agent.replay_buffer)}")
     
     # 학습 테스트
-    for _ in range(5):
-        stats = cnn_agent.update_parameters()
-        print(f"CNN Learning stats: {stats}")
+    print("\n학습 테스트 중...")
+    for epoch in range(5):
+        stats = agent.update_parameters(batch_size=batch_size)
+        print(f"Epoch {epoch+1}: {stats}")
     
-    # 모델 저장 및 로드 테스트
-    model_path = cnn_agent.save_model(prefix='cnn_')
-    cnn_agent.load_model(model_path) 
+    # 모델 저장 테스트
+    print("\n모델 저장 테스트...")
+    model_path = agent.save_model(prefix='mlp_trading_')
+    print(f"모델 저장 완료: {model_path}")
+    
+    # 모델 로드 테스트
+    print("모델 로드 테스트...")
+    agent.load_model(model_path)
+    print("모델 로드 완료")
+    
+    # 로드 후 행동 선택 테스트
+    test_state = {
+        'market_data': np.random.randn(window_size, feature_dim),
+        'portfolio_state': np.random.randn(2)
+    }
+    test_action = agent.select_action(test_state, evaluate=True)
+    print(f"로드 후 테스트 행동: {test_action}")
+    
+    print("\n=== MLP SAC 에이전트 테스트 완료 ===")
+    
+    # CNN SAC 에이전트 테스트 (주석 처리 - 현재 구현되지 않음)
+    # print("\n=== CNN SAC 에이전트 테스트 ===")
+    # print("CNN 모드는 현재 구현 중입니다. 추후 업데이트 예정...")
+    
+    print("\n모든 테스트 완료!")
