@@ -262,7 +262,10 @@ if __name__ == "__main__":
     from src.preprocessing.data_processor import DataProcessor
     
     # 데이터 수집 및 전처리
-    collector = DataCollector(symbols=["AAPL"])
+    # collector = DataCollector(symbols=["AAPL"])
+    
+    from src.config.config import TARGET_SYMBOLS
+    collector = DataCollector(symbols=TARGET_SYMBOLS)
     data = collector.load_all_data()
     
     if not data:
@@ -274,12 +277,16 @@ if __name__ == "__main__":
         processor = DataProcessor()
         results = processor.process_all_symbols(data)
         
-        if "AAPL" in results:
-            # 정규화된 데이터 사용
-            normalized_data = results["AAPL"]["normalized_data"]
+        # if "AAPL" in results:
+        #     # 정규화된 데이터 사용
+        #     normalized_data = results["AAPL"]["normalized_data"]
             
-            # 환경 생성
-            env = TradingEnvironment(data=normalized_data, symbol="AAPL")
+        #     # 환경 생성
+        #     env = TradingEnvironment(data=normalized_data, symbol="AAPL")
+        test_symbol = TARGET_SYMBOLS[0]
+        if test_symbol in results:
+            normalized_data = results[test_symbol]["normalized_data"]
+            env = TradingEnvironment(data=normalized_data, symbol=test_symbol)
             
             # 에이전트 생성
             state_dim = env.observation_space['market_data'].shape[0] * env.observation_space['market_data'].shape[1] + env.observation_space['portfolio_state'].shape[0]

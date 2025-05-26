@@ -95,9 +95,13 @@ def parse_args():
     parser.add_argument('--initial_balance', type=float, default=10000.0, help='초기 자본금')
     parser.add_argument('--multi_asset', action='store_true', help='다중 자산 환경 사용 여부')
     
-    # 모델 관련 인자
+    # 모델 관련 인자(기본 MLP)
     parser.add_argument('--hidden_dim', type=int, default=256, help='은닉층 차원')
+    # CNN
     parser.add_argument('--use_cnn', action='store_true', help='CNN 모델 사용 여부')
+    # LSTM
+    parser.add_argument('--use_lstm', action='store_true', help='LSTM 모델 사용 여부')
+    # 로드 경로
     parser.add_argument('--load_model', type=str, default=None, help='로드할 모델 경로')
     
     # 학습 관련 인자
@@ -111,18 +115,18 @@ def parse_args():
 
 def create_training_environment(results, symbols, args):
     """학습용 환경을 생성 (훈련 데이터만 사용)"""
-    LOGGER.info("📚 학습용 환경 생성 중...")
+    LOGGER.info("학습용 환경 생성 중...")
     
     if args.multi_asset:
         # 다중 자산 환경 생성
-        LOGGER.info("🏢 다중 자산 트레이딩 환경 생성 중...")
+        LOGGER.info("다중 자산 트레이딩 환경 생성 중...")
         
         train_data_dict = {}
         raw_data_dict = {}
         
         for symbol in symbols:
             if symbol not in results:
-                LOGGER.warning(f"⚠️  {symbol} 데이터 처리 결과가 없습니다.")
+                LOGGER.warning(f"{symbol} 데이터 처리 결과가 없습니다.")
                 continue
             
             # DataProcessor에서 이미 분할된 훈련 데이터 사용
@@ -130,7 +134,7 @@ def create_training_environment(results, symbols, args):
                 train_data_dict[symbol] = results[symbol]['train']  # 정규화된 훈련 데이터
                 raw_data_dict[symbol] = results[symbol]['featured_data']  # 원본 특성 데이터 (가격 정보용)
             else:
-                LOGGER.error(f"❌ {symbol} 훈련 데이터가 없습니다.")
+                LOGGER.error(f"{symbol} 훈련 데이터가 없습니다.")
                 continue
         
         env = MultiAssetTradingEnvironment(
@@ -143,10 +147,10 @@ def create_training_environment(results, symbols, args):
     else:
         # 단일 자산 환경 생성
         symbol = symbols[0]
-        LOGGER.info(f"🏪 단일 자산 트레이딩 환경 생성 중: {symbol}")
+        LOGGER.info(f"단일 자산 트레이딩 환경 생성 중: {symbol}")
         
         if symbol not in results:
-            LOGGER.error(f"❌ {symbol} 데이터 처리 결과가 없습니다.")
+            LOGGER.error(f"{symbol} 데이터 처리 결과가 없습니다.")
             return None
         
         # DataProcessor에서 이미 분할된 훈련 데이터 사용
@@ -154,7 +158,7 @@ def create_training_environment(results, symbols, args):
             normalized_data = results[symbol]['train']  # 정규화된 훈련 데이터
             original_data = results[symbol]['featured_data']  # 원본 특성 데이터 (가격 정보용)
         else:
-            LOGGER.error(f"❌ {symbol} 훈련 데이터가 없습니다.")
+            LOGGER.error(f"{symbol} 훈련 데이터가 없습니다.")
             return None
         
         env = TradingEnvironment(
@@ -166,48 +170,58 @@ def create_training_environment(results, symbols, args):
             train_data=True
         )
     
-    LOGGER.info(f"✅ 학습 환경 생성 완료")
+    LOGGER.info(f"학습 환경 생성 완료")
     return env
 
 def create_agent(env, args):
     """SAC 에이전트 생성"""
-    LOGGER.info("🤖 SAC 에이전트 생성 중...")
-    
+    LOGGER.info("SAC 에이전트 생성 중...")
+
     # 행동 차원 결정
     if args.multi_asset:
         action_dim = len(env.envs)
     else:
         action_dim = 1
-    
-    if args.use_cnn:
-        LOGGER.warning("⚠️  CNN 모드는 현재 구현 중입니다. MLP 모드로 대체합니다.")
-        args.use_cnn = False
-    
-    # MLP 모델 사용
+
+    # 상호 배타적 검증 추가
+    if args.use_cnn and args.use_lstm:
+        LOGGER.error("❌ CNN과 LSTM을 동시에 사용할 수 없습니다.")
+        return None
+
+    # 모델 타입 로그
+    if args.use_lstm:
+        LOGGER.info("[LSTM 사용] LSTM 모델을 사용합니다.")
+    elif args.use_cnn:
+        LOGGER.info("[CNN 사용] CNN 모델을 사용합니다.")
+    else:
+        LOGGER.info("[MLP 사용] 기본 MLP 모델을 사용합니다.")
+
+    # 에이전트 생성
     agent = SACAgent(
         state_dim=None,
         action_dim=action_dim,
         hidden_dim=args.hidden_dim,
         input_shape=(args.window_size, env.feature_dim if not args.multi_asset else list(env.envs.values())[0].feature_dim),
-        use_cnn=False
+        use_cnn=args.use_cnn,
+        use_lstm=args.use_lstm
     )
     
-    # 모델 로드 (지정된 경우)
+    # 모델 로드 (선택적)
     if args.load_model:
-        LOGGER.info(f"📂 모델 로드 중: {args.load_model}")
+        LOGGER.info(f"모델 로드 중: {args.load_model}")
         try:
             agent.load_model(args.load_model)
-            LOGGER.info("✅ 모델 로드 성공")
+            LOGGER.info("모델 로드 성공")
         except Exception as e:
-            LOGGER.error(f"❌ 모델 로드 실패: {e}")
+            LOGGER.error(f"모델 로드 실패: {e}")
             LOGGER.info("🆕 새 모델로 학습을 시작합니다.")
     
-    LOGGER.info(f"✅ SAC 에이전트 생성 완료 (행동 차원: {action_dim}, 은닉층: {args.hidden_dim})")
+    LOGGER.info(f"SAC 에이전트 생성 완료 (행동 차원: {action_dim}, 은닉층: {args.hidden_dim})")
     return agent
 
 def train_agent(agent, train_env, args, timer):
     """에이전트 학습 (훈련에만 집중)"""
-    LOGGER.info("🎯 학습 시작...")
+    LOGGER.info("학습 시작...")
     
     episode_rewards = []
     portfolio_values = []
@@ -307,17 +321,17 @@ def log_training_progress(episode, args, episode_rewards, portfolio_values,
     progress = episode / args.num_episodes * 100
     
     LOGGER.info("=" * 80)
-    LOGGER.info(f"📊 EPISODE {episode+1:,}/{args.num_episodes:,} | 진행률: {progress:.1f}%")
+    LOGGER.info(f"EPISODE {episode+1:,}/{args.num_episodes:,} | 진행률: {progress:.1f}%")
     LOGGER.info("=" * 80)
     
     # 시간 정보
-    LOGGER.info(f"⏱️  시간 정보:")
+    LOGGER.info(f"⏱시간 정보:")
     LOGGER.info(f"   └─ 경과 시간: {timer.format_time(elapsed_time)}")
     LOGGER.info(f"   └─ 평균 에피소드 시간: {avg_episode_time:.2f}초")
     LOGGER.info(f"   └─ 예상 남은 시간: {timer.format_time(eta)}")
     
     # 훈련 성능
-    LOGGER.info(f"🏋️  훈련 성능 (최근 {len(recent_rewards)}개 에피소드):")
+    LOGGER.info(f"훈련 성능 (최근 {len(recent_rewards)}개 에피소드):")
     LOGGER.info(f"   └─ 평균 보상: {avg_reward:.4f}")
     LOGGER.info(f"   └─ 평균 포트폴리오: ${avg_portfolio:,.2f}")
     LOGGER.info(f"   └─ 현재 현금: ${info['balance']:,.2f}")
@@ -336,7 +350,7 @@ def log_training_progress(episode, args, episode_rewards, portfolio_values,
     
     # 학습 통계
     if len(agent.actor_losses) > 0:
-        LOGGER.info(f"📈 학습 통계:")
+        LOGGER.info(f"학습 통계:")
         LOGGER.info(f"   └─ Actor Loss: {agent.actor_losses[-1]:.6f}")
         LOGGER.info(f"   └─ Critic Loss: {agent.critic_losses[-1]:.6f}")
         LOGGER.info(f"   └─ Alpha: {agent.alpha.item():.6f}")
@@ -350,7 +364,7 @@ def main():
     timer.start_training()
     
     print('=' * 50)
-    LOGGER.info('🚀 SAC 모델 학습 시작 (훈련 집중 버전)')
+    LOGGER.info('SAC 모델 학습 시작 (훈련 집중 버전)')
     
     # 인자 파싱
     args = parse_args()
@@ -358,8 +372,8 @@ def main():
     # 심볼 목록 설정
     symbols = args.symbols if args.symbols else TARGET_SYMBOLS
     
-    LOGGER.info(f"📈 학습 대상 심볼: {symbols}")
-    LOGGER.info(f"⚙️  학습 설정:")
+    LOGGER.info(f"학습 대상 심볼: {symbols}")
+    LOGGER.info(f"학습 설정:")
     LOGGER.info(f"   └─ 에피소드 수: {args.num_episodes:,}")
     LOGGER.info(f"   └─ 배치 크기: {args.batch_size}")
     LOGGER.info(f"   └─ 윈도우 크기: {args.window_size}")
@@ -369,42 +383,42 @@ def main():
     LOGGER.info(f"   └─ 다중 자산: {'예' if args.multi_asset else '아니오'}")
     
     # 데이터 수집
-    LOGGER.info("📊 데이터 수집 중...")
+    LOGGER.info("데이터 수집 중...")
     collector = DataCollector(symbols=symbols)
     
     if args.collect_data:
-        LOGGER.info("🔄 새로운 데이터 수집 중...")
+        LOGGER.info("새로운 데이터 수집 중...")
         data = collector.load_and_save()
     else:
-        LOGGER.info("💾 저장된 데이터 로드 중...")
+        LOGGER.info("저장된 데이터 로드 중...")
         data = collector.load_all_data()
         
         if not data:
-            LOGGER.warning("⚠️  저장된 데이터가 없어 새로 수집합니다.")
+            LOGGER.warning("저장된 데이터가 없어 새로 수집합니다.")
             data = collector.load_and_save()
     
     if not data:
-        LOGGER.error("❌ 데이터 수집 실패")
+        LOGGER.error("데이터 수집 실패")
         return
     
-    LOGGER.info(f"✅ 데이터 수집 완료: {len(data)}개 심볼")
+    LOGGER.info(f"데이터 수집 완료: {len(data)}개 심볼")
     
     # 데이터 전처리
-    LOGGER.info("⚙️  데이터 전처리 중...")
+    LOGGER.info("데이터 전처리 중...")
     processor = DataProcessor(window_size=args.window_size)
     results = processor.process_all_symbols(data)
     
     if not results:
-        LOGGER.error("❌ 데이터 전처리 실패")
+        LOGGER.error("데이터 전처리 실패")
         return
     
-    LOGGER.info(f"✅ 데이터 전처리 완료: {len(results)}개 심볼")
+    LOGGER.info(f"데이터 전처리 완료: {len(results)}개 심볼")
     
     # 환경 생성 (훈련용만)
     train_env = create_training_environment(results, symbols, args)
     
     if train_env is None:
-        LOGGER.error("❌ 훈련 환경 생성 실패")
+        LOGGER.error("훈련 환경 생성 실패")
         return
     
     # 에이전트 생성
@@ -415,7 +429,7 @@ def main():
     
     # 최종 모델 저장
     final_model_path = agent.save_model(prefix='final_')
-    LOGGER.info(f"💾 최종 모델 저장: {final_model_path}")
+    LOGGER.info(f"최종 모델 저장: {final_model_path}")
     
     # 최종 결과 출력
     total_time = timer.get_training_time()
@@ -424,19 +438,19 @@ def main():
     final_shares = shares_history[-1] if shares_history else 0
     
     LOGGER.info("=" * 80)
-    LOGGER.info("🎉 학습 완료 - 최종 결과")
+    LOGGER.info("학습 완료 - 최종 결과")
     LOGGER.info("=" * 80)
-    LOGGER.info(f"⏱️  총 학습 시간: {timer.format_time(total_time)}")
-    LOGGER.info(f"📊 평균 에피소드 시간: {timer.get_avg_episode_time():.2f}초")
-    LOGGER.info(f"🎯 학습된 에피소드: {args.num_episodes:,}개")
+    LOGGER.info(f"⏱총 학습 시간: {timer.format_time(total_time)}")
+    LOGGER.info(f"평균 에피소드 시간: {timer.get_avg_episode_time():.2f}초")
+    LOGGER.info(f"학습된 에피소드: {args.num_episodes:,}개")
     LOGGER.info("")
-    LOGGER.info(f"📈 훈련 환경 최종 성능:")
+    LOGGER.info(f"훈련 환경 최종 성능:")
     LOGGER.info(f"   └─ 최종 포트폴리오: ${final_portfolio:,.2f}")
     LOGGER.info(f"   └─ 총 수익률: {final_return:.2f}%")
     LOGGER.info(f"   └─ 최종 보유 주식: {final_shares:.4f}")
     LOGGER.info(f"   └─ 평균 에피소드 보상: {np.mean(episode_rewards):.4f}")
     LOGGER.info("")
-    LOGGER.info(f"🤖 최종 학습 통계:")
+    LOGGER.info(f"최종 학습 통계:")
     LOGGER.info(f"   └─ 총 학습 스텝: {agent.train_step_counter:,}")
     LOGGER.info(f"   └─ 최종 버퍼 크기: {len(agent.replay_buffer):,}")
     LOGGER.info(f"   └─ 최종 Alpha 값: {agent.alpha.item():.6f}")
@@ -445,8 +459,8 @@ def main():
         LOGGER.info(f"   └─ 최종 Critic Loss: {agent.critic_losses[-1]:.6f}")
     
     LOGGER.info("=" * 80)
-    LOGGER.info(f"🏁 학습 완료: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    LOGGER.info("💡 평가를 원하시면 run_evaluation.py를 사용하세요!")
+    LOGGER.info(f"학습 완료: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    LOGGER.info("평가를 원하시면 run_evaluation.py를 사용하세요!")
 
 if __name__ == "__main__":
     main()

@@ -324,6 +324,102 @@ class LiveTrader:
             if self.logger:
                 self.logger.error(f"{symbol} 거래 실행 중 오류 발생: {e}")
             return {"success": False, "error": str(e)}
+    
+    # def execute_trade(self, symbol: str, action: float) -> Dict[str, Any]:
+    #     """트레이딩 행동 실행"""
+    # try:
+    #     self.account_info = self.api.get_account_info()
+    #     current_position = self.position_manager.get_position(symbol)
+
+    #     side = "buy" if action > 0 else "sell"
+    #     position_size = abs(action)
+
+    #     available_cash = float(self.account_info.get("cash", 0))
+    #     current_price = self._get_current_price(symbol)
+
+    #     if current_price <= 0:
+    #         if self.logger:
+    #             self.logger.error(f"{symbol}의 현재 가격을 얻을 수 없습니다.")
+    #         return {"success": False, "error": "현재 가격을 얻을 수 없습니다."}
+
+    #     quantity = self.risk_manager.calculate_position_size(
+    #         symbol=symbol,
+    #         side=side,
+    #         available_balance=available_cash,
+    #         current_price=current_price,
+    #         position_ratio=position_size,
+    #         current_position=current_position.get("qty", 0)
+    #     )
+
+    #     if quantity <= 0:
+    #         if self.logger:
+    #             self.logger.info(f"{symbol} {side} 거래 건너뜀: 수량이 0 이하입니다.")
+    #         return {"success": True, "action": "no_trade", "reason": "수량이 0 이하입니다."}
+
+    #     order_result = self.api.place_market_order(
+    #         symbol=symbol,
+    #         side=side,
+    #         quantity=quantity
+    #     )
+
+    #     if order_result.get("success", True):
+    #         self.trading_stats["successful_trades"] += 1
+    #         self.trading_stats["trades"].append({
+    #             "symbol": symbol,
+    #             "side": side,
+    #             "quantity": quantity,
+    #             "price": current_price,
+    #             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+    #             "order_id": order_result.get("id", ""),
+    #             "status": "success"
+    #         })
+
+    #         if self.logger:
+    #             self.logger.info("=" * 60)
+    #             self.logger.info(f"📌 트레이드 실행 결과")
+    #             self.logger.info(f"📈 종목: {symbol}")
+    #             self.logger.info(f"🧭 방향: {'🟢 매수(BUY)' if side == 'buy' else '🔴 매도(SELL)'}")
+    #             self.logger.info(f"🔢 수량: {quantity:.4f} 주")
+    #             self.logger.info(f"💵 체결가: ${current_price:.2f}")
+    #             self.logger.info(f"🕒 시간: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    #             self.logger.info("=" * 60)
+
+    #         self.position_manager.update_position(symbol)
+
+    #         return {
+    #             "success": True,
+    #             "symbol": symbol,
+    #             "side": side,
+    #             "quantity": quantity,
+    #             "price": current_price,
+    #             "order_id": order_result.get("id", "")
+    #         }
+
+    #     else:
+    #         self.trading_stats["failed_trades"] += 1
+    #         if self.logger:
+    #             self.logger.error("=" * 60)
+    #             self.logger.error(f"❌ 트레이드 실패")
+    #             self.logger.error(f"📈 종목: {symbol}")
+    #             self.logger.error(f"🧭 방향: {side.upper()}")
+    #             self.logger.error(f"🔢 수량: {quantity:.4f} 주")
+    #             self.logger.error(f"💵 가격: ${current_price:.2f}")
+    #             self.logger.error(f"🚨 오류: {order_result.get('error', 'Unknown error')}")
+    #             self.logger.error("=" * 60)
+
+    #         return {
+    #             "success": False,
+    #             "symbol": symbol,
+    #             "side": side,
+    #             "quantity": quantity,
+    #             "price": current_price,
+    #             "error": order_result.get("error", "Unknown error")
+    #         }
+
+    # except Exception as e:
+    #     if self.logger:
+    #         self.logger.error(f"{symbol} 거래 실행 중 오류 발생: {e}")
+    #     return {"success": False, "error": str(e)}
 
     
     

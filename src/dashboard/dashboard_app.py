@@ -11,11 +11,11 @@ from flask import Flask, render_template, jsonify, request, Response
 import plotly
 from pymongo import MongoClient
 
-from src.dashboard.data_manager_file import FileDataManager
+from src.dashboard.data_manager import DataManager
 from src.dashboard.data_manager_db import DBDataManager
 from src.dashboard.visualization import Visualizer
 from src.utils.logger import Logger
-from src.utils.database import DatabaseManager
+
 
 # <라우팅 설정>
 # 라우팅 : "어떤 url이 들어왔을 때 어떤 함수를 실행할지 정하는 것"
@@ -98,11 +98,6 @@ class DashboardApp:
         def live_trading():
             return render_template('live_trading.html')
         
-        # 실시간 차트 페이지
-        @self.app.route('/live-chart')
-        def live_chart():
-            return render_template('live_chart.html')
-        
         # 백테스트 결과 페이지
         @self.app.route('/backtest')
         def backtest():
@@ -113,29 +108,11 @@ class DashboardApp:
         def models():
             return render_template('models.html')
         
-        
         # 기사 페이지
         @self.app.route('/news')
         def news():
-            ticker = request.args.get('name')  
-
-            query_filter = {}
-            if ticker:
-                query_filter = {"name": ticker}
-
-            # polygon_articles 컬렉션에서 데이터 가져오기
-            news_data = list(polygon_articles.find(query_filter, {
-                '_id': 0,
-                'name': 1,
-                'title': 1,
-                'summary': 1,
-                'sentiment': 1,
-                'date': 1,
-                'url': 1
-            }))
-
-            return render_template('news.html', news=news_data)
-
+            return render_template('news.html')
+        
         # 설정 페이지
         @self.app.route('/settings')
         def settings():
@@ -161,15 +138,17 @@ class DashboardApp:
         # 기사 데이터 조회 API
         @self.app.route('/api/news')
         def get_news():
-            ticker = request.args.get('name')
             try:
-                query = {}
-                if ticker:
-                    query = {"name": ticker}
-
-                polygon_articles_data = list(polygon_articles.find(query, {
+                polygon_articles_data = list(polygon_articles.find({}, {
                     '_id': 0,
-                    'name': 1,
+                    'title': 1,
+                    'summary': 1,
+                    'sentiment': 1,
+                    'date': 1,
+                    'url': 1
+                }))
+                yahoo_news_data = list(yahoo_news.find({}, {
+                    '_id': 0,
                     'title': 1,
                     'summary': 1,
                     'sentiment': 1,
@@ -177,23 +156,13 @@ class DashboardApp:
                     'url': 1
                 }))
 
-                yahoo_news_data = list(yahoo_news.find(query, {
-                    '_id': 0,
-                    'name': 1,
-                    'title': 1,
-                    'summary': 1,
-                    'sentiment': 1,
-                    'date': 1,
-                    'url': 1
-                }))
-                
                 return jsonify({
                     'polygon': polygon_articles_data,
-                    'yahoo': yahoo_news_data
+                    'yahoo': yahoo_news_data 
                 })
             except Exception as e:
                 return jsonify({'error': str(e)})
-                
+        
         # 백테스트 결과 API
         @self.app.route('/api/backtest-results')
         def get_backtest_results():
@@ -522,7 +491,7 @@ if __name__ == '__main__':
     
     # 대시보드 실행
     dashboard = DashboardApp(
-        data_manager=DatabaseManager(args.data_dir),
+        data_manager=DataManager(args.data_dir),
         host=args.host,
         port=args.port,
         debug=args.debug

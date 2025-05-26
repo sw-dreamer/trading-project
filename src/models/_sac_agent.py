@@ -1,5 +1,5 @@
 """
-SAC (Soft Actor-Critic) 알고리즘 구현 모듈 (LSTM 지원 버전)
+SAC (Soft Actor-Critic) 알고리즘 구현 모듈
 """
 import os
 import sys
@@ -35,16 +35,7 @@ from src.config.config import (
     MODELS_DIR,
     LOGGER
 )
-
-from src.models.networks import (
-    ActorNetwork, 
-    CriticNetwork, 
-    CNNActorNetwork, 
-    CNNCriticNetwork,
-    LSTMActorNetwork,
-    LSTMCriticNetwork
-)
-
+from src.models.networks import ActorNetwork, CriticNetwork, CNNActorNetwork, CNNCriticNetwork
 from src.utils.utils import soft_update, create_directory
 
 
@@ -130,7 +121,7 @@ class ReplayBuffer:
 
 class SACAgent:
     """
-    SAC 알고리즘 에이전트 (MLP/CNN/LSTM 지원)
+    SAC 알고리즘 에이전트
     """
         
     def __init__(
@@ -149,17 +140,13 @@ class SACAgent:
         device: torch.device = DEVICE,
         buffer_capacity: int = REPLAY_BUFFER_SIZE,
         input_shape: Tuple[int, int] = None,
-        use_cnn: bool = False,
-        use_lstm: bool = False,
-        lstm_hidden_dim: int = 128,
-        num_lstm_layers: int = 2,
-        lstm_dropout: float = 0.2
+        use_cnn: bool = False
     ):
         """
         SACAgent 클래스 초기화
         
         Args:
-            state_dim: 상태 공간의 차원 (CNN/LSTM 사용 시 None)
+            state_dim: 상태 공간의 차원 (CNN 사용 시 None)
             action_dim: 행동 공간의 차원
             hidden_dim: 신경망 은닉층의 차원
             actor_lr: Actor 네트워크 학습률
@@ -172,12 +159,8 @@ class SACAgent:
             use_automatic_entropy_tuning: 자동 엔트로피 조정 사용 여부
             device: 학습에 사용할 장치
             buffer_capacity: 리플레이 버퍼 용량
-            input_shape: 입력 데이터 형태 (CNN/LSTM 사용 시 (window_size, feature_dim))
+            input_shape: 입력 데이터 형태 (CNN 사용 시 (window_size, feature_dim))
             use_cnn: CNN 모델 사용 여부
-            use_lstm: LSTM 모델 사용 여부
-            lstm_hidden_dim: LSTM 은닉층 차원
-            num_lstm_layers: LSTM 레이어 수
-            lstm_dropout: LSTM 드롭아웃 비율
         """
         # 속성 저장
         self.state_dim = state_dim
@@ -193,86 +176,21 @@ class SACAgent:
         self.use_automatic_entropy_tuning = use_automatic_entropy_tuning
         self.device = device
         self.use_cnn = use_cnn
-        self.use_lstm = use_lstm
         self.input_shape = input_shape
-        self.lstm_hidden_dim = lstm_hidden_dim
-        self.num_lstm_layers = num_lstm_layers
-        self.lstm_dropout = lstm_dropout
-        
-        # 모델 타입 검증 (상호 배타적)
-        if use_cnn and use_lstm:
-            raise ValueError("CNN과 LSTM 모델을 동시에 사용할 수 없습니다. 하나만 선택해주세요.")
-        
-        # 모델 타입 로깅
-        if use_lstm:
-            LOGGER.info("🧠 LSTM 기반 SAC 에이전트 초기화 중...")
-            LOGGER.info("🔀 LSTM 모델 선택됨")
-            LOGGER.info(f"   └─ LSTM 은닉 차원: {lstm_hidden_dim}")
-            LOGGER.info(f"   └─ LSTM 레이어 수: {num_lstm_layers}")
-            LOGGER.info(f"   └─ LSTM 드롭아웃: {lstm_dropout}")
-            LOGGER.info("💡 시계열 패턴 학습에 최적화된 모델입니다")
-        elif use_cnn:
-            LOGGER.info("🖼️ CNN 기반 SAC 에이전트 초기화 중...")
-            LOGGER.info("🔀 CNN 모델 선택됨")
-            LOGGER.info("💡 공간적 특성 추출에 최적화된 모델입니다")
-        else:
-            LOGGER.info("🔢 MLP 기반 SAC 에이전트 초기화 중...")
-            LOGGER.info("🔀 MLP 모델 선택됨 (기본값)")
-            LOGGER.info("💡 일반적인 완전연결 신경망 모델입니다")
         
         # TradingEnvironment를 위한 상태 차원 자동 계산
-        if not use_cnn and not use_lstm and state_dim is None:
+        if not use_cnn and state_dim is None:
             # TradingEnvironment의 기본 구조: market_data (30, 40) + portfolio_state (2,)
             if input_shape is None:
                 raise ValueError("input_shape를 명시적으로 제공해야 합니다.")
             self.state_dim = input_shape[0] * input_shape[1] + 2  # 1200 + 2 = 1202
             state_dim = self.state_dim  # 네트워크 생성을 위해 local 변수도 업데이트
-            LOGGER.info(f"📏 TradingEnvironment를 위한 상태 차원 자동 계산: {self.state_dim}")
+            LOGGER.info(f"TradingEnvironment를 위한 상태 차원 자동 계산: {self.state_dim}")
         
         # 네트워크 초기화
-        if use_lstm:
-            if input_shape is None:
-                raise ValueError("LSTM 모델을 사용할 때는 input_shape가 필요합니다.")
-            
-            LOGGER.info("🏗️ LSTM 네트워크 생성 중...")
-            
-            self.actor = LSTMActorNetwork(
-                input_shape=input_shape,
-                action_dim=action_dim,
-                hidden_dim=hidden_dim,
-                lstm_hidden_dim=lstm_hidden_dim,
-                num_lstm_layers=num_lstm_layers,
-                dropout=lstm_dropout,
-                device=device
-            )
-            
-            self.critic = LSTMCriticNetwork(
-                input_shape=input_shape,
-                action_dim=action_dim,
-                hidden_dim=hidden_dim,
-                lstm_hidden_dim=lstm_hidden_dim,
-                num_lstm_layers=num_lstm_layers,
-                dropout=lstm_dropout,
-                device=device
-            )
-            
-            self.critic_target = LSTMCriticNetwork(
-                input_shape=input_shape,
-                action_dim=action_dim,
-                hidden_dim=hidden_dim,
-                lstm_hidden_dim=lstm_hidden_dim,
-                num_lstm_layers=num_lstm_layers,
-                dropout=lstm_dropout,
-                device=device
-            )
-            
-            LOGGER.info("✅ LSTM 네트워크 생성 완료")
-            
-        elif use_cnn:
+        if use_cnn:
             if input_shape is None:
                 raise ValueError("CNN 모델을 사용할 때는 input_shape가 필요합니다.")
-            
-            LOGGER.info("🏗️ CNN 네트워크 생성 중...")
             
             self.actor = CNNActorNetwork(
                 input_shape=input_shape,
@@ -294,15 +212,11 @@ class SACAgent:
                 hidden_dim=hidden_dim,
                 device=device
             )
-            
-            LOGGER.info("✅ CNN 네트워크 생성 완료")
                 
         else:
             # state_dim이 None인 경우는 이미 위에서 처리됨
             if state_dim is None:
                 raise ValueError("일반 모델을 사용할 때는 state_dim이 필요합니다.")
-            
-            LOGGER.info("🏗️ MLP 네트워크 생성 중...")
             
             self.actor = ActorNetwork(
                 state_dim=state_dim,
@@ -325,11 +239,9 @@ class SACAgent:
                 device=device
             )
             
-            LOGGER.info("✅ MLP 네트워크 생성 완료")
-            
-        # 현재 정책을 타겟 정책으로 복사
-        for target_param, param in zip(self.critic_target.parameters(), self.critic.parameters()):
-            target_param.data.copy_(param.data)
+            # 현재 정책을 타겟 정책으로 복사
+            for target_param, param in zip(self.critic_target.parameters(), self.critic.parameters()):
+                target_param.data.copy_(param.data)
         
         # 옵티마이저
         self.actor_optimizer = optim.Adam(self.actor.parameters(), lr=actor_lr)
@@ -356,13 +268,8 @@ class SACAgent:
         self.alpha_losses = []
         self.entropy_values = []
         
-        # 최종 초기화 로그
-        model_type = "LSTM" if use_lstm else ("CNN" if use_cnn else "MLP")
-        LOGGER.info(f"🎉 SAC 에이전트 초기화 완료!")
-        LOGGER.info(f"   └─ 모델 타입: {model_type}")
-        LOGGER.info(f"   └─ 행동 차원: {action_dim}")
-        LOGGER.info(f"   └─ 상태 차원: {self.state_dim if not (use_cnn or use_lstm) else input_shape}")
-        LOGGER.info(f"   └─ 장치: {device}")
+        LOGGER.info(f"SAC 에이전트 초기화 완료: 행동 차원 {action_dim}, {'CNN 사용' if use_cnn else 'MLP 사용'}")
+        LOGGER.info(f"상태 차원: {self.state_dim if not use_cnn else input_shape}")
     
     def select_action(self, state: Dict[str, np.ndarray], evaluate: bool = False) -> float:
         """
@@ -389,7 +296,7 @@ class SACAgent:
         # 단일 float 값으로 반환
         return action.detach().cpu().numpy()[0][0]
     
-    def _process_state_for_network(self, state: Dict[str, np.ndarray]) -> Union[torch.Tensor, Dict[str, torch.Tensor]]:
+    def _process_state_for_network(self, state: Dict[str, np.ndarray]) -> torch.Tensor:
         """
         TradingEnvironment 상태를 네트워크 입력으로 변환
         
@@ -399,48 +306,50 @@ class SACAgent:
         Returns:
             네트워크 입력용 텐서
         """
-        if self.use_cnn or self.use_lstm:
-            return {
-                "market_data": torch.FloatTensor(state["market_data"]).unsqueeze(0).to(self.device),
-                "portfolio_state": torch.FloatTensor(state["portfolio_state"]).unsqueeze(0).to(self.device)
-            }
+        if self.use_cnn:
+            # CNN 모델용 처리 (추후 구현)
+            # 현재는 MLP 모드만 지원
+            raise NotImplementedError("CNN 모드는 현재 구현 중입니다.")
         else:
-            market_data = state['market_data'].flatten()
-            portfolio_state = state['portfolio_state']
-            combined_state = np.concatenate([market_data, portfolio_state])
-            return torch.FloatTensor(combined_state).unsqueeze(0).to(self.device)
+            # MLP 모델용 처리: market_data를 평탄화하고 portfolio_state와 결합
+            market_data = state['market_data']  # shape: (30, 40)
+            portfolio_state = state['portfolio_state']  # shape: (2,)
+            
+            # market_data를 1차원으로 평탄화
+            market_data_flat = market_data.flatten()  # shape: (1200,)
+            
+            # portfolio_state와 결합
+            combined_state = np.concatenate([market_data_flat, portfolio_state])  # shape: (1202,)
+            
+            # 텐서로 변환하고 배치 차원 추가
+            state_tensor = torch.FloatTensor(combined_state).unsqueeze(0).to(self.device)  # shape: (1, 1202)
+            
+            return state_tensor
     
-    def _process_batch_states(self, states: List[Dict[str, np.ndarray]]) -> Union[torch.Tensor, Dict[str, torch.Tensor]]:
+    def _process_batch_states(self, states: List[Dict[str, np.ndarray]]) -> torch.Tensor:
         """
         배치 상태들을 네트워크 입력으로 변환
         
         Args:
             states: TradingEnvironment 상태들의 리스트
+            
         Returns:
             배치 텐서
         """
-        
-        if self.use_cnn or self.use_lstm:
-            market_batch = []
-            portfolio_batch = []
-            for state in states:
-                market_batch.append(state["market_data"])
-                portfolio_batch.append(state["portfolio_state"])
-            
-            market_tensor = torch.FloatTensor(np.stack(market_batch)).to(self.device)  # (B, W, F)
-            portfolio_tensor = torch.FloatTensor(np.stack(portfolio_batch)).to(self.device)  # (B, 2)
-
-            return {
-                "market_data": market_tensor,
-                "portfolio_state": portfolio_tensor
-            }
+        if self.use_cnn:
+            # CNN 모델용 배치 처리 (추후 구현)
+            raise NotImplementedError("CNN 모드는 현재 구현 중입니다.")
         else:
+            # MLP 모델용 배치 처리
             batch_states = []
             for state in states:
+                # 각 상태를 처리하여 1차원 벡터로 변환
                 processed_state = self._process_state_for_network(state)
                 batch_states.append(processed_state)
+            
+            # 배치로 결합
             return torch.cat(batch_states, dim=0)
-        
+    
     def add_experience(self, state: Dict[str, np.ndarray], action: float, reward: float, 
                       next_state: Dict[str, np.ndarray], done: bool) -> None:
         """
@@ -569,17 +478,8 @@ class SACAgent:
         create_directory(save_dir)
         
         timestamp = time.strftime("%Y%m%d_%H%M%S")
-        model_type = "lstm" if self.use_lstm else ("cnn" if self.use_cnn else "mlp")
-        model_path = Path(save_dir) / f"{prefix}{model_type}_sac_model_{timestamp}"
+        model_path = Path(save_dir) / f"{prefix}sac_model_{timestamp}"
         create_directory(model_path)
-        
-        # 모델 타입별 저장 로그
-        if self.use_lstm:
-            LOGGER.info(f"💾 LSTM SAC 모델 저장 중: {model_path}")
-        elif self.use_cnn:
-            LOGGER.info(f"💾 CNN SAC 모델 저장 중: {model_path}")
-        else:
-            LOGGER.info(f"💾 MLP SAC 모델 저장 중: {model_path}")
         
         # 네트워크 가중치 저장
         torch.save(self.actor.state_dict(), model_path / "actor.pth")
@@ -605,7 +505,7 @@ class SACAgent:
         }
         torch.save(training_stats, model_path / "training_stats.pth")
         
-        # 설정 저장 (LSTM 파라미터 포함)
+        # 설정 저장
         config = {
             'state_dim': self.state_dim,
             'action_dim': self.action_dim,
@@ -616,15 +516,10 @@ class SACAgent:
             'target_update_interval': self.target_update_interval,
             'use_automatic_entropy_tuning': self.use_automatic_entropy_tuning,
             'use_cnn': self.use_cnn,
-            'use_lstm': self.use_lstm,
-            'input_shape': self.input_shape,
-            'lstm_hidden_dim': self.lstm_hidden_dim,
-            'num_lstm_layers': self.num_lstm_layers,
-            'lstm_dropout': self.lstm_dropout
+            'input_shape': self.input_shape
         }
         torch.save(config, model_path / "config.pth")        
-        
-        LOGGER.info(f"✅ {model_type.upper()} 모델 저장 완료: {model_path}")
+        LOGGER.info(f"모델 저장 완료: {model_path}")
         
         return model_path
     
@@ -638,17 +533,8 @@ class SACAgent:
         model_path = Path(model_path)
         
         if not model_path.exists():
-            LOGGER.error(f"❌ 모델 경로가 존재하지 않습니다: {model_path}")
+            LOGGER.error(f"모델 경로가 존재하지 않습니다: {model_path}")
             return
-        
-        # 모델 타입 감지 및 로그
-        model_name = model_path.name.lower()
-        if "lstm" in model_name:
-            LOGGER.info(f"🔄 LSTM SAC 모델 로드 중: {model_path}")
-        elif "cnn" in model_name:
-            LOGGER.info(f"🔄 CNN SAC 모델 로드 중: {model_path}")
-        else:
-            LOGGER.info(f"🔄 MLP SAC 모델 로드 중: {model_path}")
         
         try:
             # 먼저 원래 방식으로 로드 시도
@@ -677,16 +563,10 @@ class SACAgent:
             self.entropy_values = training_stats.get('entropy_values', [])
             self.train_step_counter = training_stats.get('train_step_counter', 0)
             
-            # 성공 로그
-            model_type = "LSTM" if self.use_lstm else ("CNN" if self.use_cnn else "MLP")
-            LOGGER.info(f"✅ {model_type} 모델 로드 완료: {model_path}")
-            LOGGER.info(f"   └─ 학습 스텝: {self.train_step_counter:,}")
-            LOGGER.info(f"   └─ 버퍼 크기: {len(self.replay_buffer):,}")
-            
+            LOGGER.info(f"모델 로드 완료: {model_path}")
         except RuntimeError as e:
             # 크기 불일치 오류 발생 시 크기 조정 로드 메서드 사용
-            LOGGER.warning(f"⚠️ 표준 모델 로드 실패: {e}")
-            LOGGER.info("🔄 크기 조정 방식으로 재시도 중...")
+            LOGGER.error(f"모델 로드 실패: {e}")
             self.load_model_with_resize(model_path)
     
     def get_latest_model_path(self, save_dir: Union[str, Path] = None, prefix: str = '') -> Optional[Path]:
@@ -707,13 +587,7 @@ class SACAgent:
         if not save_dir.exists():
             return None
         
-        # 모델 타입에 따른 패턴 확인
-        patterns = [f"{prefix}lstm_sac_model_", f"{prefix}cnn_sac_model_", f"{prefix}mlp_sac_model_", f"{prefix}sac_model_"]
-        
-        model_dirs = []
-        for pattern in patterns:
-            model_dirs.extend([d for d in save_dir.iterdir() if d.is_dir() and d.name.startswith(pattern)])
-        
+        model_dirs = [d for d in save_dir.iterdir() if d.is_dir() and d.name.startswith(f"{prefix}sac_model_")]
         if not model_dirs:
             return None
         
@@ -730,8 +604,6 @@ class SACAgent:
         """
         model_path = Path(model_path)
         
-        LOGGER.info("🔧 크기 조정 방식으로 모델 로드 시도 중...")
-        
         # 저장된 상태 사전 로드
         saved_actor_dict = torch.load(model_path / "actor.pth", map_location=self.device)
         saved_critic_dict = torch.load(model_path / "critic.pth", map_location=self.device)
@@ -743,16 +615,6 @@ class SACAgent:
         # 크기가 일치하는 파라미터만 로드
         actor_dict = {k: v for k, v in saved_actor_dict.items() if k in current_actor_dict and v.shape == current_actor_dict[k].shape}
         critic_dict = {k: v for k, v in saved_critic_dict.items() if k in current_critic_dict and v.shape == current_critic_dict[k].shape}
-        
-        # 호환 통계 로그
-        actor_loaded = len(actor_dict)
-        actor_total = len(current_actor_dict)
-        critic_loaded = len(critic_dict)
-        critic_total = len(current_critic_dict)
-        
-        LOGGER.info(f"📊 모델 호환성 분석:")
-        LOGGER.info(f"   └─ Actor: {actor_loaded}/{actor_total} 레이어 호환 ({actor_loaded/actor_total*100:.1f}%)")
-        LOGGER.info(f"   └─ Critic: {critic_loaded}/{critic_total} 레이어 호환 ({critic_loaded/critic_total*100:.1f}%)")
         
         # 상태 사전 업데이트
         current_actor_dict.update(actor_dict)
@@ -771,7 +633,6 @@ class SACAgent:
             self.critic_target.load_state_dict(current_critic_target_dict)
         except:
             # critic_target 파일이 없으면 critic을 복사
-            LOGGER.warning("⚠️ critic_target 파일이 없어 critic에서 복사합니다.")
             for target_param, param in zip(self.critic_target.parameters(), self.critic.parameters()):
                 target_param.data.copy_(param.data)
         
@@ -786,7 +647,7 @@ class SACAgent:
                 self.alpha = self.log_alpha.exp()
                 self.alpha_optimizer.load_state_dict(torch.load(model_path / "alpha_optimizer.pth", map_location=self.device))
         except:
-            LOGGER.warning(f"⚠️ 옵티마이저 상태 로드 실패. 기본값 유지.")
+            LOGGER.warning(f"옵티마이저 또는 기타 상태 로드 실패. 기본값 유지.")
         
         # 학습 통계 로드 (가능한 경우)
         try:
@@ -797,11 +658,9 @@ class SACAgent:
             self.entropy_values = training_stats.get('entropy_values', [])
             self.train_step_counter = training_stats.get('train_step_counter', 0)
         except:
-            LOGGER.warning(f"⚠️ 학습 통계 로드 실패. 기본값 유지.")
+            LOGGER.warning(f"학습 통계 로드 실패. 기본값 유지.")
         
-        model_type = "LSTM" if self.use_lstm else ("CNN" if self.use_cnn else "MLP")
-        LOGGER.info(f"✅ {model_type} 모델 크기 조정 로드 완료: {model_path}")
-        LOGGER.info("💡 일부 파라미터는 새로 초기화됩니다.")
+        LOGGER.info(f"모델 로드 완료(일부 파라미터 크기 불일치로 무시됨): {model_path}")
 
 
 def train_sac_agent(env, agent, num_episodes: int = 1000, 
@@ -821,8 +680,7 @@ def train_sac_agent(env, agent, num_episodes: int = 1000,
     Returns:
         학습된 SAC 에이전트
     """
-    model_type = "LSTM" if agent.use_lstm else ("CNN" if agent.use_cnn else "MLP")
-    LOGGER.info(f"🚀 {model_type} SAC 에이전트 학습 시작: {num_episodes} 에피소드")
+    LOGGER.info(f"SAC 에이전트 학습 시작: {num_episodes} 에피소드")
     
     episode_rewards = []
     episode_lengths = []
@@ -872,7 +730,7 @@ def train_sac_agent(env, agent, num_episodes: int = 1000,
                 LOGGER.info(f"  Critic Loss: {agent.critic_losses[-1]:.6f}")
                 LOGGER.info(f"  Alpha: {agent.alpha.item():.6f}")
     
-    LOGGER.info(f"🎉 {model_type} SAC 에이전트 학습 완료!")
+    LOGGER.info("SAC 에이전트 학습 완료!")
     return agent
 
 
@@ -880,110 +738,79 @@ if __name__ == "__main__":
     # 모듈 테스트 코드
     print("SAC 에이전트 테스트 시작...")
     
-    # TradingEnvironment 스타일의 테스트 설정
+    # TradingEnvironment 스타일의 MLP SAC 에이전트 테스트
+    print("\n=== MLP SAC 에이전트 테스트 ===")
+    
+    # TradingEnvironment 상태 구조: market_data (30, 40) + portfolio_state (2,)
     window_size = 30
     feature_dim = 40
     action_dim = 1
     batch_size = 4
     
-    print("\n=== MLP SAC 에이전트 테스트 ===")
-    
     # MLP 에이전트 초기화 (TradingEnvironment용)
-    mlp_agent = SACAgent(
+    agent = SACAgent(
         state_dim=None,  # 자동 계산됨 (30*40 + 2 = 1202)
         action_dim=1,
         input_shape=(window_size, feature_dim),  # 자동 계산을 위한 힌트
-        use_cnn=False,
-        use_lstm=False
+        use_cnn=False
     )
     
-    print(f"MLP 에이전트 초기화 완료 - 상태 차원: {mlp_agent.state_dim}")
+    print(f"MLP 에이전트 초기화 완료 - 상태 차원: {agent.state_dim}")
     
-    print("\n=== CNN SAC 에이전트 테스트 ===")
-    
-    # CNN 에이전트 초기화
-    cnn_agent = SACAgent(
-        state_dim=None,
-        action_dim=1,
-        input_shape=(window_size, feature_dim),
-        use_cnn=True,
-        use_lstm=False
-    )
-    
-    print(f"CNN 에이전트 초기화 완료")
-    
-    print("\n=== LSTM SAC 에이전트 테스트 ===")
-    
-    # LSTM 에이전트 초기화
-    lstm_agent = SACAgent(
-        state_dim=None,
-        action_dim=1,
-        input_shape=(window_size, feature_dim),
-        use_cnn=False,
-        use_lstm=True,
-        lstm_hidden_dim=64,
-        num_lstm_layers=1,
-        lstm_dropout=0.1
-    )
-    
-    print(f"LSTM 에이전트 초기화 완료")
-    
-    # 모든 에이전트 테스트
-    agents = [
-        ("MLP", mlp_agent),
-        ("CNN", cnn_agent), 
-        ("LSTM", lstm_agent)
-    ]
-    
-    for agent_name, agent in agents:
-        print(f"\n--- {agent_name} 에이전트 테스트 ---")
-        
-        # TradingEnvironment 스타일의 상태로 테스트
-        for i in range(batch_size):
-            state = {
-                'market_data': np.random.randn(window_size, feature_dim),
-                'portfolio_state': np.random.randn(2)
-            }
-            next_state = {
-                'market_data': np.random.randn(window_size, feature_dim),
-                'portfolio_state': np.random.randn(2)
-            }
-            
-            action = np.random.uniform(-1.0, 1.0)
-            reward = np.random.randn()
-            done = np.random.choice([True, False])
-            
-            # 경험 추가
-            agent.add_experience(state, action, reward, next_state, done)
-            
-            # 행동 선택 테스트
-            if i == 0:
-                selected_action = agent.select_action(state, evaluate=False)
-                print(f"  선택된 행동: {selected_action}")
-        
-        print(f"  리플레이 버퍼 크기: {len(agent.replay_buffer)}")
-        
-        # 학습 테스트
-        print(f"  학습 테스트 중...")
-        stats = agent.update_parameters(batch_size=batch_size)
-        print(f"  학습 통계: Actor Loss {stats['actor_loss']:.6f}, Critic Loss {stats['critic_loss']:.6f}")
-        
-        # 모델 저장 테스트
-        print(f"  모델 저장 테스트...")
-        model_path = agent.save_model(prefix=f'{agent_name.lower()}_test_')
-        print(f"  모델 저장 완료: {model_path}")
-        
-        # 모델 로드 테스트
-        print(f"  모델 로드 테스트...")
-        agent.load_model(model_path)
-        print(f"  모델 로드 완료")
-        
-        # 로드 후 행동 선택 테스트
-        test_state = {
+    # TradingEnvironment 스타일의 상태로 테스트
+    for i in range(batch_size * 2):
+        # TradingEnvironment 상태 형식
+        state = {
             'market_data': np.random.randn(window_size, feature_dim),
             'portfolio_state': np.random.randn(2)
         }
-        test_action = agent.select_action(test_state, evaluate=True)
-        print(f"  로드 후 테스트 행동: {test_action}")
+        next_state = {
+            'market_data': np.random.randn(window_size, feature_dim),
+            'portfolio_state': np.random.randn(2)
+        }
+        
+        action = np.random.uniform(-1.0, 1.0)  # TradingEnvironment 행동 범위
+        reward = np.random.randn()
+        done = np.random.choice([True, False])
+        
+        # 경험 추가
+        agent.add_experience(state, action, reward, next_state, done)
+        
+        # 행동 선택 테스트
+        if i == 0:
+            selected_action = agent.select_action(state, evaluate=False)
+            print(f"선택된 행동: {selected_action}")
     
-    print("\n🎉 모든 SAC 에이전트 테스트 완료!")
+    print(f"리플레이 버퍼 크기: {len(agent.replay_buffer)}")
+    
+    # 학습 테스트
+    print("\n학습 테스트 중...")
+    for epoch in range(5):
+        stats = agent.update_parameters(batch_size=batch_size)
+        print(f"Epoch {epoch+1}: {stats}")
+    
+    # 모델 저장 테스트
+    print("\n모델 저장 테스트...")
+    model_path = agent.save_model(prefix='mlp_trading_')
+    print(f"모델 저장 완료: {model_path}")
+    
+    # 모델 로드 테스트
+    print("모델 로드 테스트...")
+    agent.load_model(model_path)
+    print("모델 로드 완료")
+    
+    # 로드 후 행동 선택 테스트
+    test_state = {
+        'market_data': np.random.randn(window_size, feature_dim),
+        'portfolio_state': np.random.randn(2)
+    }
+    test_action = agent.select_action(test_state, evaluate=True)
+    print(f"로드 후 테스트 행동: {test_action}")
+    
+    print("\n=== MLP SAC 에이전트 테스트 완료 ===")
+    
+    # CNN SAC 에이전트 테스트 (주석 처리 - 현재 구현되지 않음)
+    # print("\n=== CNN SAC 에이전트 테스트 ===")
+    # print("CNN 모드는 현재 구현 중입니다. 추후 업데이트 예정...")
+    
+    print("\n모든 테스트 완료!")

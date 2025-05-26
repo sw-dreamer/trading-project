@@ -62,13 +62,6 @@ class TradingEnvironment:
             y: 타겟 데이터
         """
         
-        # # 원본 데이터가 제공되지 않은 경우 data를 사용
-        # self.raw_data = raw_data if raw_data is not None else data
-        # if 'timestamp' in self.data.columns:
-        #     self.timestamps = self.data.index.values
-        # else:
-        #     self.timestamps = np.array([None] * len(self.data))  # 또는 적절한 기본값
-        
         self.data = data
         
         # raw_data 처리: None인 경우 data에서 가격 정보 추출 시도
@@ -90,17 +83,6 @@ class TradingEnvironment:
         else:
             self.timestamps = np.array([None] * len(self.raw_data))
 
-        # # 추가: X, y 데이터 저장
-        # self.X = X
-        # self.y = y
-        # self.train_data = train_data
-
-        # print(f'data 형태: {data.shape}')
-        # if raw_data is not None:
-        #     print(f'raw_data 형태: {raw_data.shape}')
-        # else:
-        #     print('raw_data가 제공되지 않아 data를 사용합니다.')
-        
         self.window_size = window_size
         self.initial_balance = initial_balance
         print(f'initial_balance : {initial_balance}')
@@ -148,15 +130,7 @@ class TradingEnvironment:
                 low=0, high=np.inf, shape=(2,), dtype=np.float32
             )
         })
-        
-        # # 원본 데이터가 제공되었는지 확인하고 주요 컬럼이 존재하는지 검증
-        # if raw_data is not None:
-        #     if 'close' not in raw_data.columns:
-        #         LOGGER.warning("raw_data에 'close' 컬럼이 없습니다. 마지막 컬럼을 종가로 사용합니다.")
-        #         print("raw_data에 'close' 컬럼이 없습니다. 마지막 컬럼을 종가로 사용합니다.")
-        
-        # LOGGER.info(f"{self.symbol} 트레이딩 환경 초기화 완료: 데이터 길이 {self.data_length}")
-        
+            
         # 원본 데이터 검증
         if 'close' not in self.raw_data.columns:
             LOGGER.warning("raw_data에 'close' 컬럼이 없습니다. 마지막 컬럼을 종가로 사용합니다.")
@@ -286,13 +260,6 @@ class TradingEnvironment:
                 max_affordable,
                 self.max_trading_units * action_value
             )
-            # if shares_to_buy > 0:
-                
-            # 최소 1주 이상 매수하도록 조정 (0.5 이상이면 올림)
-            # if 0 < shares_to_buy < 1:
-            #     shares_to_buy = 1
-            # else:
-            #     shares_to_buy = max(1, int(shares_to_buy))
             
             if shares_to_buy > 0:
                 shares_to_buy = Decimal(str(shares_to_buy)).quantize(Decimal('0.0001'), rounding=ROUND_DOWN) # 소수점 거래
@@ -329,19 +296,13 @@ class TradingEnvironment:
                 self.trade_executed = False
                 self.position = "잘못된 매도"
                 self.invalid_sell_penalty = True
-                print("❌ 잘못된 매도 시도 (보유 주식 없음) - 큰 페널티 적용!")
+                print("잘못된 매도 시도 (보유 주식 없음) - 큰 페널티 적용!")
                 return  # 매도 실행하지 않음
 
             shares_to_sell = min(
                 self.shares_held,
                 self.max_trading_units * abs(action_value)
             )
-            # if shares_to_sell > 0:
-            #   shares_to_sell = round(shares_to_sell, 6)
-            # if 0 < shares_to_sell < 1:
-            #     shares_to_sell = 1
-            # else:
-            #     shares_to_sell = max(1, int(shares_to_sell))
             
             if shares_to_sell > 0:
                 shares_to_sell = float(Decimal(str(shares_to_sell)).quantize(Decimal('0.0001'), rounding=ROUND_DOWN))
@@ -364,12 +325,6 @@ class TradingEnvironment:
                 
                 LOGGER.debug(f"매도: {shares_to_sell}주 @ {current_price:.2f}, 수익: {net_value:.2f}, 수수료: {commission:.2f}")
                 print(f"매도: {shares_to_sell}주 @ {current_price:.2f}, 수익: {net_value:.2f}")
-            
-            # elif shares_to_sell <= 0:
-            #     # 매도량이 너무 적어서 실행 불가 (하지만 잘못된 매도는 아님!)
-            #     self.trade_executed = False
-            #     self.position = "홀드"
-            #     return
 
 
     def _get_observation(self) -> Dict[str, np.ndarray]:
@@ -482,12 +437,9 @@ class TradingEnvironment:
         # 수익률 계산
         return_rate = (current_portfolio_value - prev_portfolio_value) / prev_portfolio_value
         
-        ##### 200배 증폭이 너무 크고 -10~10으로 클리핑하면 대부분의 보상이 극값에 몰림 
-        ##### 해결: 증폭 계수를 10-50 정도로 줄이고 클리핑 범위 확대해야함
         # 수익률에 기반한 보상에 가중치 부여
         # reward = np.clip(return_rate * 200, -10, 10)  # 수익률을 200배하여 보상 크기 조정
         reward = np.clip(return_rate * 50, -5, 5)
-        
         
         # 디버깅을 위한 출력
         print(f"포트폴리오 변화율: {return_rate:.6f}, 기본 보상: {reward:.6f}")
@@ -496,19 +448,9 @@ class TradingEnvironment:
         if abs(reward) < 0.001 and return_rate != 0:
             reward = 0.001 * (1 if return_rate > 0 else -1)
         
-        # 잘못된 매도 시도가 있었는지 확인하고 별도의 큰 페널티 적용
-        # (기존 보상과 별개로 추가)
-        # if hasattr(self, 'invalid_sell_penalty') and self.invalid_sell_penalty:
-        #     penalty = -10.0 
-        #     print(f"잘못된 매도 시도에 대한 강한 페널티 적용: {penalty}")
-        #     reward += penalty  # 기존 계산된 보상에 페널티를 더함
-        #     print(f"최종 보상 (패널티 적용 후): {reward:.6f}")
-        
-        ##### -10 페널티가 너무 커서 에이전트가 매도를 기피하게 됨
-        ##### 페널티를 -1.0 정도로 줄이거나 점진적 페널티 적용
         # 잘못된 매도 패널티
         if self.invalid_sell_penalty:
-            penalty = -2.5
+            penalty = -2.5 ### 패널티
             reward += penalty
             print(f"잘못된 매도 페널티: {penalty}, 최종 보상: {reward:.6f}")
         
@@ -527,26 +469,6 @@ class TradingEnvironment:
         portfolio_value = self._get_portfolio_value()
         
         total_return = ((portfolio_value - self.initial_balance) / self.initial_balance) if self.initial_balance > 0 else 0
-        
-        # # 수익률 계산
-        # if self.initial_balance > 0:
-        #     total_return = (portfolio_value - self.initial_balance) / self.initial_balance
-        # else:
-        #     total_return = 0
-            
-        # position = "홀드"  # 기본값을 "홀드"로 설정
-        # previous_shares_held = self.previous_shares_held
-        # if self.trade_executed:
-        #     print(self.trade_executed)
-        #     position='홀드'
-        # else:
-        #     if self.shares_held < previous_shares_held:
-        #         position = "매도"  # 주식 보유량이 줄어들었으면 "매도"
-        #     elif self.shares_held > previous_shares_held:
-        #         position = "매수"  # 주식 보유량이 늘어났으면 "매수"
-        #     else:
-        #         position='홀드'
-        # self.previous_shares_held = self.shares_held
         
         # 포지션 결정
         if self.trade_executed:
@@ -855,28 +777,29 @@ if __name__ == "__main__":
     from src.data_collection.data_collector import DataCollector
     from src.preprocessing.data_processor import DataProcessor
     
+    # 원하는 심볼 설정
+    TARGET_SYMBOL = 'MSFT'  # 여기서 변경하면 됨!
+    
     # 데이터 수집 및 전처리
     collector = DataCollector(symbols=['AAPL','MSFT','GOOGL','GOOG','AMZN','NVDA','META','TSLA'])
     data = collector.load_all_data()
     
     try:
-        # 데이터 수집 및 전처리
-        collector = DataCollector(symbols=['AAPL','MSFT','GOOGL','GOOG','AMZN','NVDA','META','TSLA'])
-        data = collector.load_all_data()
-        
         if data:
             processor = DataProcessor()
             results = processor.process_all_symbols(data)
-            if 'AAPL' in results:
+            
+            # 수정된 조건문: 원하는 심볼이 있는지 확인
+            if TARGET_SYMBOL in results:
                 print("=" * 60)
-                print("TradingEnvironment 테스트 시작")
+                print(f"TradingEnvironment 테스트 시작 - {TARGET_SYMBOL}")
                 print("=" * 60)
                 
                 # 새로운 방식으로 환경 생성
                 env = create_environment_from_results(
                     results=results,
-                    symbol='AAPL',
-                    data_type='train',  # 'train', 'valid', 'test' 중 선택
+                    symbol=TARGET_SYMBOL,  # 동적으로 설정
+                    data_type='train',
                     initial_balance=10000.0
                 )
                 
@@ -926,104 +849,13 @@ if __name__ == "__main__":
                 print(f"총 거래 수수료: ${env.total_commission:.2f}")
                 
             else:
-                print("❌ AAPL 데이터를 찾을 수 없습니다.")
+                print(f"{TARGET_SYMBOL} 데이터를 찾을 수 없습니다.")
+                print(f"사용 가능한 심볼: {list(results.keys())}")
         else:
-            print("❌ 데이터를 로드할 수 없습니다.")
+            print("데이터를 로드할 수 없습니다.")
             
     except Exception as e:
-        print(f"❌ 테스트 중 오류 발생: {e}")
+        print(f"테스트 중 오류 발생: {e}")
         import traceback
         traceback.print_exc()
     
-    # if data:
-    #     processor = DataProcessor()
-    #     results = processor.process_all_symbols(data)
-        
-    #     if "AAPL" in results:
-    #         # 새로운 방식으로 환경 생성
-    #         env = create_environment_from_results(
-    #             results=results,
-    #             symbol="AAPL",
-    #             data_type='train',  # 'train', 'valid', 'test' 중 선택
-    #             initial_balance=10000.0
-    #         )
-            
-    #         print(f"환경 생성 완료: {env.symbol}")
-    #         print(f"데이터 길이: {env.data_length}")
-    #         print(f"특성 차원: {env.feature_dim}")
-            
-    #         # 간단한 테스트
-    #         obs = env.reset()
-    #         print(f"초기 관측값 형태: market_data {obs['market_data'].shape}, portfolio_state {obs['portfolio_state'].shape}")
-            
-    #         # 몇 스텝 실행
-    #         for i in range(5):
-    #             action = np.random.uniform(-1.0, 1.0)
-    #             obs, reward, done, info = env.step(action)
-    #             print(f"Step {i+1}: 행동={action:.3f}, 보상={reward:.6f}, 포트폴리오=${info['portfolio_value']:.2f}")
-                
-    #             if done:
-    #                 break
-            
-    #         print("테스트 완료!")
-    
-    
-    
-    
-    # if not data:
-    #     LOGGER.info("저장된 데이터가 없어 데이터를 수집합니다.")
-    #     data = collector.collect_and_save()
-    
-    # if data:
-    #     # 데이터 전처리
-    #     processor = DataProcessor()
-    #     results = processor.process_all_symbols(data)
-
-
-    #     LOGGER.info('='*100)
-      
-    #     # 환경 생성 및 테스트
-    #     # 환경 테스트 코드 수정
-    #     if "AAPL" in results:
-    #         # 정규화된 데이터와 원본 데이터 모두 사용
-    #         # LOGGER.info(results["AAPL"])
-    #         normalized_data = results["AAPL"]["normalized_data"]
-    #         original_data = results["AAPL"]["featured_data"]  # 원본 데이터
-            
-    #         # 환경 생성 시 원본 데이터도 전달
-    #         env = TradingEnvironment(
-    #             data=normalized_data,
-    #             raw_data=original_data,  # 원본 데이터 전달
-    #             symbol="AAPL"
-    #         )
-                
-    #         # 환경 테스트
-    #         obs = env.reset()
-    #         done = False
-    #         total_reward = 0
-            
-    #         # 랜덤 행동으로 테스트
-    #         while not done:
-    #             action = np.random.uniform(-1.0, 1.0)
-    #             obs, reward, done, info = env.step(action)
-    #             total_reward += reward
-                
-    #             if env.current_step % 100 == 0:
-    #                 env.render()
-            
-            # # 최종 결과 출력
-            # print("\n최종 결과:")
-            # print(f"총 보상: {total_reward:.2f}")
-            # print(f"최종 포트폴리오 가치: ${env.get_final_portfolio_value():.2f}")
-            # print(f"총 수익률: {(env.get_final_portfolio_value() - env.initial_balance) / env.initial_balance * 100:.2f}%")
-            
-            # # 포트폴리오 가치 변화 시각화
-            # episode_data = env.get_episode_data()
-            # plt.figure(figsize=(12, 6))
-            # plt.plot(episode_data['portfolio_values'])
-            # plt.title('포트폴리오 가치 변화')
-            # plt.xlabel('스텝')
-            # plt.ylabel('포트폴리오 가치 ($)')
-            # plt.grid(True, alpha=0.3)
-            # plt.savefig('./results/portfolio_value_test.png')
-            # plt.close() 

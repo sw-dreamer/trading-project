@@ -14,6 +14,14 @@ from src.environment.trading_env import TradingEnvironment
 from src.utils.logger import Logger
 from src.config.config import Config
 
+from src.config.config import (
+    INITIAL_BALANCE,
+    MAX_TRADING_UNITS,
+    TRANSACTION_FEE_PERCENT,
+    WINDOW_SIZE,
+    LOGGER
+)
+
 
 class Backtester:
     """
@@ -24,7 +32,7 @@ class Backtester:
     Fixed Backtester.__init__ method with default values for missing configuration parameters
     """
 
-    def __init__(self, agent, test_data, config, logger, initial_balance=10000.0, transaction_fee_percent=0.0025):
+    def __init__(self, agent, test_data, config, logger, initial_balance=INITIAL_BALANCE, transaction_fee_percent=TRANSACTION_FEE_PERCENT):
         """
         Backtester 클래스 초기화
         
