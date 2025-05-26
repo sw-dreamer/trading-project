@@ -11,11 +11,11 @@ from flask import Flask, render_template, jsonify, request, Response
 import plotly
 from pymongo import MongoClient
 
-from src.dashboard.data_manager import DataManager
+from src.dashboard.data_manager_file import FileDataManager
 from src.dashboard.data_manager_db import DBDataManager
 from src.dashboard.visualization import Visualizer
 from src.utils.logger import Logger
-
+from src.utils.database import DatabaseManager
 
 # <라우팅 설정>
 # 라우팅 : "어떤 url이 들어왔을 때 어떤 함수를 실행할지 정하는 것"
@@ -113,6 +113,7 @@ class DashboardApp:
         def models():
             return render_template('models.html')
         
+        
         # 기사 페이지
         @self.app.route('/news')
         def news():
@@ -160,7 +161,7 @@ class DashboardApp:
         # 기사 데이터 조회 API
         @self.app.route('/api/news')
         def get_news():
-            ticker = request.args.get('name')  # JS에서 보내는 ticker
+            ticker = request.args.get('name')
             try:
                 query = {}
                 if ticker:
@@ -521,7 +522,7 @@ if __name__ == '__main__':
     
     # 대시보드 실행
     dashboard = DashboardApp(
-        data_manager=DataManager(args.data_dir),
+        data_manager=DatabaseManager(args.data_dir),
         host=args.host,
         port=args.port,
         debug=args.debug
