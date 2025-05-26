@@ -6,7 +6,8 @@ from src.utils.database import HAS_MYSQL
 
 # DashboardApp 및 DataManager 가져오기
 from src.dashboard.dashboard_app import DashboardApp
-from src.dashboard.data_manager import DataManager
+from src.dashboard.data_manager_file import FileDataManager
+from src.dashboard.data_manager_db import DBDataManager
 from src.dashboard.data_manager_factory import DataManagerFactory
 
 # MySQL이 설치된 경우에만 DBDataManager 가져오기

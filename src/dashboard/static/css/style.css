@@ -193,6 +193,26 @@ input.form-control:focus, textarea.form-control:focus, select.form-control:focus
     color: white;
 }
 
+/* 모델 선택 카드 화살표 */
+.select-wrapper {
+    position: relative;
+  }
+  
+  .select-wrapper select {
+    padding-right: 30px;
+  }
+  
+  .select-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #808080;
+    pointer-events: none;
+  }
+  
+
 /* 링크 */
 a {
     color: #60a5fa;

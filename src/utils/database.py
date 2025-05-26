@@ -22,17 +22,18 @@ from src.utils.logger import Logger
 class DatabaseManager:
     """
     MySQL 데이터베이스 연결 관리 클래스
+    DB연결을 직접 관리(접속,쿼리,풀링)
     """
     
     def __init__(
         self,
-        host: str = 'localhost',
+        host: str = '192.168.40.199',
         port: int = 3306,
         user: str = 'root',
-        password: str = '',
-        database: str = 'sac_trading',
-        pool_size: int = 5,
-        pool_name: str = 'sac_pool',
+        password: str = 'mysecretpassword',
+        database: str = 'trading',
+        pool_size: int = 5, 
+        pool_name: str = 'trading_pool',
         logger: Optional[Logger] = None
     ):
         """
