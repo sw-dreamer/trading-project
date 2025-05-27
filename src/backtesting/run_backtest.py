@@ -125,6 +125,7 @@ def load_model_with_compatibility(model_path, env, args):
             saved_action_dim = config.get('action_dim', 1)
             saved_hidden_dim = config.get('hidden_dim', 256)
             saved_use_cnn = config.get('use_cnn', False)
+            saved_use_lstm = config.get('use_lstm', False)
             saved_input_shape = config.get('input_shape')
 
             LOGGER.info(f"💾 저장된 모델 설정:")
@@ -132,6 +133,7 @@ def load_model_with_compatibility(model_path, env, args):
             LOGGER.info(f"   └─ 행동 차원: {saved_action_dim}")
             LOGGER.info(f"   └─ 은닉층 차원: {saved_hidden_dim}")
             LOGGER.info(f"   └─ CNN 사용: {saved_use_cnn}")
+            LOGGER.info(f"   └─ LSTM 사용: {saved_use_lstm}")
             if saved_input_shape:
                 LOGGER.info(f"   └─ 입력 형태: {saved_input_shape}")
 
@@ -167,14 +169,29 @@ def load_model_with_compatibility(model_path, env, args):
             LOGGER.info(f"📏 환경 상태 정보 (MLP 구조):")
             LOGGER.info(f"   └─ 상태 차원: {actual_state_dim}")
 
-        # CNN 사용 여부 결정 (저장된 설정 우선)
-        final_use_cnn = saved_use_cnn or args.use_cnn
+        # CNN / LSTM 충돌 방지
+        if args.use_cnn and args.use_lstm:
+            LOGGER.error("❌ CNN과 LSTM은 동시에 사용할 수 없습니다. 하나만 선택하세요.")
+            return None
 
-        # 에이전트 생성
-        if final_use_cnn:
+        # 우선순위: LSTM > CNN > MLP
+        final_use_lstm = args.use_lstm or saved_use_lstm
+        final_use_cnn = args.use_cnn or saved_use_cnn
+
+        if final_use_lstm:
+            LOGGER.info("🔧 LSTM 모델 생성 중...")
+            final_input_shape = saved_input_shape if saved_input_shape else input_shape
+            agent = SACAgent(
+                state_dim=None,
+                action_dim=saved_action_dim,
+                hidden_dim=saved_hidden_dim,
+                input_shape=final_input_shape,
+                use_lstm=True,
+                device=DEVICE
+            )
+        elif final_use_cnn:
             LOGGER.info("🔧 CNN 모델 생성 중...")
             final_input_shape = saved_input_shape if saved_input_shape else input_shape
-
             agent = SACAgent(
                 state_dim=None,
                 action_dim=saved_action_dim,
@@ -185,8 +202,6 @@ def load_model_with_compatibility(model_path, env, args):
             )
         else:
             LOGGER.info("🔧 MLP 모델 생성 중...")
-
-            # 상태 차원 결정 (저장된 모델 우선)
             final_state_dim = saved_state_dim if saved_state_dim else actual_state_dim
 
             if saved_state_dim and saved_state_dim != actual_state_dim:
@@ -199,7 +214,6 @@ def load_model_with_compatibility(model_path, env, args):
                 state_dim=final_state_dim,
                 action_dim=saved_action_dim,
                 hidden_dim=saved_hidden_dim,
-                use_cnn=False,
                 device=DEVICE
             )
 
