@@ -49,7 +49,6 @@ class Backtester:
             config: 설정 객체
             logger: 로깅을 위한 Logger 인스턴스 (옵션)
             initial_balance: 초기 자본금
-            transaction_fee_percent: 거래 수수료율 (0.0025 = 0.25%)
             save_to_db: 데이터베이스 저장 여부
             skip_db_on_error: DB 오류 시 무시 여부
         """
