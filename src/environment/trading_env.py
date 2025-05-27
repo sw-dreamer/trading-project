@@ -810,7 +810,7 @@ if __name__ == "__main__":
                     results=results,
                     symbol=TARGET_SYMBOL,  # 동적으로 설정
                     data_type='train',
-                    initial_balance=10000.0
+                    initial_balance=INITIAL_BALANCE
                 )
                 
                 print(f"환경 생성 완료: {env.symbol}")

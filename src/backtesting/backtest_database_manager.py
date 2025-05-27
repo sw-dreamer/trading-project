@@ -13,6 +13,14 @@ from datetime import datetime, date
 from typing import Dict, Any, Optional
 import traceback
 
+from src.config.config import (
+    DEVICE,
+    TARGET_SYMBOLS,
+    LOGGER,
+    WINDOW_SIZE,
+    INITIAL_BALANCE,
+    TRANSACTION_FEE_PERCENT
+)
 
 class BacktestDatabaseManager:
     """
@@ -166,7 +174,7 @@ CREATE TABLE backtest_results (
                 backtest_date = now.date()
             
             # 기본 값들
-            initial_balance = results.get('initial_portfolio_value', 100000.0)
+            initial_balance = results.get('initial_portfolio_value', INITIAL_BALANCE)
             final_balance = results.get('final_portfolio_value', initial_balance)
             
             # 메트릭스에서 값들 추출 (기본값 설정)
@@ -233,8 +241,8 @@ CREATE TABLE backtest_results (
                 'backtest_date': now.date(),
                 'start_date': now,
                 'end_date': now,
-                'initial_balance': 100000.0,
-                'final_balance': 100000.0,
+                'initial_balance': INITIAL_BALANCE,
+                'final_balance': INITIAL_BALANCE,
                 'total_return': 0.0,
                 'win_rate': 0.0,
                 'total_trades': 0,

@@ -25,7 +25,8 @@ from src.config.config import (
     SAVE_MODEL_INTERVAL,
     MAX_STEPS_PER_EPISODE,
     TARGET_SYMBOLS,
-    LOGGER
+    LOGGER,
+    INITIAL_BALANCE
 )
 from src.data_collection.data_collector import DataCollector
 from src.preprocessing.data_processor import DataProcessor
@@ -92,7 +93,7 @@ def parse_args():
     
     # 환경 관련 인자
     parser.add_argument('--window_size', type=int, default=30, help='관측 윈도우 크기')
-    parser.add_argument('--initial_balance', type=float, default=10000.0, help='초기 자본금')
+    parser.add_argument('--initial_balance', type=float, default=INITIAL_BALANCE, help='초기 자본금')
     parser.add_argument('--multi_asset', action='store_true', help='다중 자산 환경 사용 여부')
     
     # 모델 관련 인자(기본 MLP)
