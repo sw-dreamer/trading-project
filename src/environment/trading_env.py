@@ -776,12 +776,22 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     from src.data_collection.data_collector import DataCollector
     from src.preprocessing.data_processor import DataProcessor
+    from src.config.config import config
+    import argparse
     
-    # 원하는 심볼 설정
-    TARGET_SYMBOL = 'MSFT'  # 여기서 변경하면 됨!
+    parser = argparse.ArgumentParser(description="테스트할 심볼")
+    parser.add_argument("--symbols", nargs="+", help="테스트할 심볼 리스트", default=config.trading_symbols)
+    args = parser.parse_args()
+    
+    # 2. 심볼 리스트 할당
+    symbols = args.symbols
+    # 첫 번째 심볼을 테스트 대상으로 설정 (또는 모든 심볼 테스트)
+    TARGET_SYMBOL = symbols[0] if symbols else config.trading_symbols
+    print(f'symbols: {symbols}')
+    print(f'TARGET_SYMBOL: {TARGET_SYMBOL}')
     
     # 데이터 수집 및 전처리
-    collector = DataCollector(symbols=['AAPL','MSFT','GOOGL','GOOG','AMZN','NVDA','META','TSLA'])
+    collector = DataCollector(symbols=symbols)
     data = collector.load_all_data()
     
     try:
