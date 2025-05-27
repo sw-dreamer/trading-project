@@ -167,7 +167,13 @@ class Trainer:
             #     self._plot_training_curves(timestamp)
         
         # 최종 모델 저장
-        final_model_path = self.agent.save_model(self.models_dir, "final_")
+        final_model_path = self.agent.save_model(
+            save_dir=str(self.models_dir),
+            prefix='',  # 접두사 없음
+            model_type='mlp',  # trainer.py에서는 기본 MLP
+            symbol=getattr(self, 'symbol', None),
+            symbols=getattr(self, 'symbols', None)
+        )
         LOGGER.info(f"최종 모델 저장 완료: {final_model_path}")
         
         # 최종 학습 곡선 저장

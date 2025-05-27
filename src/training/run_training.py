@@ -205,7 +205,11 @@ def create_agent(env, args):
         use_cnn=args.use_cnn,
         use_lstm=args.use_lstm
     )
-    
+
+    # 모델 타입 정보를 에이전트에 저장 (저장 시 사용)
+    agent.model_type = model_type
+    agent.training_symbols = args.symbols if args.symbols else TARGET_SYMBOLS
+
     # 모델 로드 (선택적)
     if args.load_model:
         LOGGER.info(f"모델 로드 중: {args.load_model}")
@@ -423,14 +427,20 @@ def main():
     
     # 에이전트 생성
     agent = create_agent(train_env, args)
-    
+
     # 학습 실행
     episode_rewards, portfolio_values, shares_history = train_agent(agent, train_env, args, timer)
-    
+
     # 최종 모델 저장
-    final_model_path = agent.save_model(prefix='final_')
-    LOGGER.info(f"최종 모델 저장: {final_model_path}")
-    
+    final_model_path = agent.save_model(
+        save_dir="models",
+        prefix='',  # 접두사 없음
+        model_type=getattr(agent, 'model_type', 'mlp'),
+        symbol=symbols[0] if len(symbols) == 1 else None,
+        symbols=symbols if len(symbols) > 1 else None
+    )
+
+    LOGGER.info(f"최종 모델 저장 완료: {final_model_path}")
     # 최종 결과 출력
     total_time = timer.get_training_time()
     final_portfolio = portfolio_values[-1] if portfolio_values else args.initial_balance

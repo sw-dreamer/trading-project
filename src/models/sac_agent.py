@@ -555,46 +555,74 @@ class SACAgent:
         
         return stats
     
-    def save_model(self, save_dir: Union[str, Path] = None, prefix: str = '') -> None:
+    def save_model(self, save_dir: Union[str, Path] = None, prefix: str = "",
+                   model_type: str = None, symbol: str = None, symbols: List[str] = None) -> str:
         """
-        모델 저장
-        
+        모델 저장 (개선된 버전)
+
         Args:
-            save_dir: 저장 디렉토리 (None인 경우 기본값 사용)
+            save_dir: 저장 디렉토리
             prefix: 파일명 접두사
+            model_type: 모델 타입 ('mlp', 'cnn', 'lstm')
+            symbol: 단일 심볼 (MLP용)
+            symbols: 다중 심볼 리스트
+
+        Returns:
+            str: 저장된 모델의 경로
         """
         if save_dir is None:
             save_dir = MODELS_DIR
-        
+
         create_directory(save_dir)
-        
+
+        # 타임스탬프 생성
         timestamp = time.strftime("%Y%m%d_%H%M%S")
-        model_type = "lstm" if self.use_lstm else ("cnn" if self.use_cnn else "mlp")
-        model_path = Path(save_dir) / f"{prefix}{model_type}_sac_model_{timestamp}"
-        create_directory(model_path)
-        
-        # 모델 타입별 저장 로그
-        if self.use_lstm:
-            LOGGER.info(f"💾 LSTM SAC 모델 저장 중: {model_path}")
-        elif self.use_cnn:
-            LOGGER.info(f"💾 CNN SAC 모델 저장 중: {model_path}")
+
+        # 모델 타입 자동 감지 (지정되지 않은 경우)
+        if model_type is None:
+            if self.use_lstm:
+                model_type = 'lstm'
+            elif self.use_cnn:
+                model_type = 'cnn'
+            else:
+                model_type = 'mlp'
+
+        # 파일명 패턴 생성
+        if model_type.lower() == 'mlp':
+            # MLP: 심볼별로 구분
+            if symbol:
+                model_name = f"final_sac_model_{symbol}_{timestamp}"
+            elif symbols and len(symbols) == 1:
+                model_name = f"final_sac_model_{symbols[0]}_{timestamp}"
+            else:
+                # 다중 심볼이거나 심볼 정보 없음
+                model_name = f"final_sac_model_multi_{timestamp}"
         else:
-            LOGGER.info(f"💾 MLP SAC 모델 저장 중: {model_path}")
-        
+            # CNN, LSTM: 심볼 구분 없음
+            model_name = f"final_{model_type.lower()}_sac_model_{timestamp}"
+
+        # 접두사 적용
+        if prefix:
+            model_name = f"{prefix}{model_name}"
+
+        # 저장 경로 생성
+        model_path = Path(save_dir) / model_name
+        create_directory(model_path)
+
         # 네트워크 가중치 저장
         torch.save(self.actor.state_dict(), model_path / "actor.pth")
         torch.save(self.critic.state_dict(), model_path / "critic.pth")
         torch.save(self.critic_target.state_dict(), model_path / "critic_target.pth")
-        
+
         # 옵티마이저 상태 저장
         torch.save(self.actor_optimizer.state_dict(), model_path / "actor_optimizer.pth")
         torch.save(self.critic_optimizer.state_dict(), model_path / "critic_optimizer.pth")
-        
+
         # Alpha 관련 상태 저장
         if self.use_automatic_entropy_tuning:
             torch.save(self.log_alpha, model_path / "log_alpha.pth")
             torch.save(self.alpha_optimizer.state_dict(), model_path / "alpha_optimizer.pth")
-        
+
         # 학습 통계 저장
         training_stats = {
             'actor_losses': self.actor_losses,
@@ -604,29 +632,34 @@ class SACAgent:
             'train_step_counter': self.train_step_counter
         }
         torch.save(training_stats, model_path / "training_stats.pth")
-        
+
         # 설정 저장 (LSTM 파라미터 포함)
         config = {
+            'model_type': model_type.lower(),
+            'symbol': symbol,
+            'symbols': symbols,
             'state_dim': self.state_dim,
             'action_dim': self.action_dim,
             'hidden_dim': self.hidden_dim,
-            'gamma': self.gamma,
-            'tau': self.tau,
-            'alpha_init': self.alpha_init,
-            'target_update_interval': self.target_update_interval,
-            'use_automatic_entropy_tuning': self.use_automatic_entropy_tuning,
             'use_cnn': self.use_cnn,
             'use_lstm': self.use_lstm,
             'input_shape': self.input_shape,
-            'lstm_hidden_dim': self.lstm_hidden_dim,
-            'num_lstm_layers': self.num_lstm_layers,
-            'lstm_dropout': self.lstm_dropout
+            'lstm_hidden_dim': getattr(self, 'lstm_hidden_dim', None),
+            'num_lstm_layers': getattr(self, 'num_lstm_layers', None),
+            'lstm_dropout': getattr(self, 'lstm_dropout', None),
+            'timestamp': timestamp,
+            'saved_at': time.strftime("%Y-%m-%d %H:%M:%S"),
+            'device': str(self.device)
         }
-        torch.save(config, model_path / "config.pth")        
-        
-        LOGGER.info(f"✅ {model_type.upper()} 모델 저장 완료: {model_path}")
-        
-        return model_path
+        torch.save(config, model_path / "config.pth")
+
+        model_type_display = model_type.upper()
+        LOGGER.info(f"✅ {model_type_display} 모델 저장 완료: {model_path}")
+        LOGGER.info(f"   └─ 모델 타입: {model_type_display}")
+        LOGGER.info(f"   └─ 심볼: {symbol or symbols or 'Multi'}")
+        LOGGER.info(f"   └─ 타임스탬프: {timestamp}")
+
+        return str(model_path)
     
     def load_model(self, model_path: Union[str, Path]) -> None:
         """
