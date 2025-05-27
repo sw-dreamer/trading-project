@@ -1,0 +1,2 @@
+num_episode 500
+penalty -2.5
