@@ -8,6 +8,7 @@ from datetime import datetime
 from decimal import Decimal
 import logging
 from typing import Dict, List, Optional, Any
+import time
 
 
 class DatabaseManager:
@@ -31,18 +32,23 @@ class DatabaseManager:
         self.password = password
         self.connection = None
         self.logger = logger or logging.getLogger(__name__)
+        self.connection_config = {
+            'host': host,
+            'database': database,
+            'user': user,
+            'password': password,
+            'autocommit': True,
+            'charset': 'utf8mb4',
+            'connection_timeout': 30
+        }
         
     def connect(self) -> bool:
         """데이터베이스 연결"""
         try:
-            self.connection = mysql.connector.connect(
-                host=self.host,
-                database=self.database,
-                user=self.user,
-                password=self.password,
-                autocommit=True,
-                charset='utf8mb4'
-            )
+            if self.connection and self.connection.is_connected():
+                return True
+                
+            self.connection = mysql.connector.connect(**self.connection_config)
             
             if self.connection.is_connected():
                 self.logger.info(f"✅ MySQL 데이터베이스 연결 성공: {self.host}/{self.database}")
@@ -61,34 +67,95 @@ class DatabaseManager:
             self.logger.info("🔌 MySQL 연결 종료")
     
     def is_connected(self) -> bool:
-        """연결 상태 확인"""
-        return self.connection and self.connection.is_connected()
-    
-    def execute_query(self, query: str, params: tuple = None) -> bool:
-        """쿼리 실행 (INSERT, UPDATE, DELETE)"""
+        """연결 상태 확인 및 재연결"""
         try:
-            cursor = self.connection.cursor()
-            cursor.execute(query, params)
-            cursor.close()
-            return True
-        except Error as e:
-            self.logger.error(f"❌ 쿼리 실행 실패: {e}")
-            self.logger.error(f"Query: {query}")
-            if params:
-                self.logger.error(f"Params: {params}")
-            return False
+            if self.connection and self.connection.is_connected():
+                # 연결 상태 테스트
+                try:
+                    self.connection.ping(attempts=3, delay=1)
+                    return True
+                except:
+                    # ping 실패 시 연결이 끊어진 것으로 간주
+                    pass
+        except:
+            pass
+        
+        # 연결이 끊어진 경우 재연결 시도
+        self.logger.warning("⚠️ MySQL 연결이 끊어졌습니다. 재연결을 시도합니다...")
+        return self.connect()
     
-    def fetch_query(self, query: str, params: tuple = None) -> List[Dict]:
-        """쿼리 실행 (SELECT) 및 결과 반환"""
-        try:
-            cursor = self.connection.cursor(dictionary=True)
-            cursor.execute(query, params)
-            results = cursor.fetchall()
-            cursor.close()
-            return results
-        except Error as e:
-            self.logger.error(f"❌ 조회 쿼리 실행 실패: {e}")
-            return []
+    def execute_query(self, query: str, params: tuple = None, retry_count: int = 3) -> bool:
+        """쿼리 실행 (INSERT, UPDATE, DELETE) - 재시도 로직 포함"""
+        for attempt in range(retry_count):
+            try:
+                # 연결 상태 확인 및 재연결
+                if not self.is_connected():
+                    self.logger.error("❌ 데이터베이스 연결을 설정할 수 없습니다.")
+                    if attempt < retry_count - 1:
+                        time.sleep(1)
+                        continue
+                    return False
+                
+                cursor = self.connection.cursor()
+                cursor.execute(query, params)
+                cursor.close()
+                return True
+                
+            except Error as e:
+                self.logger.error(f"❌ 쿼리 실행 실패 (시도 {attempt + 1}/{retry_count}): {e}")
+                if attempt < retry_count - 1:
+                    self.logger.info("🔄 1초 후 재시도...")
+                    time.sleep(1)
+                    # 연결 재설정
+                    try:
+                        if self.connection:
+                            self.connection.close()
+                    except:
+                        pass
+                    self.connection = None
+                else:
+                    self.logger.error(f"Query: {query}")
+                    if params:
+                        self.logger.error(f"Params: {params}")
+                    
+        return False
+    
+    def fetch_query(self, query: str, params: tuple = None, retry_count: int = 3) -> List[Dict]:
+        """쿼리 실행 (SELECT) 및 결과 반환 - 재시도 로직 포함"""
+        for attempt in range(retry_count):
+            try:
+                # 연결 상태 확인 및 재연결
+                if not self.is_connected():
+                    self.logger.error("❌ 데이터베이스 연결을 설정할 수 없습니다.")
+                    if attempt < retry_count - 1:
+                        time.sleep(1)
+                        continue
+                    return []
+                
+                cursor = self.connection.cursor(dictionary=True)
+                cursor.execute(query, params)
+                results = cursor.fetchall()
+                cursor.close()
+                return results
+                
+            except Error as e:
+                self.logger.error(f"❌ 조회 쿼리 실행 실패 (시도 {attempt + 1}/{retry_count}): {e}")
+                if attempt < retry_count - 1:
+                    self.logger.info("🔄 1초 후 재시도...")
+                    time.sleep(1)
+                    # 연결 재설정
+                    try:
+                        if self.connection:
+                            self.connection.close()
+                    except:
+                        pass
+                    self.connection = None
+                else:
+                    self.logger.error(f"Query: {query}")
+                    if params:
+                        self.logger.error(f"Params: {params}")
+                    
+        return []
     
     def save_trading_stats(self, portfolio_value: float, cash_balance: float, 
                           equity_value: float, daily_pnl: float = 0, 

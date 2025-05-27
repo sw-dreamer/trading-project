@@ -184,7 +184,7 @@ def setup_signal_handlers(live_traders: Dict[str, EnhancedLiveTrader], db_manage
     """시그널 핸들러 설정 (종료 시 정리 작업)"""
     def signal_handler(signum, frame):
         if signum in [signal.SIGINT, signal.SIGTERM]:
-            logger.info("🛑 종료 신호를 받았습니다. 트레이딩을 안전하게 중지합니다...")
+            print("🛑 종료 신호를 받았습니다. 트레이딩을 안전하게 중지합니다...")
             
             # 트레이딩 중지
             for symbol, live_trader in live_traders.items():
@@ -212,7 +212,7 @@ def setup_signal_handlers(live_traders: Dict[str, EnhancedLiveTrader], db_manage
             db_manager.disconnect()
             
             logger.info("👋 프로그램을 종료합니다.")
-            sys.exit(0)
+            os._exit(0)
     
     # Ctrl+C (SIGINT) 및 SIGTERM 핸들러 등록
     signal.signal(signal.SIGINT, signal_handler)

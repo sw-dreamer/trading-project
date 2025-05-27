@@ -1,5 +1,5 @@
 """
-모델 상태 관리자 - 백테스팅 완료된 모델을 실시간 트레이딩에서 사용하기 위한 관리자 
+모델 상태 관리자 - 백테스팅 완료된 모델을 실시간 트레이딩에서 사용하기 위한 관리자
 """
 import os
 import torch
@@ -31,8 +31,8 @@ class ModelStateManager:
         self.agent = None
         self.data_processor = None
         self.model_metadata = {}
-        
-    def load_complete_model(self) -> tuple[SACAgent, DataProcessor]:
+    
+    def load_complete_model(self) -> tuple:
         """
         백테스팅 완료된 모델과 전처리 파이프라인을 로드
         
@@ -59,7 +59,7 @@ class ModelStateManager:
         except Exception as e:
             print(f"❌ 모델 로드 실패: {e}")
             raise
-    
+        
     def _load_model_metadata(self) -> None:
         """모델 메타데이터 로드"""
         metadata_path = self.model_path / "model_metadata.json"
@@ -77,7 +77,7 @@ class ModelStateManager:
             }
     
     def _load_sac_agent(self) -> SACAgent:
-        """SAC 에이전트 로드"""
+        """SAC 에이전트 로드 (LSTM/CNN 지원)"""
         try:
             # 모델 설정 파일 로드
             config_path = self.model_path / "config.pth"
@@ -86,18 +86,35 @@ class ModelStateManager:
             
             model_config = torch.load(config_path, map_location=self.config.DEVICE)
             
+            # LSTM/CNN 사용 여부 확인
+            use_cnn = model_config.get('use_cnn', False)
+            use_lstm = model_config.get('use_lstm', False)
+            input_shape = model_config.get('input_shape')
+            
+            print(f"📋 모델 설정 로드:")
+            print(f"   └─ CNN 사용: {use_cnn}")
+            print(f"   └─ LSTM 사용: {use_lstm}")
+            print(f"   └─ 입력 형태: {input_shape}")
+            
             # SAC 에이전트 생성
             agent = SACAgent(
                 state_dim=model_config.get('state_dim'),
                 action_dim=model_config.get('action_dim', 1),
                 hidden_dim=model_config.get('hidden_dim', self.config.HIDDEN_DIM),
-                use_cnn=model_config.get('use_cnn', False),
-                input_shape=model_config.get('input_shape'),
+                use_cnn=use_cnn,
+                use_lstm=use_lstm,  # LSTM 지원 추가
+                input_shape=input_shape,
+                lstm_hidden_dim=model_config.get('lstm_hidden_dim', 128),
+                num_lstm_layers=model_config.get('num_lstm_layers', 2),
+                lstm_dropout=model_config.get('lstm_dropout', 0.2),
                 device=self.config.DEVICE
             )
             
             # 모델 가중치 로드
             agent.load_model(self.model_path)
+            
+            model_type = "LSTM" if use_lstm else ("CNN" if use_cnn else "MLP")
+            print(f"✅ {model_type} SAC 에이전트 로드 완료")
             
             return agent
             
@@ -136,13 +153,7 @@ class ModelStateManager:
         symbols: list
     ) -> None:
         """
-        백테스팅 완료된 모델 상태 저장
-        
-        Args:
-            agent: 학습된 SAC 에이전트
-            data_processor: 전처리기 (스케일러 포함)
-            backtest_results: 백테스트 결과
-            symbols: 사용된 심볼 리스트
+        백테스팅 완료된 모델 상태 저장 (LSTM/CNN 정보 포함)
         """
         try:
             # 모델 저장
@@ -153,7 +164,7 @@ class ModelStateManager:
             with open(scalers_path, 'wb') as f:
                 pickle.dump(data_processor.scalers, f)
             
-            # 메타데이터 저장
+            # 메타데이터 저장 (모델 타입 정보 포함)
             metadata = {
                 "training_date": pd.Timestamp.now().isoformat(),
                 "backtest_performance": {
@@ -163,7 +174,14 @@ class ModelStateManager:
                 },
                 "symbols": symbols,
                 "window_size": data_processor.window_size,
-                "model_path": str(model_save_path)
+                "model_path": str(model_save_path),
+                "model_type": {
+                    "use_cnn": getattr(agent, 'use_cnn', False),
+                    "use_lstm": getattr(agent, 'use_lstm', False),
+                    "state_dim": agent.state_dim if hasattr(agent, 'state_dim') else None,
+                    "action_dim": agent.action_dim if hasattr(agent, 'action_dim') else 1,
+                    "hidden_dim": agent.hidden_dim if hasattr(agent, 'hidden_dim') else None
+                }
             }
             
             metadata_path = model_save_path / "model_metadata.json"
@@ -178,10 +196,7 @@ class ModelStateManager:
     
     def validate_model_compatibility(self) -> bool:
         """
-        모델이 현재 실시간 트레이딩 설정과 호환되는지 확인
-        
-        Returns:
-            호환성 여부
+        모델이 현재 실시간 트레이딩 설정과 호환되는지 확인 (모델 타입 포함)
         """
         try:
             # 심볼 호환성 확인
@@ -192,7 +207,6 @@ class ModelStateManager:
                 missing_symbols = trading_symbols - model_symbols
                 print(f"⚠️  모델에 없는 심볼들: {missing_symbols}")
                 
-                # AAPL이 없어도 허용 (테스트용)
                 if missing_symbols == {'AAPL'} or 'AAPL' in missing_symbols:
                     print("💡 AAPL 심볼을 테스트용으로 허용합니다.")
                     return True
@@ -204,6 +218,18 @@ class ModelStateManager:
             if model_window_size != self.config.window_size:
                 print(f"⚠️  윈도우 크기 불일치: 모델({model_window_size}) vs 설정({self.config.window_size})")
                 return False
+            
+            # 모델 타입 정보 출력
+            model_type_info = self.model_metadata.get('model_type', {})
+            use_cnn = model_type_info.get('use_cnn', False)
+            use_lstm = model_type_info.get('use_lstm', False)
+            
+            if use_cnn:
+                print("🧠 모델 타입: CNN (Convolutional Neural Network)")
+            elif use_lstm:
+                print("🧠 모델 타입: LSTM (Long Short-Term Memory)")
+            else:
+                print("🧠 모델 타입: MLP (Multi-Layer Perceptron)")
             
             print("✅ 모델 호환성 확인 완료")
             return True

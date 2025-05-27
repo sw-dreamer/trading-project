@@ -5,6 +5,7 @@ import threading
 import queue
 import os
 import json
+import torch
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any, Union, Tuple, Callable
 
@@ -221,11 +222,19 @@ class LiveTrader:
         }
     
     def execute_trade(self, symbol: str, action: float) -> Dict[str, Any]:
-        """트레이딩 행동 실행"""
+        """트레이딩 행동 실행 (모든 모델 타입 지원)"""
         try:
             # 계정 및 포지션 정보 업데이트
             self.account_info = self.api.get_account_info()
             current_position = self.position_manager.get_position(symbol)
+            
+            # 현재 상태 가져오기
+            if symbol not in self.state_dict:
+                if self.logger:
+                    self.logger.warning(f"{symbol}의 상태 정보가 없습니다.")
+                return {"success": False, "error": "상태 정보 없음"}
+            
+            current_state = self.state_dict[symbol]
             
             # 행동 값에 따른 거래 방향 및 크기 결정
             side = "buy" if action > 0 else "sell"
@@ -274,12 +283,16 @@ class LiveTrader:
                     "price": current_price,
                     "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     "order_id": order_result.get("id", ""),
-                    "status": "success"
+                    "status": "success",
+                    "model_type": "CNN" if getattr(self.agent, 'use_cnn', False) else 
+                                "LSTM" if getattr(self.agent, 'use_lstm', False) else "MLP"
                 })
                 
                 if self.logger:
+                    model_type = "CNN" if getattr(self.agent, 'use_cnn', False) else \
+                            "LSTM" if getattr(self.agent, 'use_lstm', False) else "MLP"
                     self.logger.info("=" * 60)
-                    self.logger.info(f"📌 트레이드 실행 결과")
+                    self.logger.info(f"📌 트레이드 실행 결과 ({model_type} 모델)")
                     self.logger.info(f"📈 종목: {symbol}")
                     self.logger.info(f"🧭 방향: {'🟢 매수(BUY)' if side == 'buy' else '🔴 매도(SELL)'}")
                     self.logger.info(f"🔢 수량: {quantity:.4f} 주")
@@ -296,10 +309,11 @@ class LiveTrader:
                     "side": side,
                     "quantity": quantity,
                     "price": current_price,
-                    "order_id": order_result.get("id", "")
+                    "order_id": order_result.get("id", ""),
+                    "model_type": model_type
                 }
             else:
-                # 실패한 거래
+                # 실패한 거래 처리
                 self.trading_stats["failed_trades"] += 1
                 if self.logger:
                     self.logger.error("=" * 60)
@@ -550,9 +564,9 @@ class LiveTrader:
             if self.logger:
                 self.logger.error(f"초기 데이터 로드 중 오류 발생: {e}")
     
-    def _create_trading_state(self, normalized_data: pd.DataFrame, symbol: str) -> Dict[str, np.ndarray]:
+    def _create_trading_state(self, normalized_data: pd.DataFrame, symbol: str) -> Dict[str, Union[np.ndarray, torch.Tensor]]:
         """
-        백테스팅과 동일한 형태의 상태 생성
+        백테스팅과 동일한 형태의 상태 생성 (LSTM/CNN 지원)
         
         Args:
             normalized_data: 정규화된 특성 데이터
@@ -594,21 +608,61 @@ class LiveTrader:
                 stock_value / portfolio_value  # 주식 비율
             ], dtype=np.float32)
             
-            # 백테스팅과 동일한 형태의 상태 반환
-            return {
-                'market_data': market_data_array,
-                'portfolio_state': portfolio_state
-            }
-            
+            # 에이전트의 모델 타입에 따라 상태 형식 결정
+            if hasattr(self.agent, 'use_cnn') and self.agent.use_cnn:
+                # CNN 모델을 위한 2D 텐서 형태로 변환
+                # (time_steps, features) -> (1, time_steps, features) for batch dimension
+                market_tensor = torch.FloatTensor(market_data_array).unsqueeze(0)  # (1, window_size, n_features)
+                portfolio_tensor = torch.FloatTensor(portfolio_state).unsqueeze(0)  # (1, 2)
+                
+                return {
+                    'market_data': market_tensor,
+                    'portfolio_state': portfolio_tensor
+                }
+                
+            elif hasattr(self.agent, 'use_lstm') and getattr(self.agent, 'use_lstm', False):
+                # LSTM 모델을 위한 시퀀스 형태로 변환
+                # (time_steps, features) -> (1, time_steps, features) for batch dimension
+                market_tensor = torch.FloatTensor(market_data_array).unsqueeze(0)  # (1, window_size, n_features)
+                portfolio_tensor = torch.FloatTensor(portfolio_state).unsqueeze(0)  # (1, 2)
+                
+                return {
+                    'market_data': market_tensor,
+                    'portfolio_state': portfolio_tensor
+                }
+            else:
+                # MLP 모델을 위한 플래튼된 형태
+                # (time_steps, features) -> (time_steps * features,) flattened
+                market_flattened = market_data_array.flatten()
+                
+                return {
+                    'market_data': market_flattened,
+                    'portfolio_state': portfolio_state
+                }
+                
         except Exception as e:
             if self.logger:
                 self.logger.error(f"{symbol} 상태 생성 중 오류: {e}")
             
             # 오류 발생 시 기본 상태 반환
-            return {
-                'market_data': np.zeros((self.window_size, 40), dtype=np.float32),  # 40은 대략적인 특성 수
-                'portfolio_state': np.array([1.0, 0.0], dtype=np.float32)
-            }
+            n_features = 40  # 대략적인 특성 수
+            
+            if hasattr(self.agent, 'use_cnn') and self.agent.use_cnn:
+                return {
+                    'market_data': torch.zeros((1, self.window_size, n_features), dtype=torch.float32),
+                    'portfolio_state': torch.tensor([[1.0, 0.0]], dtype=torch.float32)
+                }
+            elif hasattr(self.agent, 'use_lstm') and getattr(self.agent, 'use_lstm', False):
+                return {
+                    'market_data': torch.zeros((1, self.window_size, n_features), dtype=torch.float32),
+                    'portfolio_state': torch.tensor([[1.0, 0.0]], dtype=torch.float32)
+                }
+            else:
+                return {
+                    'market_data': np.zeros((self.window_size * n_features,), dtype=np.float32),
+                    'portfolio_state': np.array([1.0, 0.0], dtype=np.float32)
+                }
+
     
     def _get_current_price(self, symbol: str) -> float:
         """현재 가격 조회"""

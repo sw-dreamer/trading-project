@@ -364,44 +364,147 @@ class SACAgent:
         LOGGER.info(f"   └─ 상태 차원: {self.state_dim if not (use_cnn or use_lstm) else input_shape}")
         LOGGER.info(f"   └─ 장치: {device}")
     
-    def select_action(self, state: Dict[str, np.ndarray], evaluate: bool = False) -> float:
+    def select_action(self, state: Union[Dict[str, np.ndarray], Dict[str, torch.Tensor], np.ndarray], evaluate: bool = False) -> float:
         """
-        TradingEnvironment 상태에 따른 행동 선택
+        상태에 따른 행동 선택 (실시간 트레이딩 호환)
         
         Args:
-            state: TradingEnvironment의 상태 {'market_data': array, 'portfolio_state': array}
+            state: 상태 (TradingEnvironment 형태 또는 기존 numpy 배열)
             evaluate: 평가 모드 여부 (True일 경우 탐색 없이 평균 행동 선택)
             
         Returns:
             선택된 행동 (단일 float 값)
         """
-        # 상태를 텐서로 변환
-        state_tensor = self._process_state_for_network(state)
-        
-        with torch.no_grad():
-            if evaluate:
-                # 평가 모드: 평균 행동 선택 (탐색 없음)
-                _, _, action = self.actor.sample(state_tensor)
+        try:
+            # 상태를 네트워크 입력 형태로 변환
+            if isinstance(state, dict):
+                # TradingEnvironment 스타일 상태
+                state_tensor = self._process_state_for_network(state)
+            elif isinstance(state, np.ndarray):
+                # 기존 스타일 상태 (numpy 배열)
+                if self.use_cnn or self.use_lstm:
+                    # CNN/LSTM 모델인데 플래튼된 배열을 받은 경우
+                    # window_size와 feature_dim으로 reshape 시도
+                    if self.input_shape and len(state) == (self.input_shape[0] * self.input_shape[1] + 2):
+                        # MLP용으로 플래튼된 상태를 다시 분리
+                        market_data_flat = state[:-2]  # 포트폴리오 상태 제외
+                        portfolio_state = state[-2:]   # 마지막 2개 요소
+                        
+                        # market_data를 원래 형태로 reshape
+                        market_data = market_data_flat.reshape(self.input_shape)
+                        
+                        # 딕셔너리 형태로 변환
+                        state = {
+                            'market_data': market_data,
+                            'portfolio_state': portfolio_state
+                        }
+                        state_tensor = self._process_state_for_network(state)
+                    else:
+                        # 형태를 알 수 없는 경우 텐서로 변환
+                        state_tensor = torch.FloatTensor(state).unsqueeze(0).to(self.device)
+                else:
+                    # MLP 모델
+                    state_tensor = torch.FloatTensor(state).unsqueeze(0).to(self.device)
+            elif isinstance(state, torch.Tensor):
+                # 이미 텐서인 경우
+                state_tensor = state.to(self.device)
+                if state_tensor.dim() == 1:
+                    state_tensor = state_tensor.unsqueeze(0)
             else:
-                # 학습 모드: 탐색이 포함된 행동 선택
-                action, _, _ = self.actor.sample(state_tensor)
-        
-        # 단일 float 값으로 반환
-        return action.detach().cpu().numpy()[0][0]
+                raise ValueError(f"지원하지 않는 상태 타입: {type(state)}")
+            
+            # 행동 선택
+            with torch.no_grad():
+                if evaluate:
+                    # 평가 모드: 평균 행동 선택 (탐색 없음)
+                    _, _, action = self.actor.sample(state_tensor)
+                else:
+                    # 학습 모드: 탐색이 포함된 행동 선택
+                    action, _, _ = self.actor.sample(state_tensor)
+            
+            # 단일 float 값으로 반환
+            return float(action.detach().cpu().numpy().flatten()[0])
+            
+        except Exception as e:
+            LOGGER.error(f"행동 선택 중 오류: {e}")
+            LOGGER.error(f"상태 타입: {type(state)}")
+            if isinstance(state, dict):
+                LOGGER.error(f"상태 키: {state.keys()}")
+                for k, v in state.items():
+                    LOGGER.error(f"  {k}: {type(v)}, shape: {getattr(v, 'shape', 'N/A')}")
+            elif hasattr(state, 'shape'):
+                LOGGER.error(f"상태 형태: {state.shape}")
+            
+            # 오류 발생 시 기본 행동 반환
+            return 0.0
 
-    def _process_state_for_network(self, state: Dict[str, np.ndarray]) -> Union[torch.Tensor, Dict[str, torch.Tensor]]:
-        if self.use_cnn or self.use_lstm:
-            # CNN / LSTM: 상태를 그대로 딕셔너리 형태로 유지
-            return {
-                "market_data": torch.FloatTensor(state["market_data"]).unsqueeze(0).to(self.device),
-                "portfolio_state": torch.FloatTensor(state["portfolio_state"]).unsqueeze(0).to(self.device)
-            }
-        else:
-            # MLP: 상태를 flatten
-            market_data = state['market_data'].flatten()
-            portfolio_state = state['portfolio_state']
-            combined_state = np.concatenate([market_data, portfolio_state])
-            return torch.FloatTensor(combined_state).unsqueeze(0).to(self.device)
+    def _process_state_for_network(self, state: Dict[str, Union[np.ndarray, torch.Tensor]]) -> Union[torch.Tensor, Dict[str, torch.Tensor]]:
+        """
+        상태를 네트워크 입력 형태로 변환 (개선된 버전)
+        
+        Args:
+            state: TradingEnvironment 상태 딕셔너리
+            
+        Returns:
+            네트워크 입력용 텐서 또는 텐서 딕셔너리
+        """
+        try:
+            if self.use_cnn or self.use_lstm:
+                # CNN / LSTM: 상태를 딕셔너리 형태로 유지
+                market_data = state["market_data"]
+                portfolio_state = state["portfolio_state"]
+                
+                # numpy 배열을 텐서로 변환
+                if isinstance(market_data, np.ndarray):
+                    market_tensor = torch.FloatTensor(market_data).to(self.device)
+                else:
+                    market_tensor = market_data.to(self.device)
+                    
+                if isinstance(portfolio_state, np.ndarray):
+                    portfolio_tensor = torch.FloatTensor(portfolio_state).to(self.device)
+                else:
+                    portfolio_tensor = portfolio_state.to(self.device)
+                
+                # 배치 차원 확인 및 추가
+                if market_tensor.dim() == 2:  # (window_size, feature_dim)
+                    market_tensor = market_tensor.unsqueeze(0)  # (1, window_size, feature_dim)
+                if portfolio_tensor.dim() == 1:  # (2,)
+                    portfolio_tensor = portfolio_tensor.unsqueeze(0)  # (1, 2)
+                
+                return {
+                    "market_data": market_tensor,
+                    "portfolio_state": portfolio_tensor
+                }
+            else:
+                # MLP: 상태를 flatten
+                market_data = state['market_data']
+                portfolio_state = state['portfolio_state']
+                
+                # numpy 배열을 텐서로 변환
+                if isinstance(market_data, np.ndarray):
+                    market_flat = market_data.flatten()
+                else:
+                    market_flat = market_data.flatten().cpu().numpy()
+                    
+                if isinstance(portfolio_state, np.ndarray):
+                    portfolio_flat = portfolio_state
+                else:
+                    portfolio_flat = portfolio_state.cpu().numpy()
+                
+                # 결합
+                combined_state = np.concatenate([market_flat, portfolio_flat])
+                return torch.FloatTensor(combined_state).unsqueeze(0).to(self.device)
+            
+        except Exception as e:
+            LOGGER.error(f"상태 변환 중 오류: {e}")
+            # 기본 상태 반환
+            if self.use_cnn or self.use_lstm:
+                return {
+                    "market_data": torch.zeros((1, self.input_shape[0], self.input_shape[1]), device=self.device),
+                    "portfolio_state": torch.zeros((1, 2), device=self.device)
+                }
+            else:
+                return torch.zeros((1, self.state_dim), device=self.device)
 
     def _process_batch_states(self, states: List[Dict[str, np.ndarray]]) -> Union[torch.Tensor, Dict[str, torch.Tensor]]:
         """
@@ -549,9 +652,9 @@ class SACAgent:
         return stats
     
     def save_model(self, save_dir: Union[str, Path] = None, prefix: str = "",
-                   model_type: str = None, symbol: str = None, symbols: List[str] = None) -> str:
+               model_type: str = None, symbol: str = None, symbols: List[str] = None) -> str:
         """
-        모델 저장 (개선된 버전)
+        모델 저장 (실시간 트레이딩 호환성 개선)
 
         Args:
             save_dir: 저장 디렉토리
@@ -626,23 +729,38 @@ class SACAgent:
         }
         torch.save(training_stats, model_path / "training_stats.pth")
 
-        # 설정 저장 (LSTM 파라미터 포함)
+        # 설정 저장 (실시간 트레이딩 호환성 정보 포함)
         config = {
+            # 기본 모델 정보
             'model_type': model_type.lower(),
             'symbol': symbol,
             'symbols': symbols,
             'state_dim': self.state_dim,
             'action_dim': self.action_dim,
             'hidden_dim': self.hidden_dim,
+            
+            # 모델 아키텍처
             'use_cnn': self.use_cnn,
             'use_lstm': self.use_lstm,
             'input_shape': self.input_shape,
+            
+            # LSTM 전용 파라미터
             'lstm_hidden_dim': getattr(self, 'lstm_hidden_dim', None),
             'num_lstm_layers': getattr(self, 'num_lstm_layers', None),
             'lstm_dropout': getattr(self, 'lstm_dropout', None),
+            
+            # 실시간 트레이딩 호환성 정보
+            'realtime_compatible': True,
+            'supports_dict_state': self.use_cnn or self.use_lstm,
+            'supports_flat_state': not (self.use_cnn or self.use_lstm),
+            'state_format': 'dict' if (self.use_cnn or self.use_lstm) else 'flat',
+            
+            # 메타 정보
             'timestamp': timestamp,
             'saved_at': time.strftime("%Y-%m-%d %H:%M:%S"),
-            'device': str(self.device)
+            'device': str(self.device),
+            'framework': 'pytorch',
+            'sac_version': '1.0'
         }
         torch.save(config, model_path / "config.pth")
 
@@ -650,10 +768,12 @@ class SACAgent:
         LOGGER.info(f"✅ {model_type_display} 모델 저장 완료: {model_path}")
         LOGGER.info(f"   └─ 모델 타입: {model_type_display}")
         LOGGER.info(f"   └─ 심볼: {symbol or symbols or 'Multi'}")
+        LOGGER.info(f"   └─ 실시간 호환: {'YES' if config['realtime_compatible'] else 'NO'}")
+        LOGGER.info(f"   └─ 상태 형식: {config['state_format'].upper()}")
         LOGGER.info(f"   └─ 타임스탬프: {timestamp}")
 
         return str(model_path)
-    
+        
     def load_model(self, model_path: Union[str, Path]) -> None:
         """
         모델 로드
