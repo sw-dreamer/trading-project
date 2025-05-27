@@ -207,6 +207,12 @@ def create_agent(env, args):
     )
 
     # 모델 타입 정보를 에이전트에 저장 (저장 시 사용)
+    if args.use_lstm:
+        model_type = 'lstm'
+    elif args.use_cnn:
+        model_type = 'cnn'
+    else:
+        model_type = 'mlp'
     agent.model_type = model_type
     agent.training_symbols = args.symbols if args.symbols else TARGET_SYMBOLS
 
