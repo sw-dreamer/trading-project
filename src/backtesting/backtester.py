@@ -28,7 +28,7 @@ from src.config.config import (
     MYSQL_PASSWORD,
     MYSQL_PORT,
     SAVE_TO_DATABASE,
-    SKIP_DB_ON_ERROR,
+    SKIP_DB_ON_ERROR
 )
 from src.utils.utils import create_directory
 

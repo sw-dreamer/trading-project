@@ -388,28 +388,21 @@ class SACAgent:
         
         # 단일 float 값으로 반환
         return action.detach().cpu().numpy()[0][0]
-    
+
     def _process_state_for_network(self, state: Dict[str, np.ndarray]) -> Union[torch.Tensor, Dict[str, torch.Tensor]]:
-        """
-        TradingEnvironment 상태를 네트워크 입력으로 변환
-        
-        Args:
-            state: TradingEnvironment의 상태
-            
-        Returns:
-            네트워크 입력용 텐서
-        """
         if self.use_cnn or self.use_lstm:
+            # CNN / LSTM: 상태를 그대로 딕셔너리 형태로 유지
             return {
                 "market_data": torch.FloatTensor(state["market_data"]).unsqueeze(0).to(self.device),
                 "portfolio_state": torch.FloatTensor(state["portfolio_state"]).unsqueeze(0).to(self.device)
             }
         else:
+            # MLP: 상태를 flatten
             market_data = state['market_data'].flatten()
             portfolio_state = state['portfolio_state']
             combined_state = np.concatenate([market_data, portfolio_state])
             return torch.FloatTensor(combined_state).unsqueeze(0).to(self.device)
-    
+
     def _process_batch_states(self, states: List[Dict[str, np.ndarray]]) -> Union[torch.Tensor, Dict[str, torch.Tensor]]:
         """
         배치 상태들을 네트워크 입력으로 변환
