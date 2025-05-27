@@ -90,6 +90,8 @@ def parse_args():
     # 모델 관련 설정
     parser.add_argument('--use_cnn', action='store_true',
                         help='CNN 모델 사용 여부')
+    parser.add_argument('--use_lstm', action='store_true',
+                    help='LSTM 모델 사용 여부')
     parser.add_argument('--override_window_size', action='store_true',
                         help='모델에 맞게 window_size 강제 조정')
 
