@@ -6,8 +6,10 @@ import json
 import pandas as pd
 from datetime import datetime
 from typing import Dict, List, Any, Optional, Union
-
-from flask import Flask, render_template, jsonify, request, Response
+from flask import Flask
+from .routes.alpaca_routes import alpaca_bp
+import tempfile
+from flask import Flask, render_template, jsonify, request, Response, redirect
 import plotly
 from pymongo import MongoClient
 
@@ -16,6 +18,7 @@ from src.dashboard.data_manager_db import DBDataManager
 from src.dashboard.visualization import Visualizer
 from src.utils.logger import Logger
 from src.utils.database import DatabaseManager
+from werkzeug.utils import secure_filename
 
 # <라우팅 설정>
 # 라우팅 : "어떤 url이 들어왔을 때 어떤 함수를 실행할지 정하는 것"
@@ -135,12 +138,6 @@ class DashboardApp:
             }))
 
             return render_template('news.html', news=news_data)
-
-        # 설정 페이지
-        @self.app.route('/settings')
-        def settings():
-            
-            return render_template('settings.html')
         
         # API 엔드포인트 설정
         
@@ -438,7 +435,49 @@ class DashboardApp:
             )
             
             return jsonify(json.loads(plotly.io.to_json(fig)))
-    
+        
+        # 모델 파일로 직접 업로드
+
+        @self.app.route('/models', methods=['POST'])
+        def upload_model():
+            model_id = request.form['model_id']
+            description = request.form.get('description', '')
+            file = request.files['model_file']
+
+            if file.filename == '':
+                return '파일이 선택되지 않았습니다.', 400
+            
+            upload_dir = 'uploads'
+            os.makedirs(upload_dir, exist_ok=True)
+            
+            filename = secure_filename(file.filename)
+            model_file_path = os.path.join('uploads', filename)
+
+            # uploads 폴더가 없으면 자동으로 생성
+            os.makedirs(os.path.dirname(model_file_path), exist_ok=True)
+
+            file.save(model_file_path)
+
+            # JSON 메타파일도 같이 생성
+            model_data = {
+                'model_id': model_id,
+                'description': description,
+                'is_active': True,
+                'file_path': model_file_path  
+            }
+            temp_json_path = os.path.join(upload_dir, f'{model_id}_meta.json')
+            with open(temp_json_path, 'w') as f:
+                json.dump(model_data, f)
+
+            #모델 정보 등록
+            success = self.data_manager.sync_file_to_db('models', temp_json_path)
+            if success:
+                return redirect('/models')
+            else:
+                return '모델 업로드 실패', 500
+
+            
+            
     def run(self) -> None:
         """
         대시보드 웹 서버 실행

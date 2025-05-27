@@ -35,9 +35,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/news">관련 기사</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/settings">설정</a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -224,10 +221,10 @@
             }
 
             // 포트폴리오 가치 및 변화 업데이트
-            if (data.account && data.trading_stats) {
-                const currentBalance = data.account.balance || 0;
+            if (data.trading_stats) {
+                const currentBalance = data.trading_stats.portfolio_value || 0;
                 const initialBalance = data.trading_stats.initial_balance || 0;
-                const pnl = data.trading_stats.pnl || 0;
+                const pnl = data.trading_stats.daily_pnl || 0;
                 const pnlPercent = initialBalance > 0 ? (pnl / initialBalance * 100) : 0;
                 
                 $('#portfolio-value').text(`$${currentBalance.toLocaleString('ko-KR', {maximumFractionDigits: 2})}`);

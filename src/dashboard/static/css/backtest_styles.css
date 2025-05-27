@@ -146,15 +146,6 @@ a:hover {
     border-left: 4px solid #60a5fa;
 }
 
-/* 설정 섹션 */
-.settings-section {
-    margin-bottom: 2rem;
-}
-.settings-section h5 {
-    border-bottom: 1px solid #334155;
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
-}
 
 /* 포지션 배지 */
 .position-badge {

@@ -194,6 +194,35 @@ input.form-control:focus, textarea.form-control:focus, select.form-control:focus
 }
 
 /* 모델 선택 카드 화살표 */
+.custom-select-wrapper {
+    position: relative;
+  }
+  
+.custom-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 2.5rem;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #111827;
+    border-radius: 0.5rem;
+    background-image: none;
+  }
+  
+.custom-select-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    pointer-events: none;
+  }
+  
+  
+
+
+/* 모델 선택 카드 화살표 */
 .select-wrapper {
     position: relative;
   }

@@ -40,6 +40,7 @@ class DBDataManager:
         if self.logger:
             self.logger.info("DBDataManager 초기화 완료")
     
+    # 트레이딩 통계
     def get_trading_stats(self, refresh: bool = False) -> Dict[str, Any]:
         """
         트레이딩 통계 조회
@@ -82,7 +83,7 @@ class DBDataManager:
             positions = self.db_manager.execute_query(positions_query)
             
             # 통계 데이터 구성
-            portfolio_values = [row['portfolio_value'] for row in reversed(stats_rows)]
+            portfolio_values = [row['portfolio_value'] for row in reversed(stats_rows)]    
             timestamps = [row['timestamp'].isoformat() for row in reversed(stats_rows)]
             
             # 일일 수익률 계산
@@ -108,10 +109,15 @@ class DBDataManager:
             positions_dict = {}
             for position in positions:
                 positions_dict[position['symbol']] = {
+                    # 보유수량
                     'quantity': float(position['quantity']),
+                    # 평균 매입가
                     'avg_entry_price': float(position['avg_entry_price']),
+                    # 현재가
                     'current_price': float(position['current_price']) if position['current_price'] else 0,
+                    # 미실현 손익
                     'unrealized_pnl': float(position['unrealized_pnl']),
+                    # 타임스탬프
                     'timestamp': position['timestamp'].isoformat()
                 }
             
@@ -137,10 +143,15 @@ class DBDataManager:
                 ],
                 'positions': positions_dict,
                 'trading_stats': {
+                    # 현재 총 자산가치
                     'portfolio_value': float(latest_stats['portfolio_value']),
+                    # 현재 보유 현금  
                     'cash_balance': float(latest_stats['cash_balance']),
+                    # 주식의 현재 시가 총합(주식자산 평가 금액)
                     'equity_value': float(latest_stats['equity_value']),
+                    # 오늘 손익
                     'daily_pnl': float(latest_stats['daily_pnl']),
+                    # 누적 손익
                     'total_pnl': float(latest_stats['total_pnl']),
                     'timestamp': latest_stats['timestamp'].isoformat()
                 }
@@ -219,7 +230,7 @@ class DBDataManager:
                             'win_rate': float(result['win_rate']) if result['win_rate'] else 0,
                             'profit_factor': float(result['profit_factor']) if result['profit_factor'] else 0,
                             'total_trades': result['total_trades'] or 0
-                        }
+                        },
                     }
             
             if self.logger:
@@ -232,6 +243,48 @@ class DBDataManager:
                 self.logger.error(f"백테스트 결과 조회 중 오류 발생: {e}")
             return {}
     
+    # ALPACA에서 가져와야 하는 데이터들 (db에는 trade_details 테이블에 저장되어 있음)
+    def _get_trade_details(self, model_id: str) -> Dict[str, Any]:
+        try:
+            query = """
+            SELECT timestamp, portfolio_value, action, price, shares, cost
+            FROM backtest_trade_details
+            WHERE model_id = %s
+            ORDER BY timestamp ASC
+            """
+            trades = self.db_manager.execute_query(query, (model_id,))
+
+            timestamps = [row['timestamp'].isoformat() for row in trades]
+            portfolio_values = [row['portfolio_value'] for row in trades]
+
+            trade_details = [
+                {
+                    'timestamp': row['timestamp'].isoformat(),
+                    'action': row['action'],
+                    'price': float(row['price']),
+                    'shares': float(row['shares']),
+                    'cost': float(row['cost']),
+                    'portfolio_value': float(row['portfolio_value'])
+                }
+                for row in trades
+            ]
+
+            return {
+                'portfolio_values': portfolio_values,
+                'timestamps': timestamps,
+                'trades': trade_details
+            }
+
+        except Exception as e:
+            if self.logger:
+                self.logger.error(f"[{model_id}] 트레이드 디테일 조회 오류: {e}")
+            return {
+                'portfolio_values': [],
+                'timestamps': [],
+                'trades': []
+            }
+    
+    # 모델 정보
     def get_model_info(self, refresh: bool = False) -> Dict[str, Any]:
         """
         학습된 모델 정보 조회
@@ -361,52 +414,35 @@ class DBDataManager:
         
         return metrics
 
-    def sync_file_to_db(self, file_type: str, file_path: str) -> bool:
+    def sync_file_to_db(self,json_path):
+        with open(json_path, 'r') as f:
+            data = json.load(f)
+
+        query = """
+            INSERT INTO models (model_id, description, created_time, modified_time, file_size, file_path, file_name, is_active)
+            VALUES (%s, %s, NOW(), NOW(), %s, %s, %s, %s)
         """
-        파일 데이터를 데이터베이스에 동기화
         
-        Args:
-            file_type: 파일 유형 (trading_stats, backtest_results, models, market_data)
-            file_path: 파일 경로
-            
-        Returns:
-            성공 여부
-        """
-        try:
-            if not os.path.exists(file_path):
-                if self.logger:
-                    self.logger.warning(f"파일이 존재하지 않습니다: {file_path}")
-                return False
-            
-            # 파일 로드
-            if file_path.endswith('.json'):
-                with open(file_path, 'r') as f:
-                    data = json.load(f)
-            elif file_path.endswith('.csv'):
-                data = pd.read_csv(file_path)
-            else:
-                if self.logger:
-                    self.logger.warning(f"지원하지 않는 파일 형식입니다: {file_path}")
-                return False
-            
-            # 파일 유형에 따라 다른 처리
-            if file_type == 'trading_stats':
-                return self._sync_trading_stats(data, file_path)
-            elif file_type == 'backtest_results':
-                return self._sync_backtest_results(data, file_path)
-            elif file_type == 'models':
-                return self._sync_model_info(data, file_path)
-            elif file_type == 'market_data':
-                return self._sync_market_data(data, file_path)
-            else:
-                if self.logger:
-                    self.logger.warning(f"지원하지 않는 파일 유형입니다: {file_type}")
-                return False
-            
-        except Exception as e:
-            if self.logger:
-                self.logger.error(f"파일 데이터베이스 동기화 중 오류 발생: {e}")
-            return False
+        file_path = f"uploads/{data['model_id']}.pt"  
+        file_size = os.path.getsize(file_path)
+        file_name = data['file_name']
+        is_active = int(data.get("is_active", 1))
+
+        values = (
+            data['model_id'],
+            data.get('description', ''),
+            file_size,
+            file_path,
+            file_name,
+            is_active
+        )
+
+        # DB 연결 후 INSERT
+        cursor = self.db.cursor()
+        cursor.execute(query, values)
+        self.db.commit()
+        return True
+
     
     def _sync_trading_stats(self, data: Dict[str, Any], file_path: str) -> bool:
         """
