@@ -6,16 +6,19 @@ import json
 import pandas as pd
 from datetime import datetime
 from typing import Dict, List, Any, Optional, Union
-
-from flask import Flask, render_template, jsonify, request, Response
+from flask import Flask
+from .routes.alpaca_routes import alpaca_bp
+import tempfile
+from flask import Flask, render_template, jsonify, request, Response, redirect
 import plotly
 from pymongo import MongoClient
 
-from src.dashboard.data_manager import DataManager
+from src.dashboard.data_manager_file import FileDataManager
 from src.dashboard.data_manager_db import DBDataManager
 from src.dashboard.visualization import Visualizer
 from src.utils.logger import Logger
-
+from src.utils.database import DatabaseManager
+from werkzeug.utils import secure_filename
 
 # <라우팅 설정>
 # 라우팅 : "어떤 url이 들어왔을 때 어떤 함수를 실행할지 정하는 것"
@@ -98,6 +101,11 @@ class DashboardApp:
         def live_trading():
             return render_template('live_trading.html')
         
+        # 실시간 차트 페이지
+        @self.app.route('/live-chart')
+        def live_chart():
+            return render_template('live_chart.html')
+        
         # 백테스트 결과 페이지
         @self.app.route('/backtest')
         def backtest():
@@ -108,16 +116,28 @@ class DashboardApp:
         def models():
             return render_template('models.html')
         
+        
         # 기사 페이지
         @self.app.route('/news')
         def news():
-            return render_template('news.html')
-        
-        # 설정 페이지
-        @self.app.route('/settings')
-        def settings():
-            
-            return render_template('settings.html')
+            ticker = request.args.get('name')  
+
+            query_filter = {}
+            if ticker:
+                query_filter = {"name": ticker}
+
+            # polygon_articles 컬렉션에서 데이터 가져오기
+            news_data = list(polygon_articles.find(query_filter, {
+                '_id': 0,
+                'name': 1,
+                'title': 1,
+                'summary': 1,
+                'sentiment': 1,
+                'date': 1,
+                'url': 1
+            }))
+
+            return render_template('news.html', news=news_data)
         
         # API 엔드포인트 설정
         
@@ -138,17 +158,15 @@ class DashboardApp:
         # 기사 데이터 조회 API
         @self.app.route('/api/news')
         def get_news():
+            ticker = request.args.get('name')
             try:
-                polygon_articles_data = list(polygon_articles.find({}, {
+                query = {}
+                if ticker:
+                    query = {"name": ticker}
+
+                polygon_articles_data = list(polygon_articles.find(query, {
                     '_id': 0,
-                    'title': 1,
-                    'summary': 1,
-                    'sentiment': 1,
-                    'date': 1,
-                    'url': 1
-                }))
-                yahoo_news_data = list(yahoo_news.find({}, {
-                    '_id': 0,
+                    'name': 1,
                     'title': 1,
                     'summary': 1,
                     'sentiment': 1,
@@ -156,13 +174,23 @@ class DashboardApp:
                     'url': 1
                 }))
 
+                yahoo_news_data = list(yahoo_news.find(query, {
+                    '_id': 0,
+                    'name': 1,
+                    'title': 1,
+                    'summary': 1,
+                    'sentiment': 1,
+                    'date': 1,
+                    'url': 1
+                }))
+                
                 return jsonify({
                     'polygon': polygon_articles_data,
-                    'yahoo': yahoo_news_data 
+                    'yahoo': yahoo_news_data
                 })
             except Exception as e:
                 return jsonify({'error': str(e)})
-        
+                
         # 백테스트 결과 API
         @self.app.route('/api/backtest-results')
         def get_backtest_results():
@@ -407,7 +435,49 @@ class DashboardApp:
             )
             
             return jsonify(json.loads(plotly.io.to_json(fig)))
-    
+        
+        # 모델 파일로 직접 업로드
+
+        @self.app.route('/models', methods=['POST'])
+        def upload_model():
+            model_id = request.form['model_id']
+            description = request.form.get('description', '')
+            file = request.files['model_file']
+
+            if file.filename == '':
+                return '파일이 선택되지 않았습니다.', 400
+            
+            upload_dir = 'uploads'
+            os.makedirs(upload_dir, exist_ok=True)
+            
+            filename = secure_filename(file.filename)
+            model_file_path = os.path.join('uploads', filename)
+
+            # uploads 폴더가 없으면 자동으로 생성
+            os.makedirs(os.path.dirname(model_file_path), exist_ok=True)
+
+            file.save(model_file_path)
+
+            # JSON 메타파일도 같이 생성
+            model_data = {
+                'model_id': model_id,
+                'description': description,
+                'is_active': True,
+                'file_path': model_file_path  
+            }
+            temp_json_path = os.path.join(upload_dir, f'{model_id}_meta.json')
+            with open(temp_json_path, 'w') as f:
+                json.dump(model_data, f)
+
+            #모델 정보 등록
+            success = self.data_manager.sync_file_to_db('models', temp_json_path)
+            if success:
+                return redirect('/models')
+            else:
+                return '모델 업로드 실패', 500
+
+            
+            
     def run(self) -> None:
         """
         대시보드 웹 서버 실행
@@ -491,7 +561,7 @@ if __name__ == '__main__':
     
     # 대시보드 실행
     dashboard = DashboardApp(
-        data_manager=DataManager(args.data_dir),
+        data_manager=DatabaseManager(args.data_dir),
         host=args.host,
         port=args.port,
         debug=args.debug
