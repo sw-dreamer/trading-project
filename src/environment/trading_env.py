@@ -450,7 +450,7 @@ class TradingEnvironment:
         
         # 잘못된 매도 패널티
         if self.invalid_sell_penalty:
-            penalty = -2.5 ### 패널티
+            penalty = -1.0 ### 패널티
             reward += penalty
             print(f"잘못된 매도 페널티: {penalty}, 최종 보상: {reward:.6f}")
         
