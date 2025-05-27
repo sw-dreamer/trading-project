@@ -56,6 +56,14 @@ class DataProcessor:
         
         # 결측치 처리
         data = data.copy()
+        
+            # 메타 데이터 컬럼 제거
+        meta_cols = ['symbol', 'ticker', 'asset', 'exchange']
+        data = data.drop(columns=[col for col in meta_cols if col in data.columns])
+        
+        LOGGER.info(f"컬럼 목록: {list(data.columns)}")
+        LOGGER.info(f"symbol 값 예시: {data['symbol'].unique() if 'symbol' in data.columns else '없음'}")
+        
         data.fillna(method='ffill', inplace=True)  # 앞의 값으로 채우기
         data.fillna(method='bfill', inplace=True)  # 뒤의 값으로 채우기
         
@@ -271,6 +279,7 @@ class DataProcessor:
             else:
                 return np.full(len(args[0]), np.nan)
     
+    
     def _handle_outliers_and_infinities(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         이상치 및 무한대 값 처리
@@ -305,7 +314,8 @@ class DataProcessor:
             LOGGER.warning(f"결측치 {nan_counts}개가 여전히 존재합니다")
         
         # 무한대 값 체크 및 로그
-        inf_counts = np.isinf(df.values).sum()
+        numeric_data = df.select_dtypes(include=[np.number])
+        inf_counts = np.isinf(numeric_data.values).sum()
         if inf_counts > 0:
             LOGGER.warning(f"무한대 값 {inf_counts}개가 여전히 존재합니다")
             # 무한대 값을 0으로 대체
@@ -474,15 +484,28 @@ class DataProcessor:
 
 
 if __name__ == "__main__":
-    # 테스트용 코드
+    import argparse
     from src.data_collection.data_collector import DataCollector
+    from src.config.config import config
+    
+    # # 1. 사용할 심볼 불러오기 (선호에 따라 아래 둘 중 택1)
+    # symbols = config.trading_symbols       # 실시간용 심볼
+    # # symbols = config.TARGET_SYMBOLS      # 전체 학습 가능한 심볼
+    
+    # 1. 명령행 인자 파싱
+    parser = argparse.ArgumentParser(description="심볼별 데이터 전처리")
+    parser.add_argument("--symbols", nargs="+", help="전처리할 심볼 리스트", default=config.trading_symbols)
+    args = parser.parse_args()
+    
+    # 2. 심볼 리스트 할당
+    symbols = args.symbols
     
     # 데이터 수집
-    collector = DataCollector(symbols=["AAPL"])
+    collector = DataCollector(symbols=symbols)
     data = collector.load_all_data()
     
     # 데이터 전처리
-    processor = DataProcessor(window_size=30)
+    processor = DataProcessor(window_size=config.WINDOW_SIZE)
     results = processor.process_all_symbols(data, use_windows=False)
     processor.save_processed_data(results)
     

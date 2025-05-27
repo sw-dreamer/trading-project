@@ -1,7 +1,5 @@
 """
-    MYSQL 데이터베이스 기반 대시보드 데이터 관리 모듈
-    database.py에서 제공하는 DatabaseManager 인스턴스를 사용. 
-    이미 연결된 데이터베이스 연결을 이용하여 데이터 로직을 처리
+PostgreSQL 데이터베이스 기반 대시보드 데이터 관리 모듈
 """
 import os
 import json
@@ -16,7 +14,7 @@ from src.utils.database import DatabaseManager
 
 class DBDataManager:
     """
-    데이터베이스를 사용하는 대시보드 데이터 관리 클래스
+    PostgreSQL 데이터베이스를 사용하는 대시보드 데이터 관리 클래스
     """
     
     def __init__(

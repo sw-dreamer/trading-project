@@ -15,6 +15,7 @@ from pathlib import Path
 from src.config.config import (
     DEVICE,
     TARGET_SYMBOLS,
+    INITIAL_BALANCE,
     LOGGER
 )
 from src.data_collection.data_collector import DataCollector
@@ -39,124 +40,151 @@ def parse_args():
     
     # 환경 관련 인자
     parser.add_argument('--window_size', type=int, default=30, help='관측 윈도우 크기')
-    parser.add_argument('--initial_balance', type=float, default=10000.0, help='초기 자본금')
+    parser.add_argument('--initial_balance', type=float, default=INITIAL_BALANCE, help='초기 자본금')
     parser.add_argument('--multi_asset', action='store_true', help='다중 자산 환경 사용 여부')
     
     # 모델 관련 인자
     parser.add_argument('--model_path', type=str, required=True, help='로드할 모델 경로')
     parser.add_argument('--use_cnn', action='store_true', help='CNN 모델 사용 여부')
+    parser.add_argument('--use_lstm', action='store_true', help='LSTM 모델 사용 여부')
     
     # 평가 관련 인자
     parser.add_argument('--num_episodes', type=int, default=5, help='평가할 에피소드 수')
     parser.add_argument('--render', action='store_true', help='환경 렌더링 여부')
     parser.add_argument('--result_prefix', type=str, default='', help='결과 파일 접두사')
-    parser.add_argument('--data_type', type=str, default='valid', choices=['train', 'valid', 'test'], 
-                        help='평가에 사용할 데이터 유형 (기본값: valid)')
-    
+    parser.add_argument(
+        '--data_type',
+        type=str,
+        default='valid',
+        choices=['train', 'valid', 'test'],
+        help='평가에 사용할 데이터 유형 (기본값: valid)'
+    )
+
     return parser.parse_args()
+
 
 def load_model(model_path, env, args):
     """
-    모델 로드
-    
+    모델 로드 (LSTM/CNN/MLP 지원)
+
     Args:
         model_path: 모델 경로
         env: 환경 객체
         args: 명령줄 인자
-        
+
     Returns:
-        로드된 SAC 에이전트
+        로드된 SAC 에이전트 또는 None
     """
     LOGGER.info(f"🤖 모델 로드 중: {model_path}")
-    
+
     try:
-        # 모델 설정 로드
+        # 설정 파일 로드
         config_path = os.path.join(model_path, "config.pth")
         if not os.path.exists(config_path):
             LOGGER.error(f"❌ 모델 설정 파일이 없습니다: {config_path}")
             return None
-            
+
         config = torch.load(config_path, map_location=DEVICE)
         LOGGER.info("✅ 모델 설정 로드 성공")
-        
-        # 환경에서 실제 상태 차원 계산
-        market_shape = env.observation_space['market_data'].shape
-        portfolio_shape = env.observation_space['portfolio_state'].shape
-        actual_state_dim = market_shape[0] * market_shape[1] + portfolio_shape[0]
-        
-        LOGGER.info(f"📏 계산된 실제 상태 차원: {actual_state_dim}")
-        LOGGER.info(f"   └─ 마켓 데이터: {market_shape}")
-        LOGGER.info(f"   └─ 포트폴리오: {portfolio_shape}")
-        
-        # 저장된 모델 설정 확인
+
+        # 저장된 설정값
         saved_state_dim = config.get('state_dim')
         saved_action_dim = config.get('action_dim', 1)
         saved_hidden_dim = config.get('hidden_dim', 256)
         saved_use_cnn = config.get('use_cnn', False)
-        
-        LOGGER.info(f"💾 저장된 모델 설정:")
-        LOGGER.info(f"   └─ 상태 차원: {saved_state_dim}")
-        LOGGER.info(f"   └─ 행동 차원: {saved_action_dim}")
-        LOGGER.info(f"   └─ 은닉층 차원: {saved_hidden_dim}")
-        LOGGER.info(f"   └─ CNN 사용: {saved_use_cnn}")
-        
-        # CNN 모델 여부 결정
-        use_cnn = args.use_cnn or saved_use_cnn
-        
-        if use_cnn:
-            LOGGER.info("🔧 CNN 모델 생성 중...")
-            input_shape = config.get('input_shape', (args.window_size, env.feature_dim))
+        saved_use_lstm = config.get('use_lstm', False)
+        saved_input_shape = config.get('input_shape')
+
+        LOGGER.info("💾 저장된 모델 설정:")
+        LOGGER.info(f"   └ 상태 차원: {saved_state_dim}")
+        LOGGER.info(f"   └ 행동 차원: {saved_action_dim}")
+        LOGGER.info(f"   └ 은닉층: {saved_hidden_dim}")
+        LOGGER.info(f"   └ CNN 사용: {saved_use_cnn}")
+        LOGGER.info(f"   └ LSTM 사용: {saved_use_lstm}")
+
+        # 현재 환경에서 상태 차원 계산
+        market_shape = env.observation_space['market_data'].shape
+        portfolio_shape = env.observation_space['portfolio_state'].shape
+        actual_state_dim = market_shape[0] * market_shape[1] + portfolio_shape[0]
+        input_shape = (market_shape[0], market_shape[1])
+
+        LOGGER.info("📏 환경 상태 정보:")
+        LOGGER.info(f"   └ 마켓 데이터: {market_shape}")
+        LOGGER.info(f"   └ 포트폴리오: {portfolio_shape}")
+        LOGGER.info(f"   └ 계산된 상태 차원: {actual_state_dim}")
+
+        # CNN / LSTM 충돌 방지
+        if args.use_cnn and args.use_lstm:
+            LOGGER.error("❌ CNN과 LSTM은 동시에 사용할 수 없습니다.")
+            return None
+
+        # 우선순위: LSTM > CNN > MLP
+        final_use_lstm = args.use_lstm or saved_use_lstm
+        final_use_cnn = args.use_cnn or saved_use_cnn
+
+        if final_use_lstm:
+            LOGGER.info("🔧 LSTM 모델 생성 중...")
             agent = SACAgent(
                 state_dim=None,
                 action_dim=saved_action_dim,
                 hidden_dim=saved_hidden_dim,
-                input_shape=input_shape,
-                use_cnn=True
+                input_shape=saved_input_shape if saved_input_shape else input_shape,
+                use_lstm=True,
+                device=DEVICE
             )
-        else:
-            LOGGER.info("🔧 MLP 모델 생성 중...")
-            
-            # 상태 차원 불일치 확인
-            if saved_state_dim != actual_state_dim:
-                LOGGER.warning(f"⚠️  상태 차원 불일치:")
-                LOGGER.warning(f"   └─ 저장된 모델: {saved_state_dim}")
-                LOGGER.warning(f"   └─ 현재 환경: {actual_state_dim}")
-                LOGGER.warning("   └─ 저장된 모델의 차원을 사용합니다.")
-            
-            # 저장된 모델의 상태 차원을 우선 사용
+
+        elif final_use_cnn:
+            LOGGER.info("🔧 CNN 모델 생성 중...")
             agent = SACAgent(
-                state_dim=saved_state_dim if saved_state_dim is not None else actual_state_dim,
+                state_dim=None,
                 action_dim=saved_action_dim,
                 hidden_dim=saved_hidden_dim,
-                use_cnn=False
+                input_shape=saved_input_shape if saved_input_shape else input_shape,
+                use_cnn=True,
+                device=DEVICE
             )
-        
-        # 모델 로드 시도
+
+        else:
+            LOGGER.info("🔧 MLP 모델 생성 중...")
+            final_state_dim = saved_state_dim if saved_state_dim else actual_state_dim
+
+            if saved_state_dim and saved_state_dim != actual_state_dim:
+                LOGGER.warning("⚠️ 상태 차원 불일치:")
+                LOGGER.warning(f"   └ 저장된 모델: {saved_state_dim}")
+                LOGGER.warning(f"   └ 현재 환경: {actual_state_dim}")
+                LOGGER.warning("   └ 저장된 차원을 사용합니다.")
+
+            agent = SACAgent(
+                state_dim=final_state_dim,
+                action_dim=saved_action_dim,
+                hidden_dim=saved_hidden_dim,
+                device=DEVICE
+            )
+
+        # 모델 로드
         try:
             agent.load_model(model_path)
-            LOGGER.info("✅ 표준 방식으로 모델 로드 성공")
+            LOGGER.info("✅ 모델 로드 완료")
         except Exception as e:
-            LOGGER.warning(f"⚠️  표준 모델 로드 실패: {e}")
-            LOGGER.info("🔄 크기 조정 방식으로 모델 로드 시도...")
-            
-            try:
-                if hasattr(agent, 'load_model_with_resize'):
+            LOGGER.warning(f"⚠️ 표준 모델 로드 실패: {e}")
+            if hasattr(agent, 'load_model_with_resize'):
+                try:
                     agent.load_model_with_resize(model_path)
                     LOGGER.info("✅ 크기 조정 방식으로 모델 로드 성공")
-                else:
-                    LOGGER.error("❌ load_model_with_resize 메서드가 없습니다.")
+                except Exception as e2:
+                    LOGGER.error(f"❌ 크기 조정 방식도 실패: {e2}")
                     return None
-            except Exception as e:
-                LOGGER.error(f"❌ 크기 조정 모델 로드도 실패: {e}")
+            else:
                 return None
-        
+
         return agent
-        
+
     except Exception as e:
-        LOGGER.error(f"❌ 모델 로드 중 오류 발생: {str(e)}")
+        LOGGER.error(f"❌ 모델 로드 중 오류: {str(e)}")
         import traceback
         LOGGER.error(traceback.format_exc())
         return None
+
 
 def main():
     """

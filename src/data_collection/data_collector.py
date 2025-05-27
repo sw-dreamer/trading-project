@@ -12,6 +12,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
 import sys
 import os
+import argparse
 
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 sys.path.append(project_root)
@@ -229,14 +230,23 @@ class DataCollector:
 
 
 if __name__ == "__main__":
-    # 모듈 테스트 코드
+    from src.config.config import config
+    
+    parser = argparse.ArgumentParser(description="심볼별 데이터 수집")
+    parser.add_argument("--symbols", nargs="+", help="수집할 심볼 리스트", default=config.trading_symbols)
+    args = parser.parse_args()
+    
+    # DataCollector에 심볼 리스트 전달
     collector = DataCollector(
         user='postgres',
         password='mysecretpassword',
         host='192.168.40.193',
         port=5432,
-        db_name='mydb'
+        db_name='mydb',
+        symbols=args.symbols  # 여기가 핵심!
     )
+    
+    print(f"수집 대상 심볼: {collector.symbols}")
     
     # 데이터베이스 테이블 확인
     tables = collector.check_tables()
