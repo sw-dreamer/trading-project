@@ -13,8 +13,8 @@ from src.models.sac_agent import SACAgent
 from src.environment.trading_env import TradingEnvironment
 from src.utils.logger import Logger
 
-from src.config.config import Config
-from src.config.config import (
+from src.config.ea_teb_config import Config
+from src.config.ea_teb_config import (
     DEVICE,
     TARGET_SYMBOLS,
     LOGGER,

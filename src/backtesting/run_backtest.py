@@ -25,7 +25,7 @@ from src.data_collection.data_collector import DataCollector
 from src.preprocessing.data_processor import DataProcessor
 # Import 경로 수정: 실제 디렉토리 구조에 맞게
 from src.backtesting.backtest_database_manager import BacktestDatabaseManager
-from src.config.config import (
+from src.config.ea_teb_config import (
     DEVICE,
     TARGET_SYMBOLS,
     LOGGER,

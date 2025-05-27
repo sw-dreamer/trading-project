@@ -11,7 +11,7 @@ import os
 
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 sys.path.append(project_root)
-from src.config.config import (
+from src.config.ea_teb_config import (
     HIDDEN_DIM,
     DEVICE,
     LOGGER

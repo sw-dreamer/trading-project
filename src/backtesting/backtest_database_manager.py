@@ -13,7 +13,7 @@ from datetime import datetime, date
 from typing import Dict, Any, Optional
 import traceback
 
-from src.config.config import (
+from src.config.ea_teb_config import (
     DEVICE,
     TARGET_SYMBOLS,
     LOGGER,

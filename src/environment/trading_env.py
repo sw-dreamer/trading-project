@@ -22,7 +22,7 @@ from decimal import Decimal, ROUND_DOWN, getcontext
 save_dir = './results'
 os.makedirs(save_dir, exist_ok=True)
 
-from src.config.config import (
+from src.config.ea_teb_config import (
     INITIAL_BALANCE,
     MAX_TRADING_UNITS,
     TRANSACTION_FEE_PERCENT,

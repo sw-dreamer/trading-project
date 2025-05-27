@@ -10,7 +10,7 @@ from typing import Dict, List, Tuple, Union, Optional, Any
 from pathlib import Path
 import time
 
-from src.config.config import (
+from src.config.ea_teb_config import (
     DEVICE,
     RESULTS_DIR,
     LOGGER

@@ -17,7 +17,7 @@ from pathlib import Path
 import time
 from tqdm import tqdm
 
-from src.config.config import (
+from src.config.ea_teb_config import (
     DEVICE,
     BATCH_SIZE,
     NUM_EPISODES,
