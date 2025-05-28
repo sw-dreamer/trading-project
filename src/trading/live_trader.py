@@ -261,7 +261,7 @@ class LiveTrader:
                 position_ratio=position_size,
                 current_position=current_position.get("qty", 0)
             )
-            
+            Logger.info(f'quantity\n{quantity}')
             # ===== 공매도 완전 차단 =====
             if side == "sell":
                 current_position_qty = float(current_position.get("qty", 0))
