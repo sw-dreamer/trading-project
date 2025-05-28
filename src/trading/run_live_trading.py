@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# run_live_trading.py 기존 테이블 구조 호환 버전 - 심볼 해결 수정
+# run_live_trading.py 기존 테이블 구조 호환 버전 - 심볼 해결 수정 + 장 마감 자동 종료
 
 import os
 import argparse
@@ -10,7 +10,8 @@ import signal
 import sys
 import time
 import json
-from datetime import datetime
+import pytz
+from datetime import datetime, timedelta
 from pathlib import Path
 
 # 상위 디렉토리를 path에 추가
@@ -26,7 +27,7 @@ from typing import Dict, List
 
 
 class EnhancedLiveTrader:
-    """데이터베이스 연동이 포함된 향상된 실시간 트레이더 - 기존 테이블 호환 버전"""
+    """데이터베이스 연동이 포함된 향상된 실시간 트레이더 - 기존 테이블 호환 버전 + 장 마감 자동 종료"""
     
     def __init__(self, live_trader: LiveTrader, db_manager: DatabaseManager, 
                  symbol: str, model_id: str, session_id: str):
@@ -36,6 +37,9 @@ class EnhancedLiveTrader:
         self.model_id = model_id
         self.session_id = session_id
         self.last_db_save_time = 0
+        
+        # 한국 시간대 설정
+        self.korea_tz = pytz.timezone('Asia/Seoul')
         
         self.today_date = datetime.now().strftime("%Y-%m-%d")
         self.daily_start_portfolio_value = None
@@ -270,9 +274,9 @@ class EnhancedLiveTrader:
         """트레이딩 시작"""
         return self.live_trader.start()
     
-    def stop(self):
+    def stop(self, reason="수동 종료"):
         """트레이딩 중지"""
-        return self.live_trader.stop()
+        return self.live_trader.stop(reason)
     
     def get_state(self):
         """상태 조회"""
@@ -407,7 +411,7 @@ def extract_symbol_from_path(model_path: str) -> str:
 
 def parse_args():
     """명령행 인자 파싱"""
-    parser = argparse.ArgumentParser(description='SAC 모델 실시간 트레이딩 실행 (기존 테이블 호환)')
+    parser = argparse.ArgumentParser(description='SAC 모델 실시간 트레이딩 실행 (기존 테이블 호환 + 장 마감 자동 종료)')
     
     parser.add_argument('--model_path', type=str, required=False,
                         help='백테스팅 완료된 모델의 경로 (지정하지 않으면 config.py의 설정 사용)')
@@ -423,6 +427,10 @@ def parse_args():
                         help='실제 거래 없이 시뮬레이션만 실행')
     parser.add_argument('--force_connect', action='store_true',
                     help='시장 시간과 관계없이 연결하려면 force_connect=True')
+    parser.add_argument('--disable_auto_stop', action='store_true',
+                        help='장 마감 자동 종료 비활성화')
+    parser.add_argument('--market_close_time', type=str, default='05:00',
+                        help='장 마감 시간 (한국시간, HH:MM 형식, 기본값: 05:00)')
     parser.add_argument('--db_host', type=str, default='192.168.40.199',
                         help='MySQL 서버 호스트')
     parser.add_argument('--db_name', type=str, default='trading',
@@ -471,7 +479,7 @@ def setup_signal_handlers(live_traders: Dict[str, EnhancedLiveTrader], db_manage
             
             # 트레이딩 중지
             for symbol, live_trader in live_traders.items():
-                if live_trader.stop():
+                if live_trader.stop("강제 종료"):
                     logger.info(f"✅ {symbol} 트레이딩이 성공적으로 중지되었습니다.")
                 else:
                     logger.error(f"❌ {symbol} 트레이딩 중지 중 오류가 발생했습니다.")
@@ -585,8 +593,12 @@ def main():
     global args
     args = parse_args()
     
-    print("🚀 SAC 실시간 트레이딩 시스템 시작 (기존 테이블 호환)")
-    print("=" * 60)
+    print("🚀 SAC 실시간 트레이딩 시스템 시작 (기존 테이블 호환 + 장 마감 자동 종료)")
+    print("=" * 80)
+    
+    # 한국 시간대 설정
+    korea_tz = pytz.timezone('Asia/Seoul')
+    korea_now = datetime.now(korea_tz)
     
     # 결과 디렉토리 설정
     results_dir = os.path.join(args.results_dir, datetime.now().strftime("%Y%m%d_%H%M%S"))
@@ -594,8 +606,15 @@ def main():
     
     # 로거 설정
     logger = setup_logger(results_dir)
-    logger.info("🎯 SAC 실시간 트레이딩 시작 (기존 테이블 호환)")
+    logger.info("🎯 SAC 실시간 트레이딩 시작 (기존 테이블 호환 + 장 마감 자동 종료)")
     logger.info(f"📁 결과 저장 경로: {results_dir}")
+    logger.info(f"🕐 현재 한국시간: {korea_now.strftime('%Y-%m-%d %H:%M:%S')} KST")
+    
+    # 장 마감 자동 종료 설정
+    if args.disable_auto_stop:
+        logger.info("⚠️ 장 마감 자동 종료가 비활성화되었습니다.")
+    else:
+        logger.info(f"🕐 장 마감 자동 종료 설정: {args.market_close_time} KST")
     
     if args.dry_run:
         logger.info("🔄 DRY RUN 모드: 실제 거래는 실행되지 않습니다.")
@@ -746,6 +765,13 @@ def main():
                     risk_manager=risk_manager
                 )
                 
+                # 장 마감 자동 종료 설정 적용
+                if args.disable_auto_stop:
+                    live_trader.auto_stop_on_market_close = False
+                else:
+                    live_trader.auto_stop_on_market_close = True
+                    live_trader.market_close_time_kst = args.market_close_time
+                
                 # 데이터 검증 시스템 연동
                 live_trader.data_validator = data_validator
                 
@@ -765,6 +791,12 @@ def main():
                 
                 model_info = model_info_dict.get(model_path, {})
                 logger.info(f"✅ {symbol} 실시간 트레이더 초기화 완료 (모델: {model_info.get('model_type', 'Unknown')})")
+                
+                # 장 마감 자동 종료 설정 로그
+                if live_trader.auto_stop_on_market_close:
+                    logger.info(f"   └─ 장 마감 자동 종료: {live_trader.market_close_time_kst} KST")
+                else:
+                    logger.info(f"   └─ 장 마감 자동 종료: 비활성화")
                 
             except FileNotFoundError as e:
                 logger.warning(f"⚠️  {symbol} 모델을 찾을 수 없습니다: {e}")
@@ -805,6 +837,12 @@ def main():
         logger.info(f"📈 거래 대상: {', '.join(live_traders.keys())}")
         logger.info(f"🆔 세션 ID: {session_id}")
         
+        # 장 마감 자동 종료 상태 출력
+        if not args.disable_auto_stop:
+            logger.info(f"🕐 장 마감 자동 종료: {args.market_close_time} KST에 자동 종료됩니다")
+        else:
+            logger.info("⚠️ 장 마감 자동 종료: 비활성화됨")
+        
         successful_starts = 0
         for symbol, live_trader in live_traders.items():
             if live_trader.start():
@@ -819,18 +857,69 @@ def main():
         
         logger.info(f"🎉 {successful_starts}/{len(live_traders)}개 심볼 트레이딩 시작 완료")
         
-        # 주기적인 모니터링 루프
+        # 주기적인 모니터링 루프 (장 마감 체크 포함)
         last_log_time = time.time()
         last_save_time = time.time()
         last_db_save_time = time.time()
         last_risk_check_time = time.time()
         last_model_info_log_time = time.time()
+        last_market_status_log_time = time.time()
         
         logger.info("🔄 모니터링 루프 시작")
         
         try:
             while True:
                 current_time = time.time()
+                
+                # 트레이딩 시스템이 모두 중지되었는지 확인 (장 마감 자동 종료 체크)
+                all_stopped = True
+                for symbol, live_trader in live_traders.items():
+                    state = live_trader.get_state()
+                    if state.get('running', False):
+                        all_stopped = False
+                        break
+                
+                if all_stopped:
+                    logger.info("🏁 모든 트레이딩 시스템이 중지되었습니다. (장 마감 자동 종료)")
+                    break
+                
+                # 시장 상태 주기적 로깅 (10분마다)
+                if current_time - last_market_status_log_time >= 600:
+                    korea_now = datetime.now(korea_tz)
+                    market_status = api_connector.is_market_open()
+                    
+                    if market_status.get('is_open', False):
+                        logger.info(f"🟢 시장 상태: 개장 중 ({korea_now.strftime('%Y-%m-%d %H:%M:%S')} KST)")
+                    else:
+                        next_open = market_status.get('next_open')
+                        if next_open:
+                            next_open_kr = next_open.astimezone(korea_tz)
+                            logger.info(f"🔴 시장 상태: 폐장 중 ({korea_now.strftime('%Y-%m-%d %H:%M:%S')} KST)")
+                            logger.info(f"   └─ 다음 개장: {next_open_kr.strftime('%Y-%m-%d %H:%M')} KST")
+                    
+                    # 장 마감까지 남은 시간 계산
+                    if not args.disable_auto_stop:
+                        try:
+                            close_time_str = args.market_close_time
+                            close_hour, close_minute = map(int, close_time_str.split(':'))
+                            
+                            # 오늘의 장 마감 시간
+                            today_close = korea_now.replace(hour=close_hour, minute=close_minute, second=0, microsecond=0)
+                            
+                            # 만약 현재 시간이 장 마감 시간을 지났다면 다음 날 장 마감 시간으로 설정
+                            if korea_now >= today_close:
+                                today_close += timedelta(days=1)
+                            
+                            time_until_close = today_close - korea_now
+                            hours, remainder = divmod(int(time_until_close.total_seconds()), 3600)
+                            minutes, _ = divmod(remainder, 60)
+                            
+                            logger.info(f"⏰ 장 마감까지: {hours}시간 {minutes}분")
+                            
+                        except Exception as e:
+                            logger.debug(f"장 마감 시간 계산 오류: {e}")
+                    
+                    last_market_status_log_time = current_time
                 
                 # 데이터베이스 저장 간격마다 통계 저장
                 if current_time - last_db_save_time >= args.db_save_interval:
@@ -845,13 +934,26 @@ def main():
                 
                 # 로깅 간격마다 상태 로깅
                 if current_time - last_log_time >= args.log_interval:
+                    korea_now = datetime.now(korea_tz)
+                    
                     for symbol, live_trader in live_traders.items():
                         state = live_trader.get_state()
                         
                         logger.info("=" * 50)
                         logger.info(f"📊 {symbol} 현재 트레이딩 상태 (세션: {session_id})")
+                        logger.info(f"🕐 한국시간: {korea_now.strftime('%Y-%m-%d %H:%M:%S')} KST")
                         logger.info("=" * 50)
                         logger.info(f"🔄 실행 상태: {'✅ 실행 중' if state['running'] else '❌ 중지됨'}")
+                        
+                        # 장 마감 자동 종료 상태
+                        market_settings = state.get('market_close_settings', {})
+                        if market_settings.get('auto_stop_enabled', False):
+                            close_time = market_settings.get('market_close_time_kst', '05:00')
+                            checked = market_settings.get('market_close_checked', False)
+                            logger.info(f"🕐 장 마감 자동 종료: {close_time} KST {'(체크됨)' if checked else '(대기중)'}")
+                        else:
+                            logger.info("🕐 장 마감 자동 종료: 비활성화")
+                        
                         logger.info(f"💰 계정 현금: ${state['account'].get('cash', 0):,.2f}")
                         logger.info(f"📈 포트폴리오: ${state['account'].get('portfolio_value', 0):,.2f}")
                         logger.info(f"🔢 총 거래: {len(state['trading_stats']['trades'])}회")
@@ -861,9 +963,16 @@ def main():
                         # 수익률 계산
                         initial_balance = state['trading_stats']['initial_balance']
                         current_balance = state['trading_stats']['current_balance']
+                        daily_start_balance = state['trading_stats'].get('daily_start_balance', initial_balance)
+                        current_portfolio = state['account'].get('portfolio_value', 0)
+                        
                         if initial_balance > 0:
-                            return_pct = ((current_balance - initial_balance) / initial_balance) * 100
-                            logger.info(f"📊 수익률: {return_pct:+.2f}%")
+                            session_return_pct = ((current_portfolio - initial_balance) / initial_balance) * 100
+                            logger.info(f"📊 세션 수익률: {session_return_pct:+.2f}%")
+                        
+                        if daily_start_balance > 0:
+                            daily_return_pct = ((current_portfolio - daily_start_balance) / daily_start_balance) * 100
+                            logger.info(f"📅 일일 수익률: {daily_return_pct:+.2f}%")
                         
                         # 포지션 정보
                         positions = state.get('positions', {})
@@ -984,7 +1093,8 @@ def main():
                                 **model_info.get('metadata', {}),
                                 'trading_results': final_summary,
                                 'session_id': session_id,
-                                'completion_time': datetime.now().isoformat()
+                                'completion_time': datetime.now().isoformat(),
+                                'auto_stopped_by_market_close': all_stopped  # 장 마감 자동 종료 여부
                             },
                             config_info=model_info.get('config')
                         )
@@ -1000,7 +1110,7 @@ def main():
                 logger.error(f"❌ 모델 정보 저장 중 오류: {e}")
             
             for symbol, live_trader in live_traders.items():
-                if live_trader.stop():
+                if live_trader.stop("정상 종료"):
                     logger.info(f"✅ {symbol} 트레이딩 중지 완료")
                     
                 # 최종 통계를 데이터베이스에 저장
@@ -1027,11 +1137,13 @@ def main():
                     final_stats = {
                         'total_trades': summary.get('total_trades', 0),
                         'successful_trades': summary.get('successful_trades', 0),
-                        'return_pct': summary.get('daily_return_pct', 0)
+                        'return_pct': summary.get('daily_return_pct', 0),
+                        'auto_stopped_by_market_close': all_stopped  # 장 마감 자동 종료 여부
                     }
                 
-                db_manager.update_trading_session_status(session_id, 'STOPPED', final_stats)
-                logger.info(f"🏁 트레이딩 세션 종료 정보 저장 완료: {session_id}")
+                status = 'AUTO_STOPPED' if all_stopped else 'STOPPED'
+                db_manager.update_trading_session_status(session_id, status, final_stats)
+                logger.info(f"🏁 트레이딩 세션 종료 정보 저장 완료: {session_id} ({status})")
                 
             except Exception as e:
                 logger.error(f"❌ 세션 종료 정보 저장 실패: {e}")
@@ -1043,7 +1155,12 @@ def main():
             db_manager.disconnect()
         
             logger.info("✅ 모든 정리 작업 완료")
-            logger.info("👋 SAC 실시간 트레이딩 시스템 종료")
+            
+            # 최종 종료 메시지
+            if all_stopped:
+                logger.info("🕐 SAC 실시간 트레이딩 시스템이 장 마감으로 자동 종료되었습니다")
+            else:
+                logger.info("👋 SAC 실시간 트레이딩 시스템 종료")
             
     except Exception as e:
         logger.error(f"❌ 시스템 초기화 중 오류 발생: {e}")

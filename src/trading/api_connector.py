@@ -25,7 +25,7 @@ from src.config.config import (
 )
 
 class TradingViewWebSocketClient:
-    """TradingView WebSocket 클라이언트"""
+    """TradingView WebSocket 클라이언트 - 최적화된 고속 버전"""
     
     def __init__(self, symbol: str, interval: str = "1", logger=None):
         self.symbol = symbol
@@ -40,6 +40,8 @@ class TradingViewWebSocketClient:
         self.data_callback = None
         self.data_buffer = []
         self.max_buffer_size = 1000
+        self.last_bar_time = None  # 중복 방지용
+        self.is_restarting = False
         
     def generate_ids(self):
         timestamp = int(time.time() * 1000)
@@ -63,29 +65,57 @@ class TradingViewWebSocketClient:
                     if method == "timescale_update":
                         bars = msg["p"][1].get(self.series_id, {}).get("s", [])
                         for bar in bars:
-                            bar_data = {
-                                'timestamp': datetime.utcfromtimestamp(bar["v"][0]),
-                                'open': bar["v"][1],
-                                'high': bar["v"][2],
-                                'low': bar["v"][3],
-                                'close': bar["v"][4],
-                                'volume': bar["v"][5]
-                            }
+                            bar_time = bar["v"][0]
+                            bar_dt = datetime.utcfromtimestamp(bar_time)
                             
-                            # 데이터 버퍼에 추가
-                            self.data_buffer.append(bar_data)
-                            if len(self.data_buffer) > self.max_buffer_size:
-                                self.data_buffer = self.data_buffer[-self.max_buffer_size:]
+                            # 중복 방지
+                            if bar_time == self.last_bar_time:
+                                continue
                             
-                            # 콜백 함수가 있으면 호출
-                            if self.data_callback:
-                                self.data_callback(bar_data)
+                            # 확정된 분봉만 처리 (현재 시간 - 1분)
+                            now_dt = datetime.utcnow().replace(second=0, microsecond=0)
+                            target_dt = now_dt - timedelta(minutes=1)
+                            
+                            if bar_dt == target_dt:
+                                self.last_bar_time = bar_time
                                 
+                                bar_data = {
+                                    'timestamp': bar_dt,
+                                    'open': float(bar["v"][1]),
+                                    'high': float(bar["v"][2]),
+                                    'low': float(bar["v"][3]),
+                                    'close': float(bar["v"][4]),
+                                    'volume': float(bar["v"][5])
+                                }
+                                
+                                # 데이터 버퍼에 추가
+                                self.data_buffer.append(bar_data)
+                                if len(self.data_buffer) > self.max_buffer_size:
+                                    self.data_buffer = self.data_buffer[-self.max_buffer_size:]
+                                
+                                if self.logger:
+                                    self.logger.info(f"[{self.symbol}] ✅ 확정된 분봉: {bar_dt.strftime('%Y-%m-%d %H:%M:%S')} - "
+                                                    f"O:{bar_data['open']}, H:{bar_data['high']}, L:{bar_data['low']}, "
+                                                    f"C:{bar_data['close']}, V:{bar_data['volume']}")
+                                
+                                # 콜백 함수가 있으면 호출
+                                if self.data_callback:
+                                    self.data_callback(bar_data)
+                                
+                                # 확정된 데이터 받은 후 연결 종료하고 다음 분 스케줄링
+                                if self.logger:
+                                    self.logger.info(f"[{self.symbol}] 🔄 데이터 수신 완료, 연결 종료 후 다음 분 대기")
+                                self.stop()
+                                self.schedule_next_connection()
+                    else:
+                        if self.logger:
+                            self.logger.debug(f"[{self.symbol}] 📥 시스템 메시지: {msg}")
         except json.JSONDecodeError:
-            pass
+            if self.logger:
+                self.logger.debug(f"[{self.symbol}] 📭 빈 메시지 또는 잘못된 형식")
         except Exception as e:
             if self.logger:
-                self.logger.warning(f"[{self.symbol}] 메시지 처리 오류: {e}")
+                self.logger.warning(f"[{self.symbol}] ⚠️ 메시지 처리 오류: {e}")
 
     def on_open(self, ws):
         if self.logger:

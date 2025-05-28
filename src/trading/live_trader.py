@@ -6,6 +6,7 @@ import queue
 import os
 import json
 import torch
+import pytz
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any, Union, Tuple, Callable
 
@@ -22,6 +23,7 @@ class LiveTrader:
     """
     실시간 트레이딩 모듈: 학습된 SAC 에이전트를 사용하여 실시간 트레이딩을 수행합니다.
     백테스팅과 동일한 데이터 전처리 파이프라인을 사용합니다.
+    장 마감 시 자동 종료 기능 추가.
     """
     
     def __init__(
@@ -83,6 +85,7 @@ class LiveTrader:
         self.running = False
         self.data_thread = None
         self.trading_thread = None
+        self.market_monitor_thread = None  # 장 시간 모니터링 스레드 추가
         
         # 트레이딩 설정
         self.trading_symbols = config.trading_symbols
@@ -100,11 +103,22 @@ class LiveTrader:
             "failed_trades": 0,
             "initial_balance": 0,
             "current_balance": 0,
-            "pnl": 0
+            "pnl": 0,
+            "daily_start_balance": 0,  # 일일 시작 잔고 추가
+            "session_start_positions": {}  # 세션 시작 시 포지션 정보
         }
+        
+        # 한국 시간대 설정
+        self.korea_tz = pytz.timezone('Asia/Seoul')
+        
+        # 장 마감 자동 종료 설정 (기본값)
+        self.auto_stop_on_market_close = True
+        self.market_close_time_kst = "05:00"  # 한국시간 새벽 5시
+        self.market_close_checked = False  # 당일 장 마감 체크 완료 여부
         
         if self.logger:
             self.logger.info("LiveTrader 초기화 완료")
+            self.logger.info(f"🕐 장 마감 자동 종료 설정: {self.market_close_time_kst} KST")
     
     def start(self) -> bool:
         """실시간 트레이딩 시작"""
@@ -134,9 +148,17 @@ class LiveTrader:
             self._load_initial_data()
             
             # 트레이딩 통계 초기화
-            self.trading_stats["start_time"] = datetime.now()
+            current_time = datetime.now()
+            self.trading_stats["start_time"] = current_time
             self.trading_stats["initial_balance"] = float(self.account_info.get("cash", 0))
             self.trading_stats["current_balance"] = self.trading_stats["initial_balance"]
+            self.trading_stats["daily_start_balance"] = self.trading_stats["initial_balance"]
+            
+            # 세션 시작 시 포지션 정보 저장 (포트폴리오 변화율 계산용)
+            self.trading_stats["session_start_positions"] = self.position_manager.get_all_positions()
+            
+            # 장 마감 체크 초기화
+            self.market_close_checked = False
             
             # 스레드 시작
             self.running = True
@@ -148,10 +170,20 @@ class LiveTrader:
             self.trading_thread.daemon = True
             self.trading_thread.start()
             
+            # 장 시간 모니터링 스레드 시작 (자동 종료가 활성화된 경우만)
+            if self.auto_stop_on_market_close:
+                self.market_monitor_thread = threading.Thread(target=self._market_time_monitor)
+                self.market_monitor_thread.daemon = True
+                self.market_monitor_thread.start()
+            
             if self.logger:
                 self.logger.info("실시간 트레이딩을 시작합니다.")
                 self.logger.info(f"트레이딩 심볼: {', '.join(self.trading_symbols)}")
                 self.logger.info(f"트레이딩 간격: {self.trading_interval}초")
+                if self.auto_stop_on_market_close:
+                    self.logger.info(f"🕐 장 마감 자동 종료: {self.market_close_time_kst} KST")
+                else:
+                    self.logger.info("🕐 장 마감 자동 종료: 비활성화")
                 
             return True
             
@@ -161,7 +193,7 @@ class LiveTrader:
                 self.logger.error(f"실시간 트레이딩 시작 중 오류 발생: {e}")
             return False
     
-    def stop(self) -> bool:
+    def stop(self, reason: str = "수동 종료") -> bool:
         """실시간 트레이딩 중지"""
         if not self.running:
             if self.logger:
@@ -172,12 +204,18 @@ class LiveTrader:
             # 종료 플래그 설정
             self.running = False
             
+            if self.logger:
+                self.logger.info(f"🛑 실시간 트레이딩 중지 중... ({reason})")
+            
             # 스레드 종료 대기
             if self.data_thread and self.data_thread.is_alive():
                 self.data_thread.join(timeout=5.0)
                 
             if self.trading_thread and self.trading_thread.is_alive():
                 self.trading_thread.join(timeout=5.0)
+                
+            if self.market_monitor_thread and self.market_monitor_thread.is_alive():
+                self.market_monitor_thread.join(timeout=5.0)
             
             # 최종 계정 정보 업데이트
             self.account_info = self.api.get_account_info()
@@ -186,9 +224,11 @@ class LiveTrader:
             self.trading_stats["current_balance"] = float(self.account_info.get("cash", 0))
             self.trading_stats["pnl"] = self.trading_stats["current_balance"] - self.trading_stats["initial_balance"]
             
+            # 최종 포트폴리오 성과 출력
+            self._print_final_portfolio_performance(reason)
+            
             if self.logger:
-                self.logger.info("실시간 트레이딩을 중지합니다.")
-                self.logger.info(f"수익률: {((self.trading_stats['pnl'] / self.trading_stats['initial_balance']) * 100):.2f}%")
+                self.logger.info(f"✅ 실시간 트레이딩이 중지되었습니다. ({reason})")
                 
             return True
             
@@ -196,6 +236,160 @@ class LiveTrader:
             if self.logger:
                 self.logger.error(f"실시간 트레이딩 중지 중 오류 발생: {e}")
             return False
+    
+    def _market_time_monitor(self) -> None:
+        """장 시간 모니터링 워커 스레드 - 장 마감 시 자동 종료"""
+        while self.running:
+            try:
+                # 현재 한국 시간
+                korea_now = datetime.now(self.korea_tz)
+                current_time_str = korea_now.strftime("%H:%M")
+                
+                # 날짜가 바뀌면 장 마감 체크 초기화
+                if korea_now.hour == 0 and korea_now.minute == 0:
+                    self.market_close_checked = False
+                    # 새로운 거래일 시작 - 일일 시작 잔고 업데이트
+                    self.account_info = self.api.get_account_info()
+                    self.trading_stats["daily_start_balance"] = float(self.account_info.get("portfolio_value", 0))
+                    
+                    if self.logger:
+                        self.logger.info(f"📅 새로운 거래일 시작: {korea_now.strftime('%Y-%m-%d')}")
+                        self.logger.info(f"💰 일일 시작 포트폴리오: ${self.trading_stats['daily_start_balance']:,.2f}")
+                
+                # 장 마감 시간 체크 (한국시간 05:00)
+                if (current_time_str == self.market_close_time_kst and 
+                    not self.market_close_checked and 
+                    self.auto_stop_on_market_close):
+                    
+                    self.market_close_checked = True
+                    
+                    if self.logger:
+                        self.logger.info("🔔" + "=" * 60 + "🔔")
+                        self.logger.info(f"🕐 장 마감 시간 도달: {korea_now.strftime('%Y-%m-%d %H:%M:%S')} KST")
+                        self.logger.info("🔔" + "=" * 60 + "🔔")
+                    
+                    # 트레이딩 자동 종료
+                    self.stop(reason="장 마감 자동 종료")
+                    break
+                
+                # 1분마다 체크
+                time.sleep(60)
+                
+            except Exception as e:
+                if self.logger:
+                    self.logger.error(f"장 시간 모니터링 중 오류 발생: {e}")
+                time.sleep(60)  # 오류 발생 시 1분 대기 후 재시도
+    
+    def _print_final_portfolio_performance(self, reason: str) -> None:
+        """최종 포트폴리오 성과 출력"""
+        try:
+            if self.logger:
+                self.logger.info("📊" + "=" * 80 + "📊")
+                self.logger.info(f"🏁 TRADING SESSION ENDED - {reason}")
+                self.logger.info("📊" + "=" * 80 + "📊")
+                
+                # 현재 계정 정보
+                current_account = self.api.get_account_info()
+                current_portfolio_value = float(current_account.get("portfolio_value", 0))
+                current_cash = float(current_account.get("cash", 0))
+                current_equity = float(current_account.get("equity", current_portfolio_value))
+                
+                # 세션 시작 대비 성과
+                session_start_balance = self.trading_stats["initial_balance"]
+                session_pnl = current_portfolio_value - session_start_balance
+                session_return_pct = (session_pnl / session_start_balance * 100) if session_start_balance > 0 else 0
+                
+                # 일일 성과 (당일 시작 대비)
+                daily_start_balance = self.trading_stats.get("daily_start_balance", session_start_balance)
+                daily_pnl = current_portfolio_value - daily_start_balance
+                daily_return_pct = (daily_pnl / daily_start_balance * 100) if daily_start_balance > 0 else 0
+                
+                # 현재 포지션 정보
+                current_positions = self.position_manager.get_all_positions()
+                total_position_value = sum(abs(float(pos.get("market_value", 0))) for pos in current_positions)
+                
+                # 세션 정보
+                start_time = self.trading_stats["start_time"]
+                end_time = datetime.now()
+                session_duration = end_time - start_time
+                total_trades = len(self.trading_stats["trades"])
+                successful_trades = self.trading_stats["successful_trades"]
+                failed_trades = self.trading_stats["failed_trades"]
+                
+                # 성과 출력
+                self.logger.info("💰 PORTFOLIO PERFORMANCE:")
+                self.logger.info(f"   📈 Current Portfolio Value: ${current_portfolio_value:,.2f}")
+                self.logger.info(f"   💵 Current Cash: ${current_cash:,.2f}")
+                self.logger.info(f"   🏢 Current Positions Value: ${total_position_value:,.2f}")
+                self.logger.info("")
+                
+                # 세션 성과
+                session_emoji = "📈" if session_pnl >= 0 else "📉"
+                self.logger.info("🔄 SESSION PERFORMANCE:")
+                self.logger.info(f"   💰 Session Start: ${session_start_balance:,.2f}")
+                self.logger.info(f"   {session_emoji} Session P&L: ${session_pnl:+,.2f} ({session_return_pct:+.2f}%)")
+                self.logger.info("")
+                
+                # 일일 성과
+                daily_emoji = "📈" if daily_pnl >= 0 else "📉"
+                self.logger.info("📅 DAILY PERFORMANCE:")
+                self.logger.info(f"   🌅 Daily Start: ${daily_start_balance:,.2f}")
+                self.logger.info(f"   {daily_emoji} Daily P&L: ${daily_pnl:+,.2f} ({daily_return_pct:+.2f}%)")
+                self.logger.info("")
+                
+                # 포지션별 성과
+                if current_positions:
+                    self.logger.info("🏢 FINAL POSITIONS:")
+                    for pos in current_positions:
+                        symbol = pos.get("symbol", "Unknown")
+                        qty = float(pos.get("qty", 0))
+                        if abs(qty) > 0.001:  # 의미있는 포지션만 표시
+                            avg_cost = float(pos.get("avg_entry_price", 0))
+                            current_price = float(pos.get("current_price", 0))
+                            market_value = float(pos.get("market_value", 0))
+                            unrealized_pl = float(pos.get("unrealized_pl", 0))
+                            
+                            pos_emoji = "📈" if unrealized_pl >= 0 else "📉"
+                            self.logger.info(f"   {symbol}:")
+                            self.logger.info(f"     Shares: {qty:+.4f}")
+                            self.logger.info(f"     Avg Cost: ${avg_cost:.2f}")
+                            self.logger.info(f"     Current: ${current_price:.2f}")
+                            self.logger.info(f"     Market Value: ${market_value:,.2f}")
+                            self.logger.info(f"     {pos_emoji} Unrealized P&L: ${unrealized_pl:+,.2f}")
+                else:
+                    self.logger.info("🏢 FINAL POSITIONS: No positions")
+                
+                self.logger.info("")
+                
+                # 트레이딩 통계
+                success_rate = (successful_trades / total_trades * 100) if total_trades > 0 else 0
+                self.logger.info("📊 TRADING STATISTICS:")
+                self.logger.info(f"   🔢 Total Trades: {total_trades}")
+                self.logger.info(f"   ✅ Successful: {successful_trades}")
+                self.logger.info(f"   ❌ Failed: {failed_trades}")
+                self.logger.info(f"   📈 Success Rate: {success_rate:.1f}%")
+                self.logger.info(f"   ⏰ Session Duration: {str(session_duration).split('.')[0]}")
+                
+                # 모델 타입
+                model_type = "CNN" if getattr(self.agent, 'use_cnn', False) else \
+                            "LSTM" if getattr(self.agent, 'use_lstm', False) else "MLP"
+                self.logger.info(f"   🧠 Model Type: {model_type}")
+                
+                # 종료 시간
+                korea_now = datetime.now(self.korea_tz)
+                self.logger.info(f"   🕐 End Time: {end_time.strftime('%Y-%m-%d %H:%M:%S')} ({korea_now.strftime('%Y-%m-%d %H:%M:%S')} KST)")
+                
+                self.logger.info("📊" + "=" * 80 + "📊")
+                
+                # 성과 요약 한 줄
+                if reason == "장 마감 자동 종료":
+                    self.logger.info(f"🏁 Market Closed Auto-Stop | Daily: {daily_return_pct:+.2f}% | Session: {session_return_pct:+.2f}% | Trades: {total_trades}")
+                else:
+                    self.logger.info(f"🏁 Manual Stop | Daily: {daily_return_pct:+.2f}% | Session: {session_return_pct:+.2f}% | Trades: {total_trades}")
+                
+        except Exception as e:
+            if self.logger:
+                self.logger.error(f"❌ 최종 성과 출력 중 오류: {e}")
     
     def get_state(self) -> Dict[str, Any]:
         """현재 트레이딩 상태 조회"""
@@ -212,19 +406,27 @@ class LiveTrader:
         self.trading_stats["current_balance"] = float(self.account_info.get("cash", 0))
         self.trading_stats["pnl"] = self.trading_stats["current_balance"] - self.trading_stats["initial_balance"]
         
+        # 한국 시간 정보 추가
+        korea_now = datetime.now(self.korea_tz)
+        
         return {
             "running": self.running,
             "account": self.account_info,
             "positions": positions,
             "open_orders": open_orders,
             "trading_stats": self.trading_stats,
+            "market_close_settings": {
+                "auto_stop_enabled": self.auto_stop_on_market_close,
+                "market_close_time_kst": self.market_close_time_kst,
+                "current_korea_time": korea_now.strftime("%Y-%m-%d %H:%M:%S"),
+                "market_close_checked": self.market_close_checked
+            },
             "last_update": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
     
     def execute_trade(self, symbol: str, action: float) -> Dict[str, Any]:
         """
-        트레이딩 행동 실행 (모든 모델 타입 지원)
-        (공매도 소수 주식 문제 해결)
+        트레이딩 행동 실행 (분할 매도 지원)
         """
         try:
             # 계정 및 포지션 정보 업데이트
@@ -252,38 +454,52 @@ class LiveTrader:
                     self.logger.error(f"{symbol}의 현재 가격을 얻을 수 없습니다.")
                 return {"success": False, "error": "현재 가격을 얻을 수 없습니다."}
             
-            # 리스크 관리자를 통한 주문 수량 계산
-            quantity = self.risk_manager.calculate_position_size(
-                symbol=symbol,
-                side=side,
-                available_balance=available_cash,
-                current_price=current_price,
-                position_ratio=position_size,
-                current_position=current_position.get("qty", 0)
-            )
-            Logger.info(f'quantity\n{quantity}')
-            # ===== 공매도 완전 차단 =====
-            if side == "sell":
-                current_position_qty = float(current_position.get("qty", 0))
+            # 현재 보유 수량
+            current_position_qty = float(current_position.get("qty", 0))
+            
+            # ===== 분할 거래 로직 개선 =====
+            if side == "buy":
+                # 매수의 경우: 리스크 관리자를 통한 주문 수량 계산
+                quantity = self.risk_manager.calculate_position_size(
+                    symbol=symbol,
+                    side=side,
+                    available_balance=available_cash,
+                    current_price=current_price,
+                    position_ratio=position_size,
+                    current_position=current_position_qty
+                )
                 
-                # 공매도 차단: 보유 주식이 없으면 공매도 시도 차단
+            else:  # 매도의 경우
                 if current_position_qty <= 0:
+                    # 보유 주식이 없으면 공매도이므로 거래 차단
                     if self.logger:
                         self.logger.info(f"{symbol} 공매도 시도 차단: 보유 주식 없음 (현재: {current_position_qty})")
                     return {"success": True, "action": "no_trade", "reason": "공매도 차단 - 보유 주식 없음"}
                 
-                # 보유 수량보다 많이 매도하려는 경우, 보유 수량만큼만 매도
-                if quantity > current_position_qty:
+                # **분할 매도 로직**: 보유 수량의 일정 비율만 매도
+                # position_size (0~1)를 매도 비율로 사용
+                max_sell_ratio = min(position_size, 0.5)  # 0.5=50%  최대 100%까지만
+                
+                # 매도할 수량 계산 (보유 수량 × 매도 비율)
+                quantity = current_position_qty * max_sell_ratio
+                
+                # 최소 매도 수량 체크 (0.0001주 이상)
+                if quantity < 0.0001:
                     if self.logger:
-                        self.logger.info(f"{symbol} 매도 수량 조정: {quantity:.4f} -> {current_position_qty:.4f} (보유 수량 제한)")
-                    quantity = current_position_qty
-
-            # ===== 거래 수량이 0 이하일 경우 거래 실행하지 않음 =====
+                        self.logger.info(f"{symbol} 매도 건너뜀: 계산된 수량이 너무 작음 ({quantity:.6f})")
+                    return {"success": True, "action": "no_trade", "reason": "매도 수량이 너무 작음"}
+                
+                # 보유 수량을 초과하지 않도록 제한
+                quantity = min(quantity, current_position_qty)
+                
+                if self.logger:
+                    self.logger.info(f"{symbol} 분할 매도: {quantity:.4f}주 / {current_position_qty:.4f}주 ({(quantity/current_position_qty)*100:.1f}%)")
+            
+            # 거래 수량이 0이면 거래 실행하지 않음
             if quantity <= 0:
                 if self.logger:
                     self.logger.info(f"{symbol} {side} 거래 건너뜀: 수량이 0 이하입니다.")
                 return {"success": True, "action": "no_trade", "reason": "수량이 0 이하입니다."}
-
             
             # 시장가 주문 실행
             order_result = self.api.place_market_order(
@@ -292,10 +508,6 @@ class LiveTrader:
                 quantity=quantity
             )
             
-            # 로그로 order_result 확인
-            if self.logger:
-                self.logger.debug(f"주문 결과: {order_result}")
-                
             # 모델 타입 미리 확인 (한 번만 계산)
             model_type = "CNN" if getattr(self.agent, 'use_cnn', False) else \
                         "LSTM" if getattr(self.agent, 'use_lstm', False) else "MLP"
@@ -359,8 +571,6 @@ class LiveTrader:
             if self.logger:
                 self.logger.error(f"{symbol} 거래 실행 중 오류 발생: {e}")
             return {"success": False, "error": str(e)}
-
-    
     
     def save_trading_stats(self, filepath: str) -> bool:
         """트레이딩 통계 저장"""
@@ -715,17 +925,17 @@ class LiveTrader:
             price = trade_info.get('price', 0)
             amount = quantity * price
             
-            # 거래 시간
+            # 거래 시간 (한국시간도 포함)
             trade_time = datetime.now().strftime('%H:%M:%S')
+            korea_time = datetime.now(self.korea_tz).strftime('%H:%M:%S')
             
             # 거래 방향 이모지
             side_emoji = "🟢 BUY" if side.lower() == 'buy' else "🔴 SELL"
-            model_type = "CNN" if getattr(self.agent, 'use_cnn', False) else \
-                        "LSTM" if getattr(self.agent, 'use_lstm', False) else "MLP"
+            model_type = trade_info.get('model_type', 'Unknown')
             
             if self.logger:
                 self.logger.info("🔥" + "=" * 60 + "🔥")
-                self.logger.info(f"⚡ TRADE EXECUTED at {trade_time} ({model_type} Model)")
+                self.logger.info(f"⚡ TRADE EXECUTED at {trade_time} ({korea_time} KST) ({model_type} Model)")
                 self.logger.info("🔥" + "=" * 60 + "🔥")
                 self.logger.info(f"📈 Symbol: {symbol}")
                 self.logger.info(f"{side_emoji}: {quantity:.4f} shares @ ${price:.2f}")
@@ -765,7 +975,7 @@ class LiveTrader:
                         pnl_emoji = "📈" if unrealized_pl >= 0 else "📉"
                         self.logger.info(f"   {pnl_emoji} Unrealized P&L: ${unrealized_pl:+,.2f}")
                     
-                    # 총 수익률
+                    # 총 수익률 (세션 기준)
                     initial_balance = self.trading_stats.get('initial_balance', 0)
                     current_balance = account_info.get('portfolio_value', 0)
                     if initial_balance > 0:
@@ -773,7 +983,16 @@ class LiveTrader:
                         pnl_amount = current_balance - initial_balance
                         
                         return_emoji = "📈" if total_return >= 0 else "📉"
-                        self.logger.info(f"{return_emoji} Total Return: {total_return:+.2f}% (${pnl_amount:+,.2f})")
+                        self.logger.info(f"{return_emoji} Session Return: {total_return:+.2f}% (${pnl_amount:+,.2f})")
+                    
+                    # 일일 수익률
+                    daily_start_balance = self.trading_stats.get("daily_start_balance", initial_balance)
+                    if daily_start_balance > 0:
+                        daily_return = ((current_balance - daily_start_balance) / daily_start_balance) * 100
+                        daily_pnl = current_balance - daily_start_balance
+                        
+                        daily_emoji = "📈" if daily_return >= 0 else "📉"
+                        self.logger.info(f"{daily_emoji} Daily Return: {daily_return:+.2f}% (${daily_pnl:+,.2f})")
                     
                     # 거래 통계
                     total_trades = len(self.trading_stats.get('trades', []))
@@ -790,6 +1009,3 @@ class LiveTrader:
         except Exception as e:
             if self.logger:
                 self.logger.error(f"❌ Trade logging failed: {e}")
-        
-    
-    
