@@ -222,7 +222,10 @@ class LiveTrader:
         }
     
     def execute_trade(self, symbol: str, action: float) -> Dict[str, Any]:
-        """트레이딩 행동 실행 (모든 모델 타입 지원)"""
+        """
+        트레이딩 행동 실행 (모든 모델 타입 지원)
+        (공매도 소수 주식 문제 해결)
+        """
         try:
             # 계정 및 포지션 정보 업데이트
             self.account_info = self.api.get_account_info()
@@ -259,11 +262,28 @@ class LiveTrader:
                 current_position=current_position.get("qty", 0)
             )
             
-            # 거래 수량이 0이면 거래 실행하지 않음
+            # ===== 공매도 완전 차단 =====
+            if side == "sell":
+                current_position_qty = float(current_position.get("qty", 0))
+                
+                # 공매도 차단: 보유 주식이 없으면 공매도 시도 차단
+                if current_position_qty <= 0:
+                    if self.logger:
+                        self.logger.info(f"{symbol} 공매도 시도 차단: 보유 주식 없음 (현재: {current_position_qty})")
+                    return {"success": True, "action": "no_trade", "reason": "공매도 차단 - 보유 주식 없음"}
+                
+                # 보유 수량보다 많이 매도하려는 경우, 보유 수량만큼만 매도
+                if quantity > current_position_qty:
+                    if self.logger:
+                        self.logger.info(f"{symbol} 매도 수량 조정: {quantity:.4f} -> {current_position_qty:.4f} (보유 수량 제한)")
+                    quantity = current_position_qty
+
+            # ===== 거래 수량이 0 이하일 경우 거래 실행하지 않음 =====
             if quantity <= 0:
                 if self.logger:
                     self.logger.info(f"{symbol} {side} 거래 건너뜀: 수량이 0 이하입니다.")
                 return {"success": True, "action": "no_trade", "reason": "수량이 0 이하입니다."}
+
             
             # 시장가 주문 실행
             order_result = self.api.place_market_order(
@@ -272,11 +292,18 @@ class LiveTrader:
                 quantity=quantity
             )
             
+            # 로그로 order_result 확인
+            if self.logger:
+                self.logger.debug(f"주문 결과: {order_result}")
+                
+            # 모델 타입 미리 확인 (한 번만 계산)
+            model_type = "CNN" if getattr(self.agent, 'use_cnn', False) else \
+                        "LSTM" if getattr(self.agent, 'use_lstm', False) else "MLP"
+            
             # 거래 실행 결과 처리
             if order_result.get("success", True):
-                # 성공한 거래
-                self.trading_stats["successful_trades"] += 1
-                self.trading_stats["trades"].append({
+                # 거래 정보 생성
+                trade_info = {
                     "symbol": symbol,
                     "side": side,
                     "quantity": quantity,
@@ -284,22 +311,16 @@ class LiveTrader:
                     "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     "order_id": order_result.get("id", ""),
                     "status": "success",
-                    "model_type": "CNN" if getattr(self.agent, 'use_cnn', False) else 
-                                "LSTM" if getattr(self.agent, 'use_lstm', False) else "MLP"
-                })
+                    "model_type": model_type
+                }
                 
-                if self.logger:
-                    model_type = "CNN" if getattr(self.agent, 'use_cnn', False) else \
-                            "LSTM" if getattr(self.agent, 'use_lstm', False) else "MLP"
-                    self.logger.info("=" * 60)
-                    self.logger.info(f"📌 트레이드 실행 결과 ({model_type} 모델)")
-                    self.logger.info(f"📈 종목: {symbol}")
-                    self.logger.info(f"🧭 방향: {'🟢 매수(BUY)' if side == 'buy' else '🔴 매도(SELL)'}")
-                    self.logger.info(f"🔢 수량: {quantity:.4f} 주")
-                    self.logger.info(f"💵 체결가: ${current_price:.2f}")
-                    self.logger.info(f"🕒 시간: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-                    self.logger.info("=" * 60)
-                    
+                # 성공한 거래 통계 업데이트
+                self.trading_stats["successful_trades"] += 1
+                self.trading_stats["trades"].append(trade_info)
+                
+                # 거래 실행 로그 출력
+                self._log_trade_execution(trade_info)
+                
                 # 포지션 정보 업데이트
                 self.position_manager.update_position(symbol)
                 
@@ -683,3 +704,92 @@ class LiveTrader:
             if self.logger:
                 self.logger.error(f"{symbol} 현재 가격 조회 중 오류 발생: {e}")
             return 0.0
+    
+    
+    def _log_trade_execution(self, trade_info):
+        """거래 실행 시 깔끔한 로그"""
+        try:
+            symbol = trade_info.get('symbol', 'Unknown')
+            side = trade_info.get('side', 'Unknown')
+            quantity = trade_info.get('quantity', 0)
+            price = trade_info.get('price', 0)
+            amount = quantity * price
+            
+            # 거래 시간
+            trade_time = datetime.now().strftime('%H:%M:%S')
+            
+            # 거래 방향 이모지
+            side_emoji = "🟢 BUY" if side.lower() == 'buy' else "🔴 SELL"
+            model_type = "CNN" if getattr(self.agent, 'use_cnn', False) else \
+                        "LSTM" if getattr(self.agent, 'use_lstm', False) else "MLP"
+            
+            if self.logger:
+                self.logger.info("🔥" + "=" * 60 + "🔥")
+                self.logger.info(f"⚡ TRADE EXECUTED at {trade_time} ({model_type} Model)")
+                self.logger.info("🔥" + "=" * 60 + "🔥")
+                self.logger.info(f"📈 Symbol: {symbol}")
+                self.logger.info(f"{side_emoji}: {quantity:.4f} shares @ ${price:.2f}")
+                self.logger.info(f"💰 Trade Amount: ${amount:,.2f}")
+                
+                # 거래 후 즉시 포트폴리오 상태 조회
+                time.sleep(0.3)  # API 업데이트 대기
+                try:
+                    account_info = self.api.get_account_info()
+                    
+                    self.logger.info("📊 PORTFOLIO AFTER TRADE:")
+                    self.logger.info(f"💵 Cash: ${account_info.get('cash', 0):,.2f}")
+                    self.logger.info(f"📈 Portfolio Value: ${account_info.get('portfolio_value', 0):,.2f}")
+                    
+                    # 포지션 정보
+                    position = self.position_manager.get_position(symbol)
+                    if position and abs(position.get('qty', 0)) > 0.001:
+                        qty = position.get('qty', 0)
+                        
+                        # avg_entry_price를 여러 키로 시도
+                        avg_cost = position.get('avg_entry_price', 0)
+                        if avg_cost == 0:
+                            avg_cost = position.get('avg_cost', 0)
+                        if avg_cost == 0:
+                            avg_cost = position.get('average_entry_price', 0)
+                        
+                        market_value = position.get('market_value', 0)
+                        unrealized_pl = position.get('unrealized_pnl', 0)
+                        if unrealized_pl == 0:
+                            unrealized_pl = position.get('unrealized_pl', 0)
+                        
+                        self.logger.info(f"🏢 {symbol} Position:")
+                        self.logger.info(f"   Shares: {qty:+.4f}")
+                        self.logger.info(f"   Avg Cost: ${avg_cost:.2f}")
+                        self.logger.info(f"   Market Value: ${market_value:,.2f}")
+                        
+                        pnl_emoji = "📈" if unrealized_pl >= 0 else "📉"
+                        self.logger.info(f"   {pnl_emoji} Unrealized P&L: ${unrealized_pl:+,.2f}")
+                    
+                    # 총 수익률
+                    initial_balance = self.trading_stats.get('initial_balance', 0)
+                    current_balance = account_info.get('portfolio_value', 0)
+                    if initial_balance > 0:
+                        total_return = ((current_balance - initial_balance) / initial_balance) * 100
+                        pnl_amount = current_balance - initial_balance
+                        
+                        return_emoji = "📈" if total_return >= 0 else "📉"
+                        self.logger.info(f"{return_emoji} Total Return: {total_return:+.2f}% (${pnl_amount:+,.2f})")
+                    
+                    # 거래 통계
+                    total_trades = len(self.trading_stats.get('trades', []))
+                    successful_trades = self.trading_stats.get('successful_trades', 0)
+                    failed_trades = self.trading_stats.get('failed_trades', 0)
+                    
+                    self.logger.info(f"🔢 Session Stats: {total_trades} trades (✅{successful_trades} ❌{failed_trades})")
+                    
+                except Exception as e:
+                    self.logger.warning(f"⚠️ Portfolio update failed: {e}")
+                
+                self.logger.info("🔥" + "=" * 60 + "🔥")
+                
+        except Exception as e:
+            if self.logger:
+                self.logger.error(f"❌ Trade logging failed: {e}")
+        
+    
+    

@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# run_live_trading.py 기존 테이블 구조 호환 버전 - 심볼 해결 수정
+
 import os
 import argparse
 import torch
 import signal
 import sys
 import time
+import json
 from datetime import datetime
+from pathlib import Path
 
 # 상위 디렉토리를 path에 추가
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -22,90 +26,245 @@ from typing import Dict, List
 
 
 class EnhancedLiveTrader:
-    """데이터베이스 연동이 포함된 향상된 실시간 트레이더"""
+    """데이터베이스 연동이 포함된 향상된 실시간 트레이더 - 기존 테이블 호환 버전"""
     
     def __init__(self, live_trader: LiveTrader, db_manager: DatabaseManager, 
-                 symbol: str, model_id: str):
+                 symbol: str, model_id: str, session_id: str):
         self.live_trader = live_trader
         self.db_manager = db_manager
         self.symbol = symbol
         self.model_id = model_id
+        self.session_id = session_id
         self.last_db_save_time = 0
         
+        self.today_date = datetime.now().strftime("%Y-%m-%d")
+        self.daily_start_portfolio_value = None
+        self.session_start_time = datetime.now()
+        
+        # 초기 포트폴리오 값 설정
+        try:
+            state = self.live_trader.get_state()
+            account = state.get('account', {})
+            self.daily_start_portfolio_value = float(account.get('portfolio_value', 0))
+            self.live_trader.logger.info(f"✅ 초기 포트폴리오 값 설정: ${self.daily_start_portfolio_value:,.2f}")
+        except Exception as e:
+            self.daily_start_portfolio_value = 0.0
+            self.live_trader.logger.warning(f"⚠️ 초기 포트폴리오 값 설정 실패: {e}")
+        
+        # LiveTrader에 콜백 등록
+        self._register_callbacks()
+        
+    def _register_callbacks(self):
+        """LiveTrader에 거래 실행 콜백 등록"""
+        # 기존 execute_trade 메서드를 래핑
+        original_execute_trade = self.live_trader.execute_trade
+        
+        def enhanced_execute_trade(symbol, action):
+            result = original_execute_trade(symbol, action)
+            if result.get('success', False):
+                # 거래 성공 시 DB 저장
+                self.on_trade_executed(result)
+            return result
+        
+        # 메서드 교체
+        self.live_trader.execute_trade = enhanced_execute_trade
+    
     def on_trade_executed(self, trade_info: Dict):
         """거래 실행 시 콜백 - 데이터베이스에 저장"""
         try:
+            # 안전한 값 추출
+            symbol = trade_info.get('symbol', self.symbol)
+            side = trade_info.get('side', 'unknown')
+            quantity = self._safe_float(trade_info.get('quantity', 0))
+            price = self._safe_float(trade_info.get('price', 0))
+            fee = self._safe_float(trade_info.get('fee', 0))
+            
             # 거래 정보를 데이터베이스에 저장
-            self.db_manager.save_trade(
-                symbol=trade_info.get('symbol', self.symbol),
-                side=trade_info.get('side'),  # 'buy' or 'sell'
-                quantity=abs(trade_info.get('quantity', 0)),
-                price=trade_info.get('price', 0),
-                fee=trade_info.get('fee', 0),
-                pnl=trade_info.get('pnl'),
-                model_id=self.model_id
+            success = self.db_manager.save_trade(
+                symbol=symbol,
+                side=side,
+                quantity=abs(quantity),
+                price=price,
+                fee=fee,
+                pnl=None,  # 실시간에서는 pnl을 바로 계산하기 어려움
+                model_id=self.model_id,
+                session_id=self.session_id
             )
             
-            # 포지션 정보 업데이트
+            if success:
+                self.live_trader.logger.info(f"✅ 거래 DB 저장 성공: {symbol} {side} {quantity}@${price} (세션: {self.session_id})")
+            else:
+                self.live_trader.logger.warning(f"⚠️ 거래 DB 저장 실패: {symbol}")
+            
+            # 포지션 정보 업데이트 (약간의 지연 후)
+            time.sleep(1)  # API 데이터 업데이트 대기
             self.update_position_in_db()
             
         except Exception as e:
-            self.live_trader.logger.error(f"❌ 거래 DB 저장 실패: {e}")
+            self.live_trader.logger.error(f"❌ 거래 DB 저장 중 오류: {e}")
     
     def update_position_in_db(self):
         """현재 포지션을 데이터베이스에 업데이트"""
         try:
-            state = self.live_trader.get_state()
-            positions = state.get('positions', {})
+            # API에서 직접 최신 포지션 정보 가져오기
+            position = self.live_trader.api.get_position(self.symbol)
             
-            if self.symbol in positions:
-                position = positions[self.symbol]
+            if position:
+                # 안전한 타입 변환
+                qty = self._safe_float(position.get('qty', 0))
                 
-                self.db_manager.save_position(
+                # 다양한 키로 평균 진입가 시도
+                avg_cost = (self._safe_float(position.get('avg_entry_price', 0)) or 
+                           self._safe_float(position.get('avg_cost', 0)) or 
+                           self._safe_float(position.get('average_entry_price', 0)) or
+                           self._safe_float(position.get('cost_basis', 0)))
+                
+                current_price = self._safe_float(position.get('current_price', 0))
+                market_value = self._safe_float(position.get('market_value', 0))
+                
+                # 다양한 키로 미실현 손익 시도
+                unrealized_pl = (self._safe_float(position.get('unrealized_pnl', 0)) or 
+                                self._safe_float(position.get('unrealized_pl', 0)) or
+                                self._safe_float(position.get('unrealized_plpc', 0)))
+                
+                # 현재 가격이 0이면 시장 데이터에서 가져오기
+                if current_price == 0 and abs(qty) > 0.001:
+                    try:
+                        market_data = self.live_trader.api.get_market_data(self.symbol, limit=1)
+                        if not market_data.empty:
+                            current_price = float(market_data.iloc[-1]['close'])
+                    except:
+                        pass
+                
+                # 평균 진입가가 0이고 수량이 있으면 현재 가격 사용
+                if avg_cost == 0 and abs(qty) > 0.001 and current_price > 0:
+                    avg_cost = current_price
+                
+                success = self.db_manager.save_position(
                     symbol=self.symbol,
-                    quantity=float(position.get('qty', 0)),
-                    avg_entry_price=float(position.get('avg_cost', 0)),
-                    current_price=float(position.get('market_value', 0)) / max(abs(float(position.get('qty', 1))), 0.001),
-                    unrealized_pnl=float(position.get('unrealized_pl', 0))
+                    quantity=qty,
+                    avg_entry_price=avg_cost,
+                    current_price=current_price,
+                    unrealized_pnl=unrealized_pl,
+                    session_id=self.session_id
                 )
+                
+                if success:
+                    self.live_trader.logger.debug(f"✅ 포지션 DB 업데이트: {self.symbol} {qty}주 @${avg_cost:.2f}")
+                else:
+                    self.live_trader.logger.warning(f"⚠️ 포지션 DB 업데이트 실패: {self.symbol}")
+                    
             else:
                 # 포지션이 없는 경우 0으로 업데이트
-                self.db_manager.save_position(
+                success = self.db_manager.save_position(
                     symbol=self.symbol,
                     quantity=0,
                     avg_entry_price=0,
                     current_price=0,
-                    unrealized_pnl=0
+                    unrealized_pnl=0,
+                    session_id=self.session_id
                 )
+                
+                if success:
+                    self.live_trader.logger.debug(f"✅ 포지션 0으로 DB 업데이트: {self.symbol}")
                 
         except Exception as e:
             self.live_trader.logger.error(f"❌ 포지션 DB 업데이트 실패: {e}")
-    
+
     def save_trading_stats_to_db(self):
         """거래 통계를 데이터베이스에 저장"""
+        try:
+            # 날짜 업데이트 확인
+            self.update_today_date()
+            
+            state = self.live_trader.get_state()
+            account = state.get('account', {})
+            
+            # 안전한 타입 변환
+            portfolio_value = self._safe_float(account.get('portfolio_value', 0))
+            cash_balance = self._safe_float(account.get('cash', 0))
+            equity_value = self._safe_float(account.get('equity', portfolio_value))
+            
+            # 일일 손익 계산
+            if self.daily_start_portfolio_value is None:
+                self.daily_start_portfolio_value = portfolio_value
+            
+            daily_pnl = portfolio_value - self.daily_start_portfolio_value
+            
+            # 총 손익 계산
+            trading_stats = state.get('trading_stats', {})
+            initial_balance = self._safe_float(trading_stats.get('initial_balance', portfolio_value))
+            total_pnl = portfolio_value - initial_balance
+            
+            success = self.db_manager.save_trading_stats(
+                portfolio_value=portfolio_value,
+                cash_balance=cash_balance,
+                equity_value=equity_value,
+                daily_pnl=daily_pnl,
+                total_pnl=total_pnl,
+                session_id=self.session_id
+            )
+            
+            if success:
+                self.live_trader.logger.debug(f"✅ 통계 DB 저장: 포트폴리오=${portfolio_value:,.2f}, 일일손익=${daily_pnl:+.2f}")
+            
+        except Exception as e:
+            self.live_trader.logger.error(f"❌ 통계 DB 저장 실패: {e}")
+    
+    def update_today_date(self):
+        """날짜가 바뀌면 오늘 날짜 및 관련 값들 업데이트"""
+        current_date = datetime.now().strftime("%Y-%m-%d")
+        if current_date != self.today_date:
+            self.today_date = current_date
+            
+            # 새로운 날이 시작되면 일일 시작 포트폴리오 값 재설정
+            try:
+                state = self.live_trader.get_state()
+                account = state.get('account', {})
+                self.daily_start_portfolio_value = self._safe_float(account.get('portfolio_value', 0))
+                self.live_trader.logger.info(f"📅 새로운 날 시작: {self.today_date}, 시작 포트폴리오: ${self.daily_start_portfolio_value:,.2f}")
+            except Exception as e:
+                self.live_trader.logger.error(f"❌ 날짜 업데이트 중 오류: {e}")
+    
+    def _safe_float(self, value, default=0.0):
+        """안전한 float 변환"""
+        try:
+            if value is None:
+                return default
+            if isinstance(value, str) and value.strip() == '':
+                return default
+            return float(value)
+        except (ValueError, TypeError):
+            return default
+    
+    def get_daily_summary(self):
+        """일일 요약 정보 반환"""
         try:
             state = self.live_trader.get_state()
             account = state.get('account', {})
             
-            portfolio_value = float(account.get('portfolio_value', 0))
-            cash_balance = float(account.get('cash', 0))
-            equity_value = portfolio_value - cash_balance
+            current_portfolio = self._safe_float(account.get('portfolio_value', 0))
+            daily_pnl = current_portfolio - (self.daily_start_portfolio_value or current_portfolio)
+            daily_return_pct = (daily_pnl / (self.daily_start_portfolio_value or 1)) * 100
             
-            # 일일 손익 계산 (간단히 전체 손익으로 대체)
             trading_stats = state.get('trading_stats', {})
-            initial_balance = trading_stats.get('initial_balance', cash_balance)
-            total_pnl = portfolio_value - initial_balance
+            total_trades = len(trading_stats.get('trades', []))
+            successful_trades = trading_stats.get('successful_trades', 0)
             
-            self.db_manager.save_trading_stats(
-                portfolio_value=portfolio_value,
-                cash_balance=cash_balance,
-                equity_value=equity_value,
-                daily_pnl=0,  # 일일 손익은 별도 계산 로직 필요
-                total_pnl=total_pnl
-            )
-            
+            return {
+                'date': self.today_date,
+                'session_id': self.session_id,
+                'start_portfolio': self.daily_start_portfolio_value,
+                'current_portfolio': current_portfolio,
+                'daily_pnl': daily_pnl,
+                'daily_return_pct': daily_return_pct,
+                'total_trades': total_trades,
+                'successful_trades': successful_trades,
+                'session_duration': str(datetime.now() - self.session_start_time).split('.')[0]
+            }
         except Exception as e:
-            self.live_trader.logger.error(f"❌ 통계 DB 저장 실패: {e}")
+            self.live_trader.logger.error(f"❌ 일일 요약 생성 실패: {e}")
+            return {}
     
     def start(self):
         """트레이딩 시작"""
@@ -124,9 +283,131 @@ class EnhancedLiveTrader:
         return self.live_trader.save_trading_stats(path)
 
 
+def load_model_info(model_path: str) -> Dict:
+    """
+    모델 경로에서 상세 정보 로드 - 심볼 해결 개선
+    """
+    model_info = {
+        'metadata': None,
+        'config': None,
+        'symbols': [],
+        'model_type': 'MLP'
+    }
+    
+    try:
+        model_path = Path(model_path)
+        
+        # 1. model_metadata.json 로드
+        metadata_path = model_path / "model_metadata.json"
+        if metadata_path.exists():
+            with open(metadata_path, 'r') as f:
+                model_info['metadata'] = json.load(f)
+                symbols = model_info['metadata'].get('symbols', [])
+                if symbols:
+                    model_info['symbols'] = symbols
+        
+        # 2. config.pth 로드
+        config_path = model_path / "config.pth"
+        if config_path.exists():
+            config_data = torch.load(config_path, map_location='cpu')
+            model_info['config'] = config_data
+            
+            # 모델 타입 확인
+            use_cnn = config_data.get('use_cnn', False)
+            use_lstm = config_data.get('use_lstm', False)
+            if use_cnn:
+                model_info['model_type'] = 'CNN'
+            elif use_lstm:
+                model_info['model_type'] = 'LSTM'
+            else:
+                model_info['model_type'] = 'MLP'
+                
+            # 심볼 정보가 없으면 config에서 가져오기
+            if not model_info['symbols']:
+                symbols = config_data.get('symbols', [])
+                if symbols:
+                    model_info['symbols'] = symbols
+        
+        # 3. 심볼이 여전히 없으면 모델 경로에서 추론
+        if not model_info['symbols']:
+            # 모델 경로에서 심볼 추출 시도
+            # 예: models/AAPL/final_sac_model_AAPL -> ['AAPL']
+            path_parts = str(model_path).split(os.sep)
+            
+            # 일반적인 심볼들 목록
+            common_symbols = ['AAPL', 'MSFT', 'GOOGL', 'GOOG', 'AMZN', 'NVDA', 'META', 'TSLA']
+            
+            # 경로에서 심볼 찾기
+            found_symbols = []
+            for part in path_parts:
+                if part.upper() in common_symbols:
+                    found_symbols.append(part.upper())
+            
+            if found_symbols:
+                model_info['symbols'] = list(set(found_symbols))  # 중복 제거
+                print(f"   └─ 경로에서 심볼 추출: {model_info['symbols']}")
+            else:
+                # 마지막 수단: 기본 심볼 할당
+                # 모델명에서 심볼 패턴 찾기
+                model_name = model_path.name
+                for symbol in common_symbols:
+                    if symbol in model_name.upper():
+                        model_info['symbols'] = [symbol]
+                        print(f"   └─ 모델명에서 심볼 추출: {symbol}")
+                        break
+                
+                # 여전히 없으면 config의 TRADING_SYMBOLS 사용
+                if not model_info['symbols']:
+                    try:
+                        from src.config.config import TRADING_SYMBOLS
+                        if TRADING_SYMBOLS:
+                            model_info['symbols'] = TRADING_SYMBOLS[:1]  # 첫 번째 심볼만 사용
+                            print(f"   └─ config에서 기본 심볼 할당: {model_info['symbols']}")
+                        else:
+                            # 최후의 수단: AAPL 할당
+                            model_info['symbols'] = ['AAPL']
+                            print(f"   └─ 기본 심볼 할당: AAPL")
+                    except:
+                        model_info['symbols'] = ['AAPL']
+                        print(f"   └─ 기본 심볼 할당: AAPL")
+        
+        print(f"📊 최종 심볼 목록: {model_info['symbols']}")
+        
+        return model_info
+        
+    except Exception as e:
+        print(f"⚠️ 모델 정보 로드 실패: {e}")
+        # 오류 발생 시에도 기본 심볼 할당
+        if not model_info['symbols']:
+            try:
+                from src.config.config import TRADING_SYMBOLS
+                if TRADING_SYMBOLS:
+                    model_info['symbols'] = TRADING_SYMBOLS[:1]
+                else:
+                    model_info['symbols'] = ['AAPL']
+            except:
+                model_info['symbols'] = ['AAPL']
+        
+        return model_info
+
+
+def extract_symbol_from_path(model_path: str) -> str:
+    """
+    모델 경로에서 심볼을 추출하는 헬퍼 함수
+    """
+    path_str = str(model_path).upper()
+    common_symbols = ['AAPL', 'MSFT', 'GOOGL', 'GOOG', 'AMZN', 'NVDA', 'META', 'TSLA']
+    
+    for symbol in common_symbols:
+        if symbol in path_str:
+            return symbol
+    
+    return 'AAPL'  # 기본값
+
+
 def parse_args():
     """명령행 인자 파싱"""
-    parser = argparse.ArgumentParser(description='SAC 모델 실시간 트레이딩 실행 (DB 연동 포함)')
+    parser = argparse.ArgumentParser(description='SAC 모델 실시간 트레이딩 실행 (기존 테이블 호환)')
     
     parser.add_argument('--model_path', type=str, required=False,
                         help='백테스팅 완료된 모델의 경로 (지정하지 않으면 config.py의 설정 사용)')
@@ -180,7 +461,9 @@ def setup_logger(results_dir):
     return logger
 
 
-def setup_signal_handlers(live_traders: Dict[str, EnhancedLiveTrader], db_manager: DatabaseManager, logger, args):
+def setup_signal_handlers(live_traders: Dict[str, EnhancedLiveTrader], db_manager: DatabaseManager, 
+                         logger, args, session_id: str, symbol_to_model_mapping: Dict[str, str], 
+                         model_info_dict: Dict[str, Dict]):
     """시그널 핸들러 설정 (종료 시 정리 작업)"""
     def signal_handler(signum, frame):
         if signum in [signal.SIGINT, signal.SIGTERM]:
@@ -193,12 +476,65 @@ def setup_signal_handlers(live_traders: Dict[str, EnhancedLiveTrader], db_manage
                 else:
                     logger.error(f"❌ {symbol} 트레이딩 중지 중 오류가 발생했습니다.")
             
+            # 모델 정보 저장
+            logger.info("💾 강제 종료 - 모델 정보 저장 중...")
+            try:
+                for symbol, live_trader in live_traders.items():
+                    model_path = symbol_to_model_mapping.get(symbol, '')
+                    
+                    if model_path:
+                        model_info = model_info_dict.get(model_path, {})
+                        model_id = os.path.splitext(os.path.basename(model_path))[0]
+                        final_summary = live_trader.get_daily_summary()
+                        
+                        success = db_manager.save_model_info_detailed(
+                            model_id=f"{model_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                            file_path=model_path,
+                            symbols=[symbol],
+                            description=f"강제 종료된 모델 - {symbol} ({model_info.get('model_type', 'Unknown')}) - {final_summary.get('total_trades', 0)}회 거래",
+                            is_active=False,
+                            model_metadata={
+                                **model_info.get('metadata', {}),
+                                'trading_results': final_summary,
+                                'session_id': session_id,
+                                'forced_termination': True,
+                                'completion_time': datetime.now().isoformat()
+                            },
+                            config_info=model_info.get('config')
+                        )
+                        
+                        if success:
+                            logger.info(f"✅ {symbol} 모델 정보 저장 완료: {model_id}")
+                            
+            except Exception as e:
+                logger.error(f"❌ 강제 종료 시 모델 정보 저장 실패: {e}")
+            
+            # 최종 DB 저장
             for symbol, live_trader in live_traders.items():
                 try:
                     live_trader.save_trading_stats_to_db()
                     live_trader.update_position_in_db()
                 except Exception as e:
                     logger.error(f"❌ {symbol} 최종 DB 저장 실패: {e}")
+            
+            # 세션 종료 정보 저장
+            try:
+                final_stats = {}
+                if live_traders:
+                    first_trader = next(iter(live_traders.values()))
+                    summary = first_trader.get_daily_summary()
+                    final_stats = {
+                        'total_trades': summary.get('total_trades', 0),
+                        'successful_trades': summary.get('successful_trades', 0),
+                        'return_pct': summary.get('daily_return_pct', 0),
+                        'forced_termination': True
+                    }
+                
+                db_manager.update_trading_session_status(session_id, 'STOPPED', final_stats)
+                logger.info(f"🏁 트레이딩 세션 종료 정보 저장 완료: {session_id}")
+                
+            except Exception as e:
+                logger.error(f"❌ 세션 종료 정보 저장 실패: {e}")
             
             # 트레이딩 통계 저장
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -239,28 +575,9 @@ def validate_environment(config, logger):
         if value is None:
             logger.error(f"❌ 필수 설정 {config_name} 값이 None입니다.")
             return False
-
     
     logger.info("✅ 실행 환경 검증 완료")
     return True
-
-def resolve_model_path(path):
-    """단일 pth 파일 또는 폴더 내 최신 pth 파일 찾기"""
-    if os.path.isfile(path) and path.endswith('.pth'):
-        return path
-    elif os.path.isdir(path):
-        # 폴더 내 .pth 파일 중 최신 파일 찾기
-        pth_files = [f for f in os.listdir(path) if f.endswith('.pth')]
-        if not pth_files:
-            raise FileNotFoundError(f"❌ 폴더에 .pth 파일이 없습니다: {path}")
-        # 최신 수정 시간 기준으로 정렬
-        pth_files.sort(key=lambda f: os.path.getmtime(os.path.join(path, f)), reverse=True)
-        latest_pth = os.path.join(path, pth_files[0])
-        print(f"📂 폴더에서 최신 모델 선택됨: {latest_pth}")
-        return latest_pth
-    else:
-        raise FileNotFoundError(f"❌ 잘못된 경로입니다: {path}")
-
 
 
 def main():
@@ -268,7 +585,7 @@ def main():
     global args
     args = parse_args()
     
-    print("🚀 SAC 실시간 트레이딩 시스템 시작")
+    print("🚀 SAC 실시간 트레이딩 시스템 시작 (기존 테이블 호환)")
     print("=" * 60)
     
     # 결과 디렉토리 설정
@@ -277,7 +594,7 @@ def main():
     
     # 로거 설정
     logger = setup_logger(results_dir)
-    logger.info("🎯 SAC 실시간 트레이딩 시작")
+    logger.info("🎯 SAC 실시간 트레이딩 시작 (기존 테이블 호환)")
     logger.info(f"📁 결과 저장 경로: {results_dir}")
     
     if args.dry_run:
@@ -290,6 +607,10 @@ def main():
     if not validate_environment(config, logger):
         logger.error("❌ 환경 검증 실패. 프로그램을 종료합니다.")
         sys.exit(1)
+        
+    # 세션 ID 생성
+    session_id = f"live_trading_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    logger.info(f"🆔 트레이딩 세션 ID: {session_id}")
         
     # 데이터베이스 매니저 초기화
     logger.info("🗄️  MySQL 데이터베이스 연결 중...")
@@ -306,21 +627,64 @@ def main():
         sys.exit(1) 
         
     try:
-        # 모델 경로 결정
+        # 모델 경로 결정 및 심볼 매핑 개선
         if args.model_path:
             # 명령행 인자로 지정된 모델 경로 사용
             model_paths = {args.model_path: {'enabled': True}}
             logger.info(f"🤖 지정된 모델 경로 사용: {args.model_path}")
         else:
             # config.py의 ACTIVE_TRADING_SYMBOLS 사용
-            model_paths = {symbol: data for symbol, data in config.ACTIVE_TRADING_SYMBOLS.items() if data['enabled']}
-            logger.info(f"🤖 config.py에서 활성화된 {len(model_paths)}개 심볼의 모델 사용")
+            model_paths = {}
+            for symbol, data in config.ACTIVE_TRADING_SYMBOLS.items():
+                if data.get('enabled', True):
+                    model_path = data.get('model_path', '')
+                    if model_path and os.path.exists(os.path.join(model_path, 'config.pth')):
+                        model_paths[model_path] = {
+                            'enabled': True,
+                            'preferred_symbol': symbol,  # 선호하는 심볼 명시
+                            **data
+                        }
+            
+            logger.info(f"🤖 config.py에서 활성화된 {len(model_paths)}개 모델 사용")
         
         if not model_paths:
             logger.error("❌ 활성화된 모델이 없습니다. 프로그램을 종료합니다.")
             sys.exit(1)
         
-        # 2. API 커넥터 초기화
+        # 모델 정보 로드 및 심볼 매핑
+        model_info_dict = {}
+        symbol_to_model_mapping = {}  # 심볼 -> 모델 경로 매핑
+        
+        logger.info("📊 모델 정보 로드 중...")
+        for model_path, model_config in model_paths.items():
+            logger.info(f"🔍 모델 분석 중: {model_path}")
+            
+            # 모델 정보 로드
+            model_info = load_model_info(model_path)
+            model_info_dict[model_path] = model_info
+            
+            # 심볼 매핑 생성
+            if model_info['symbols']:
+                # 메타데이터에서 찾은 심볼들 사용
+                for symbol in model_info['symbols']:
+                    symbol_to_model_mapping[symbol] = model_path
+                    logger.info(f"   └─ {symbol} → {model_path}")
+            elif 'preferred_symbol' in model_config:
+                # config에서 지정한 선호 심볼 사용
+                preferred_symbol = model_config['preferred_symbol']
+                symbol_to_model_mapping[preferred_symbol] = model_path
+                model_info['symbols'] = [preferred_symbol]  # 모델 정보 업데이트
+                logger.info(f"   └─ {preferred_symbol} → {model_path} (선호 심볼)")
+            else:
+                # 모델 경로에서 심볼 추출
+                extracted_symbol = extract_symbol_from_path(model_path)
+                symbol_to_model_mapping[extracted_symbol] = model_path
+                model_info['symbols'] = [extracted_symbol]  # 모델 정보 업데이트
+                logger.info(f"   └─ {extracted_symbol} → {model_path} (경로에서 추출)")
+        
+        logger.info(f"📋 최종 심볼-모델 매핑: {symbol_to_model_mapping}")
+        
+        # API 커넥터 초기화
         logger.info("🔌 Alpaca API 연결 중...")
         api_connector = APIConnector(logger=logger)
         if args.force_connect:
@@ -331,17 +695,17 @@ def main():
             logger.error("❌ API 서버에 연결할 수 없습니다. 프로그램을 종료합니다.")
             sys.exit(1)
 
-        # 3. 계정 정보 확인
+        # 계정 정보 확인
         account_info = api_connector.get_account_info()
         logger.info(f"💰 계정 정보:")
         logger.info(f"   └─ 현금: ${account_info.get('cash', 0):,.2f}")
         logger.info(f"   └─ 포트폴리오 가치: ${account_info.get('portfolio_value', 0):,.2f}")
         logger.info(f"   └─ 매수력: ${account_info.get('buying_power', 0):,.2f}")
         
-        # 4. 데이터 검증 시스템 초기화
+        # 데이터 검증 시스템 초기화
         data_validator = RealTimeDataValidator(logger=logger)
         
-        # 5. 리스크 관리자 초기화
+        # 리스크 관리자 초기화
         risk_manager = RiskManager(
             max_position_size=config.max_position_size,
             max_drawdown=config.max_drawdown,
@@ -353,20 +717,24 @@ def main():
         # 초기 계정 자본금으로 리스크 관리자 업데이트
         initial_balance = float(account_info.get('cash', 0))
         risk_manager.update_balance(initial_balance)
+
+        # 간단한 세션 시작 로그만 저장
+        logger.info(f"🚀 트레이딩 세션 시작: {session_id}")
+        logger.info(f"📊 대상 심볼: {len(symbol_to_model_mapping)}개")
         
-        # 6. 실시간 트레이더 초기화
+        # 실시간 트레이더 초기화 - 심볼 기반으로 생성
         live_traders = {}
         missing_models = []
 
-        for symbol, model_data in model_paths.items():
-            if not model_data['enabled']:
-                continue
-                
+        for symbol, model_path in symbol_to_model_mapping.items():
             logger.info(f"🏗️  {symbol} 실시간 트레이더 초기화 중...")
             
             try:
                 # 백테스팅 완료된 모델 시스템 생성
-                agent, data_processor = create_complete_trading_system(model_data['model_path'], config)
+                agent, data_processor = create_complete_trading_system(model_path, config)
+                
+                # config 업데이트 - 현재 심볼을 trading_symbols에 설정
+                config.trading_symbols = [symbol]
                 
                 # 실시간 트레이더 초기화
                 live_trader = LiveTrader(
@@ -382,31 +750,29 @@ def main():
                 live_trader.data_validator = data_validator
                 
                 # 모델 ID 생성 (파일명 기반)
-                model_id = os.path.splitext(os.path.basename(model_data['model_path']))[0]
-                
-                # 모델 정보를 데이터베이스에 저장
-                db_manager.save_model_info(
-                    model_id=model_id,
-                    file_path=model_data['model_path'],
-                    description=f"실시간 트레이딩 모델 for {symbol}",
-                    is_active=True
-                )
+                model_id = os.path.splitext(os.path.basename(model_path))[0]
                 
                 # 향상된 트레이더로 래핑
                 enhanced_live_trader = EnhancedLiveTrader(
                     live_trader=live_trader,
                     db_manager=db_manager,
                     symbol=symbol,
-                    model_id=model_id
+                    model_id=model_id,
+                    session_id=session_id
                 )
             
                 live_traders[symbol] = enhanced_live_trader
-                logger.info(f"✅ {symbol} 실시간 트레이더 초기화 완료")
+                
+                model_info = model_info_dict.get(model_path, {})
+                logger.info(f"✅ {symbol} 실시간 트레이더 초기화 완료 (모델: {model_info.get('model_type', 'Unknown')})")
+                
             except FileNotFoundError as e:
                 logger.warning(f"⚠️  {symbol} 모델을 찾을 수 없습니다: {e}")
                 missing_models.append(symbol)
             except Exception as e:
                 logger.error(f"❌ {symbol} 모델 초기화 중 오류 발생: {e}")
+                import traceback
+                logger.error(traceback.format_exc())
                 missing_models.append(symbol)
         
         if missing_models:
@@ -414,27 +780,51 @@ def main():
 
         if not live_traders:
             logger.error("❌ 초기화된 트레이딩 시스템이 없습니다. 프로그램을 종료합니다.")
+            logger.error("💡 문제 해결 방법:")
+            logger.error("   1. 모델 경로가 올바른지 확인하세요")
+            logger.error("   2. 모델 파일(config.pth)이 존재하는지 확인하세요")
+            logger.error("   3. config.py의 ACTIVE_TRADING_SYMBOLS 설정을 확인하세요")
+            logger.error(f"   4. 현재 심볼-모델 매핑: {symbol_to_model_mapping}")
             sys.exit(1)
         
         logger.info(f"✅ {len(live_traders)}개 심볼에 대한 트레이딩 시스템이 초기화되었습니다: {', '.join(live_traders.keys())}")
         
+        # 모델 사용 통계 출력
+        logger.info("🤖 사용된 모델 정보:")
+        for symbol, trader in live_traders.items():
+            model_path = symbol_to_model_mapping.get(symbol, '')
+            model_info = model_info_dict.get(model_path, {})
+            logger.info(f"   └─ {symbol}: {model_info.get('model_type', 'Unknown')} 모델 ({model_path})")
+        
         # 시그널 핸들러 설정
-        setup_signal_handlers(live_traders, db_manager, logger, args)
+        setup_signal_handlers(live_traders, db_manager, logger, args, session_id, 
+                            symbol_to_model_mapping, model_info_dict)
         
         # 실시간 트레이딩 시작
         logger.info("🚀 실시간 트레이딩 시작...")
         logger.info(f"📈 거래 대상: {', '.join(live_traders.keys())}")
+        logger.info(f"🆔 세션 ID: {session_id}")
         
+        successful_starts = 0
         for symbol, live_trader in live_traders.items():
-            if not live_trader.start():
+            if live_trader.start():
+                successful_starts += 1
+                logger.info(f"✅ {symbol} 실시간 트레이딩 시작 성공")
+            else:
                 logger.error(f"❌ {symbol} 실시간 트레이딩을 시작할 수 없습니다.")
-                continue
+        
+        if successful_starts == 0:
+            logger.error("❌ 모든 트레이딩 시작에 실패했습니다.")
+            sys.exit(1)
+        
+        logger.info(f"🎉 {successful_starts}/{len(live_traders)}개 심볼 트레이딩 시작 완료")
         
         # 주기적인 모니터링 루프
         last_log_time = time.time()
         last_save_time = time.time()
         last_db_save_time = time.time()
         last_risk_check_time = time.time()
+        last_model_info_log_time = time.time()
         
         logger.info("🔄 모니터링 루프 시작")
         
@@ -459,7 +849,7 @@ def main():
                         state = live_trader.get_state()
                         
                         logger.info("=" * 50)
-                        logger.info(f"📊 {symbol} 현재 트레이딩 상태")
+                        logger.info(f"📊 {symbol} 현재 트레이딩 상태 (세션: {session_id})")
                         logger.info("=" * 50)
                         logger.info(f"🔄 실행 상태: {'✅ 실행 중' if state['running'] else '❌ 중지됨'}")
                         logger.info(f"💰 계정 현금: ${state['account'].get('cash', 0):,.2f}")
@@ -504,6 +894,31 @@ def main():
             
                     last_log_time = current_time
                 
+                # 모델 정보 주기적 로깅 (30분마다)
+                if current_time - last_model_info_log_time >= 1800:  # 30분
+                    try:
+                        logger.info("🤖 모델 사용 통계:")
+                        model_stats = db_manager.get_model_usage_stats()
+                        for stat in model_stats:
+                            if stat.get('is_active'):
+                                model_id = stat.get('model_id', 'Unknown')
+                                total_trades = stat.get('total_trades', 0)
+                                last_trade = stat.get('last_trade_time', 'Never')
+                                logger.info(f"   └─ {model_id}: {total_trades}회 거래, 마지막: {last_trade}")
+                        
+                        # 활성 세션 정보
+                        sessions = db_manager.get_trading_sessions(limit=5)
+                        logger.info(f"📋 최근 트레이딩 세션: {len(sessions)}개")
+                        for session in sessions:
+                            session_id_from_db = session.get('model_id', '').replace('session_', '')
+                            is_active = "✅ 활성" if session.get('is_active') else "❌ 종료"
+                            logger.info(f"   └─ {session_id_from_db}: {is_active}")
+                            
+                    except Exception as e:
+                        logger.debug(f"모델 통계 조회 실패: {e}")
+                    
+                    last_model_info_log_time = current_time
+                
                 # 저장 간격마다 통계 저장
                 if current_time - last_save_time >= args.save_interval:
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -544,6 +959,46 @@ def main():
             # 정리 작업
             logger.info("🧹 정리 작업 시작...")
             
+            logger.info("💾 사용된 모델 정보를 데이터베이스에 저장 중...")
+            try:
+                for symbol, live_trader in live_traders.items():
+                    # 해당 심볼에 사용된 모델 경로 찾기
+                    model_path = symbol_to_model_mapping.get(symbol, '')
+                    
+                    if model_path:
+                        # 모델 정보 로드
+                        model_info = model_info_dict.get(model_path, {})
+                        model_id = os.path.splitext(os.path.basename(model_path))[0]
+                        
+                        # 트레이딩 통계 가져오기
+                        final_summary = live_trader.get_daily_summary()
+                        
+                        # 완전한 모델 정보로 데이터베이스에 저장
+                        success = db_manager.save_model_info_detailed(
+                            model_id=f"{model_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                            file_path=model_path,
+                            symbols=[symbol],
+                            description=f"트레이딩 완료 모델 - {symbol} ({model_info.get('model_type', 'Unknown')}) - {final_summary.get('total_trades', 0)}회 거래",
+                            is_active=False,  # 종료된 모델이므로 비활성화
+                            model_metadata={
+                                **model_info.get('metadata', {}),
+                                'trading_results': final_summary,
+                                'session_id': session_id,
+                                'completion_time': datetime.now().isoformat()
+                            },
+                            config_info=model_info.get('config')
+                        )
+                        
+                        if success:
+                            logger.info(f"✅ {symbol} 모델 정보 저장 완료: {model_id}")
+                            logger.info(f"   └─ 거래 횟수: {final_summary.get('total_trades', 0)}회")
+                            logger.info(f"   └─ 수익률: {final_summary.get('daily_return_pct', 0):.2f}%")
+                        else:
+                            logger.warning(f"⚠️ {symbol} 모델 정보 저장 실패")
+                            
+            except Exception as e:
+                logger.error(f"❌ 모델 정보 저장 중 오류: {e}")
+            
             for symbol, live_trader in live_traders.items():
                 if live_trader.stop():
                     logger.info(f"✅ {symbol} 트레이딩 중지 완료")
@@ -562,6 +1017,25 @@ def main():
                 if live_trader.save_trading_stats(final_results_path):
                     logger.info(f"💾 {symbol} 최종 통계 저장: {final_results_path}")
             
+            # 세션 종료 정보 저장
+            try:
+                # 최종 통계 계산
+                final_stats = {}
+                if live_traders:
+                    first_trader = next(iter(live_traders.values()))
+                    summary = first_trader.get_daily_summary()
+                    final_stats = {
+                        'total_trades': summary.get('total_trades', 0),
+                        'successful_trades': summary.get('successful_trades', 0),
+                        'return_pct': summary.get('daily_return_pct', 0)
+                    }
+                
+                db_manager.update_trading_session_status(session_id, 'STOPPED', final_stats)
+                logger.info(f"🏁 트레이딩 세션 종료 정보 저장 완료: {session_id}")
+                
+            except Exception as e:
+                logger.error(f"❌ 세션 종료 정보 저장 실패: {e}")
+            
             # API 연결 종료
             api_connector.disconnect()
             logger.info("🔌 API 연결 종료")
@@ -576,8 +1050,9 @@ def main():
         import traceback
         logger.error(traceback.format_exc())
         
-        # 오류 발생 시에도 데이터베이스 연결 정리
+        # 오류 발생 시에도 데이터베이스 연결 정리 및 세션 종료 처리
         try:
+            db_manager.update_trading_session_status(session_id, 'ERROR', {'error': str(e)})
             db_manager.disconnect()
         except:
             pass

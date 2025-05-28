@@ -29,40 +29,53 @@ model_name_pattern = 'final_sac_model_{ticker}'
 tickers = ['AAPL', 'MSFT', 'GOOGL', 'GOOG', 'AMZN', 'NVDA', 'META', 'TSLA']
 ACTIVE_TRADING_SYMBOLS = {}
 
-# 모델 파일 존재 여부 확인 함수
-def check_model_exists(ticker):
-    model_path = fr"{base_model_dir.format(ticker=ticker)}\{model_name_pattern.format(ticker=ticker)}"
-    config_path = os.path.join(model_path, 'config.pth')
-    return os.path.exists(config_path)
+# 모든 가능한 모델 경로 패턴들
+possible_model_patterns = [
+    r'models\{ticker}\final_sac_model_{ticker}',  # 기본 패턴
+    r'models\final_sac_model_{ticker}',           # 단순 패턴
+    r'final_sac_model_{ticker}',                  # 루트 패턴
+]
 
-# 모델이 있는 심볼만 활성화
+def find_model_path(ticker):
+    """여러 패턴으로 모델 경로 찾기"""
+    for pattern in possible_model_patterns:
+        model_path = pattern.format(ticker=ticker)
+        config_path = os.path.join(model_path, 'config.pth')
+        if os.path.exists(config_path):
+            return model_path
+    return None
+
+# 자동으로 모든 모델 찾기 및 활성화
+ACTIVE_TRADING_SYMBOLS = {}
 for ticker in tickers:
-    model_path = fr"{base_model_dir.format(ticker=ticker)}\{model_name_pattern.format(ticker=ticker)}"
-    if check_model_exists(ticker):
+    model_path = find_model_path(ticker)
+    if model_path:
         ACTIVE_TRADING_SYMBOLS[ticker] = {
             'model_path': model_path,
             'enabled': True,
             'max_position_size': 0.01,   # 1%
             'trading_interval': 60,      # 1분
         }
+        print(f"✅ {ticker} 모델 발견: {model_path}")
     else:
         print(f"⚠️  {ticker} 모델이 없어 거래 대상에서 제외됩니다.")
 
-# 현재 활성화된 트레이딩 종목들만 추출
+print(f"🎯 총 {len(ACTIVE_TRADING_SYMBOLS)}개 활성화된 모델")
+
 
 
 # 매우 보수적인 리스크 관리 설정
-GLOBAL_MAX_EXPOSURE = 0.05      # 전체 계좌의 5%까지만 투자
-MAX_DRAWDOWN = 0.02             # 최대 2% 낙폭 허용
-MAX_DAILY_LOSS = 0.01           # 일일 최대 손실 1%
-EMERGENCY_STOP_LOSS = 0.03      # 응급 손절 3%
+GLOBAL_MAX_EXPOSURE = 0.2       # 전체 계좌의 5%까지만 투자 # 전체 계좌의 20%까지만 투자
+MAX_DRAWDOWN = 0.15             # 최대 2% 낙폭 허용 # 5% 낙폭 허용 # 15% 낙폭 허용
+MAX_DAILY_LOSS = 0.10           # 일일 최대 손실 1% # 일일 최대 손실 3% # 일일 최대 손실 10%
+EMERGENCY_STOP_LOSS = 0.05      # 응급 손절 3% # 응급 손절 5%
 
 # 개별 종목 기본 설정 (매우 보수적)
 DEFAULT_SYMBOL_CONFIG = {
-    'max_position_size': 0.01,      # 1%로 매우 낮게
-    'trading_interval': 60,        # 10분 간격
-    'min_trade_amount': 10.0,       # 최소 거래 금액 $10
-    'max_trade_amount': 100.0,      # 최대 거래 금액 $100
+    'max_position_size': 0.03,      # 1%로 매우 낮게 # 3%로 매우 낮게
+    'trading_interval': 60,         # 1분 간격 
+    'min_trade_amount': 0.001,      # 최소 거래 금액 $10 # 최소 거래 금액 $0.001
+    'max_trade_amount': 500.0,      # 최대 거래 금액 $100 # 최대 거래 금액 $500
 }
 
 # TimescaleDB 데이터베이스 설정
