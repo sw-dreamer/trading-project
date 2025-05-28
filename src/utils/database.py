@@ -26,11 +26,11 @@ class DatabaseManager:
     
     def __init__(
         self,
-        host: str = 'localhost',
+        host: str = '192.168.40.199',
         port: int = 3306,
         user: str = 'root',
-        password: str = '',
-        database: str = 'sac_trading',
+        password: str = 'mysecretpassword',
+        database: str = 'trading',
         pool_size: int = 5,
         pool_name: str = 'sac_pool',
         logger: Optional[Logger] = None
