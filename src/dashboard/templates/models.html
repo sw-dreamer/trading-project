@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>모델 관리 - SAC 트레이딩 시스템</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
@@ -17,28 +17,18 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">대시보드</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/live-trading">실시간 트레이딩</a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="/live-chart">실시간 차트</a></li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/backtest">백테스트 결과</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/models">모델 관리</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/news">관련 기사</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/">대시보드</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/live-trading">실시간 트레이딩</a>
+                    </li><li class="nav-item"><a class="nav-link" href="/live-chart">실시간 차트</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/backtest">백테스트 결과</a>
+                    </li><li class="nav-item"><a class="nav-link active" aria-current="page" href="/models">모델 관리</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/news">관련 기사</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container-fluid mt-4"> <!--container-fluid : 바 안의 콘텐츠를 전체 너비로 채워줌-->
+    <div class="container-fluid mt-4"> 
         
         <!-- 모델 관리 -->
         <div class="row">
@@ -198,273 +188,8 @@
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // 페이지 로드 시 데이터 로드
-            loadModelList();
-            loadModelComparisonChart();
-            loadActiveModel();
-            
-            // 새로고침 버튼 이벤트
-            $('#refresh-btn').click(function() {
-                loadModelList(true);
-                loadModelComparisonChart(true);
-                loadActiveModel(true);
-            });
-            
-            // 모델 업로드 폼 제출 이벤트
-            $('#upload-form').submit(function(e) {
-                e.preventDefault();
-                uploadModel();
-            });
-            
-            // 모델 활성화 버튼 이벤트
-            $('#activate-model-btn').click(function() {
-                const selectedModelId = $(this).data('model-id');
-                if (selectedModelId) {
-                    activateModel(selectedModelId);
-                }
-            });
-        });
-        
-        function loadModelList(refresh = false) {
-            const refreshParam = refresh ? '?refresh=true' : '';
-            
-            $.getJSON(`/api/models${refreshParam}`, function(data) {
-                const modelList = $('#model-list');
-                modelList.empty();
-                
-                if ($.isEmptyObject(data)) {
-                    modelList.html('<tr><td colspan="5" class="text-center">등록된 모델이 없습니다.</td></tr>');
-                    return;
-                }
-                
-                // 모델 목록 생성
-                for (const modelId in data) {
-                    const model = data[modelId];
-                    const createdTime = model.created_time;
-                    const modifiedTime = model.modified_time;
-                    
-                    modelList.append(`
-                        <tr>
-                            <td>${modelId}</td>
-                            <td>${createdTime}</td>
-                            <td>${modifiedTime}</td>
-                            <td>
-                                <button class="btn btn-sm btn-info view-model" data-model-id="${modelId}">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                                <button class="btn btn-sm btn-success activate-model" data-model-id="${modelId}">
-                                    <i class="bi bi-check-circle"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger delete-model" data-model-id="${modelId}">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `);
-                }
-                
-                // 이벤트 리스너 추가
-                $('.view-model').click(function() {
-                    const modelId = $(this).data('model-id');
-                    viewModelDetails(modelId);
-                });
-                
-                $('.activate-model').click(function() {
-                    const modelId = $(this).data('model-id');
-                    $('#activate-model-btn').data('model-id', modelId);
-                    $('#activate-model-btn').prop('disabled', false);
-                    $('#activate-model-btn').text(`"${modelId}" 모델 활성화`);
-                });
-                
-                $('.delete-model').click(function() {
-                    const modelId = $(this).data('model-id');
-                    $('#delete-model-name').text(modelId);
-                    $('#confirm-delete-btn').data('model-id', modelId);
-                    $('#delete-model-modal').modal('show');
-                });
-            });
-            
-            // 모델 삭제 확인 버튼 이벤트
-            $('#confirm-delete-btn').click(function() {
-                const modelId = $(this).data('model-id');
-                deleteModel(modelId);
-            });
-        }
-        
-        function viewModelDetails(modelId) {
-            $.getJSON(`/api/models?model_id=${modelId}`, function(data) {
-                if ($.isEmptyObject(data) || !data[modelId]) {
-                    $('#model-detail-content').html('<div class="alert alert-danger">모델 정보를 찾을 수 없습니다.</div>');
-                    return;
-                }
-                
-                const model = data[modelId];
-                
-                let detailHtml = `
-                    <h5>기본 정보</h5>
-                    <table class="table">
-                        <tr>
-                            <th width="30%">모델 ID</th>
-                            <td>${modelId}</td>
-                        </tr>
-                        <tr>
-                            <th>파일 경로</th>
-                            <td>${model.file_path}</td>
-                        </tr>
-                        <tr>
-                            <th>생성 시간</th>
-                            <td>${model.created_time}</td>
-                        </tr>
-                        <tr>
-                            <th>수정 시간</th>
-                            <td>${model.modified_time}</td>
-                        </tr>
-                    </table>
-                `;
-                
-                // 백테스트 결과 표시
-                $.getJSON(`/api/backtest-results?model_id=${modelId}`, function(backtest) {
-                    if (!$.isEmptyObject(backtest) && backtest[modelId]) {
-                        const results = backtest[modelId];
-                        const metrics = results.metrics || {};
-                        
-                        detailHtml += `
-                            <h5 class="mt-4">백테스트 결과</h5>
-                            <table class="table">
-                                <tr>
-                                    <th width="30%">백테스트 날짜</th>
-                                    <td>${results.backtest_date || '-'}</td>
-                                </tr>
-                                <tr>
-                                    <th>테스트 기간</th>
-                                    <td>${results.start_date || '-'} ~ ${results.end_date || '-'}</td>
-                                </tr>
-                                <tr>
-                                    <th>초기 잔고</th>
-                                    <td>$${results.initial_balance?.toLocaleString() || '-'}</td>
-                                </tr>
-                                <tr>
-                                    <th>최종 잔고</th>
-                                    <td>$${results.final_balance?.toLocaleString() || '-'}</td>
-                                </tr>
-                                <tr>
-                                    <th>총 수익률</th>
-                                    <td>${metrics.total_return ? (metrics.total_return * 100).toFixed(2) + '%' : '-'}</td>
-                                </tr>
-                                <tr>
-                                    <th>샤프 비율</th>
-                                    <td>${metrics.sharpe_ratio?.toFixed(2) || '-'}</td>
-                                </tr>
-                                <tr>
-                                    <th>최대 낙폭</th>
-                                    <td>${metrics.max_drawdown ? (metrics.max_drawdown * 100).toFixed(2) + '%' : '-'}</td>
-                                </tr>
-                                <tr>
-                                    <th>승률</th>
-                                    <td>${metrics.win_rate ? (metrics.win_rate * 100).toFixed(2) + '%' : '-'}</td>
-                                </tr>
-                                <tr>
-                                    <th>총 거래 수</th>
-                                    <td>${metrics.total_trades || '-'}</td>
-                                </tr>
-                            </table>
-                        `;
-                    } else {
-                        detailHtml += `
-                            <div class="alert alert-info mt-4">
-                                이 모델의 백테스트 결과가 없습니다.
-                            </div>
-                        `;
-                    }
-                    
-                    $('#model-detail-content').html(detailHtml);
-                    $('#model-detail-modal-label').text(`모델 상세 정보 - ${modelId}`);
-                    $('#model-detail-modal').modal('show');
-                });
-            });
-        }
-        
-        function loadModelComparisonChart(refresh = false) {
-            const refreshParam = refresh ? '?refresh=true' : '';
-            
-            $.getJSON(`/api/charts/model-comparison${refreshParam}`, function(data) {
-                if (data && !data.error) {
-                    Plotly.newPlot('model-comparison-chart', data.data, data.layout);
-                } else {
-                    $('#model-comparison-chart').html('<div class="text-center py-5">모델 비교 데이터가 없습니다.</div>');
-                }
-            });
-        }
-        
-        function loadActiveModel(refresh = false) {
-            const refreshParam = refresh ? '?refresh=true' : '';
-            
-            $.getJSON(`/api/active-model${refreshParam}`, function(data) {
-                const activeModelInfo = $('#active-model-info');
-                
-                if (!data || $.isEmptyObject(data) || !data.model_id) {
-                    activeModelInfo.html('<p class="mb-0">활성화된 모델이 없습니다.</p>');
-                    return;
-                }
-                
-                activeModelInfo.html(`
-                    <div>
-                        <h6>${data.model_id}</h6>
-                        <p class="mb-1">활성화 시간: ${data.activated_time || '-'}</p>
-                        <p class="mb-0">
-                            <span class="badge bg-success">활성</span>
-                        </p>
-                    </div>
-                `);
-            });
-        }
-        function uploadModel() {
-            const modelId = $('#model-id').val();
-            const modelFile = $('#model-file')[0].files[0];
-            const description = $('#model-description').val();
-
-            if (!modelId) {
-                alert('모델 ID를 입력하세요.');
-                return;
-            }
-
-            if (!modelFile) {
-                alert('모델 파일을 선택하세요.');
-                return;
-            }
-
-            // FormData 생성
-            const formData = new FormData();
-            formData.append('model_id', modelId);
-            formData.append('model_file', modelFile);
-            formData.append('description', description);
-
-            // 실제 업로드 API 연동
-            $.ajax({
-                url: '/models',  // Flask 라우트와 동일하게
-                type: 'POST',
-                data: formData,
-                processData: false,      // 파일 전송 필수 설정
-                contentType: false,      // 파일 전송 필수 설정
-                success: function(response) {
-                    alert('모델 업로드 성공!');
-                    $('#upload-form')[0].reset();
-                    loadModelList(true); // 모델 목록 새로고침
-                },
-                error: function(xhr, status, error) {
-                    alert('모델 업로드 실패: ' + xhr.responseText);
-                }
-            });
-        }
-
-       
-
-    </script>
+    <script src="/static/js/models.js"></script>
 </body>
 </html> 
