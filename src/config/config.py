@@ -1,6 +1,5 @@
 """
 SAC 트레이딩 시스템 설정 파일 (모델 호환 버전)
-자동 생성됨 - 모델: C:\finalproject\models\final_sac_model_20250523_120624
 테스트용 심볼: AAPL
 """
 import os
@@ -142,23 +141,33 @@ BACKTEST_END_DATE = "2023-01-01"
 
 # 로깅 설정
 def setup_logger(name, log_file, level=logging.INFO):
-    """로거 설정 함수"""
+    """로거 설정 함수 (중복 핸들러 방지)"""
     os.makedirs(os.path.dirname(log_file), exist_ok=True)
-    
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
-                                 datefmt='%Y-%m-%d %H:%M:%S')
-    
+
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                                  datefmt='%Y-%m-%d %H:%M:%S')
+
+    logger = logging.getLogger(name)
+
+    # 이미 핸들러가 있는 경우 중복 설정 방지
+    if logger.handlers:
+        return logger
+
+    logger.setLevel(level)
+
+    # 파일 핸들러
     handler = logging.FileHandler(log_file, encoding='utf-8')
     handler.setFormatter(formatter)
-    
+    logger.addHandler(handler)
+
+    # 콘솔 핸들러
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
-    
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
-    logger.addHandler(handler)
     logger.addHandler(console_handler)
-    
+
+    # 상위 로거로의 전파 방지 (선택사항)
+    logger.propagate = False
+
     return logger
 
 # 기본 로거 설정
@@ -320,7 +329,6 @@ print("=" * 60)
 print("🔧 모델 호환 설정 로드됨")
 print("=" * 60)
 print(f"📊 대상 심볼: {TARGET_SYMBOLS}")
-print(f"🤖 모델 경로: C:\finalproject\models\final_sac_model_20250523_120624")
 print(f"💰 최대 포지션: {DEFAULT_SYMBOL_CONFIG['max_position_size']*100}%")
 print(f"💵 최대 거래금액: ${DEFAULT_SYMBOL_CONFIG['max_trade_amount']}")
 print(f"⏰ 거래 간격: {DEFAULT_SYMBOL_CONFIG['trading_interval']//60}분")

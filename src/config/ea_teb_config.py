@@ -248,22 +248,32 @@ SKIP_DB_ON_ERROR = True
 
 # 로깅 설정
 def setup_logger(name, log_file, level=logging.INFO):
-    """로거 설정 함수"""
+    """로거 설정 함수 (중복 핸들러 방지)"""
     os.makedirs(os.path.dirname(log_file), exist_ok=True)
 
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                                   datefmt='%Y-%m-%d %H:%M:%S')
 
+    logger = logging.getLogger(name)
+
+    # 이미 핸들러가 있는 경우 중복 설정 방지
+    if logger.handlers:
+        return logger
+
+    logger.setLevel(level)
+
+    # 파일 핸들러
     handler = logging.FileHandler(log_file, encoding='utf-8')
     handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
+    # 콘솔 핸들러
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
-
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
-    logger.addHandler(handler)
     logger.addHandler(console_handler)
+
+    # 상위 로거로의 전파 방지 (선택사항)
+    logger.propagate = False
 
     return logger
 
