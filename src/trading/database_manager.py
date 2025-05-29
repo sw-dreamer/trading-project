@@ -161,35 +161,54 @@ class DatabaseManager:
         return []
     
     def save_model_info_detailed(self, model_id: str, file_path: str, 
-                               symbols: List[str], 
-                               description: str = None, 
-                               is_active: bool = False,
-                               model_metadata: Dict = None,
-                               config_info: Dict = None) -> bool:
+                           symbols: List[str], 
+                           description: str = None, 
+                           is_active: bool = False,
+                           model_metadata: Dict = None,
+                           config_info: Dict = None) -> bool:
         """
-        기존 models 테이블 구조를 사용한 상세 모델 정보 저장
-        description 필드에 JSON 형태로 상세 정보 저장
+        모델 파일 자체(BLOB)까지 포함하여 상세 모델 정보를 저장 - 디버깅 강화 버전
+        """
+        print(f"🔍 DEBUG: save_model_info_detailed 시작")
+        print(f"   └─ model_id: {model_id}")
+        print(f"   └─ file_path: {file_path}")
+        print(f"   └─ symbols: {symbols}")
+        print(f"   └─ description: {description}")
+        print(f"   └─ is_active: {is_active}")
+        print(f"   └─ model_metadata type: {type(model_metadata)}")
+        print(f"   └─ config_info type: {type(config_info)}")
         
-        Args:
-            model_id: 모델 ID
-            file_path: 모델 파일 경로
-            symbols: 트레이딩 대상 심볼들
-            description: 모델 설명
-            is_active: 활성화 여부
-            model_metadata: 모델 메타데이터 (model_metadata.json에서 읽은 정보)
-            config_info: 모델 설정 정보 (config.pth에서 읽은 정보)
-            
-        Returns:
-            저장 성공 여부
-        """
         try:
-            # 파일 정보 가져오기
-            file_size = os.path.getsize(file_path) if os.path.exists(file_path) else 0
-            created_time = datetime.fromtimestamp(os.path.getctime(file_path)) if os.path.exists(file_path) else datetime.now()
-            modified_time = datetime.fromtimestamp(os.path.getmtime(file_path)) if os.path.exists(file_path) else datetime.now()
+            # None 체크 및 기본값 설정
+            if model_metadata is None:
+                model_metadata = {}
+                print("   └─ model_metadata를 빈 dict로 초기화")
+                
+            if config_info is None:
+                config_info = {}
+                print("   └─ config_info를 빈 dict로 초기화")
+                
+            if symbols is None:
+                symbols = []
+                print("   └─ symbols를 빈 list로 초기화")
             
-            # 모델 타입 확인
-            model_type = "MLP"  # 기본값
+            # 파일 정보 확인
+            file_exists = os.path.exists(file_path)
+            print(f"   └─ 파일 존재 여부: {file_exists}")
+            
+            if file_exists:
+                file_size = os.path.getsize(file_path)
+                created_time = datetime.fromtimestamp(os.path.getctime(file_path))
+                modified_time = datetime.fromtimestamp(os.path.getmtime(file_path))
+                print(f"   └─ 파일 크기: {file_size} bytes")
+            else:
+                file_size = 0
+                created_time = datetime.now()
+                modified_time = datetime.now()
+                print("   └─ 파일이 없어서 기본값 사용")
+            
+            # 모델 타입 추론
+            model_type = "MLP"
             if config_info:
                 use_cnn = config_info.get('use_cnn', False)
                 use_lstm = config_info.get('use_lstm', False)
@@ -197,38 +216,63 @@ class DatabaseManager:
                     model_type = "CNN"
                 elif use_lstm:
                     model_type = "LSTM"
+            print(f"   └─ 모델 타입: {model_type}")
             
-            # 상세 정보를 JSON 형태로 description에 포함
+            # 상세 정보 구성
             detailed_info = {
                 "model_type": model_type,
                 "symbols": symbols,
                 "training_date": model_metadata.get('training_date') if model_metadata else None,
                 "backtest_performance": model_metadata.get('backtest_performance') if model_metadata else None,
-                "window_size": model_metadata.get('window_size') if model_metadata else config_info.get('window_size', 30) if config_info else 30,
+                "window_size": model_metadata.get('window_size') if model_metadata else config_info.get('window_size', 30),
                 "model_config": config_info,
                 "metadata": model_metadata,
                 "activation_timestamp": datetime.now().isoformat(),
                 "file_size_bytes": file_size
             }
+            print(f"   └─ detailed_info 생성 완료")
             
-            # description에 상세 정보 포함
+            # description 생성
             if description:
                 full_description = f"{description}\n\n[상세정보]\n{json.dumps(detailed_info, ensure_ascii=False, indent=2)}"
             else:
                 basic_desc = f"실시간 트레이딩 모델 - {', '.join(symbols)} ({model_type})"
                 full_description = f"{basic_desc}\n\n[상세정보]\n{json.dumps(detailed_info, ensure_ascii=False, indent=2)}"
             
-            # 기존 models 테이블 구조 사용
+            print(f"   └─ description 길이: {len(full_description)} 문자")
+
+            # 모델 파일 읽기 (BLOB)
+            model_blob = None
+            if file_exists:
+                try:
+                    with open(file_path, 'rb') as f:
+                        model_blob = f.read()
+                    print(f"   └─ 모델 파일 읽기 성공: {len(model_blob)} bytes")
+                except Exception as e:
+                    print(f"   └─ 모델 파일 읽기 실패: {e}")
+                    model_blob = None
+            else:
+                print("   └─ 파일이 없어서 model_blob = None")
+
+            # 연결 상태 확인
+            if not self.is_connected():
+                print("   └─ ❌ 데이터베이스 연결 실패")
+                return False
+            
+            print("   └─ ✅ 데이터베이스 연결 확인")
+
+            # 쿼리 준비
             query = """
             INSERT INTO models 
-            (model_id, file_path, created_time, modified_time, file_size, description, is_active)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            (model_id, file_path, created_time, modified_time, file_size, description, is_active, model_blob)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             ON DUPLICATE KEY UPDATE
-            description = VALUES(description),
-            is_active = VALUES(is_active),
-            modified_time = VALUES(modified_time)
+                description = VALUES(description),
+                is_active = VALUES(is_active),
+                modified_time = VALUES(modified_time),
+                model_blob = VALUES(model_blob)
             """
-            
+
             params = (
                 model_id,
                 file_path,
@@ -236,18 +280,63 @@ class DatabaseManager:
                 modified_time,
                 file_size,
                 full_description,
-                is_active
+                is_active,
+                model_blob
             )
+
+            print(f"   └─ 쿼리 파라미터 준비 완료")
+            print(f"      ├─ model_id: {params[0]}")
+            print(f"      ├─ file_path: {params[1]}")
+            print(f"      ├─ created_time: {params[2]}")
+            print(f"      ├─ modified_time: {params[3]}")
+            print(f"      ├─ file_size: {params[4]}")
+            print(f"      ├─ description 길이: {len(params[5])}")
+            print(f"      ├─ is_active: {params[6]}")
+            print(f"      └─ model_blob 크기: {len(params[7]) if params[7] else 0}")
+
+            # 쿼리 실행 전 로그
+            print("   └─ 🚀 쿼리 실행 시작...")
             
-            if self.execute_query(query, params):
-                self.logger.info(f"🤖 상세 모델 정보 저장 완료: {model_id}")
+            # execute_query 메서드를 직접 호출하는 대신 여기서 직접 실행해보기
+            try:
+                cursor = self.connection.cursor()
+                cursor.execute(query, params)
+                affected_rows = cursor.rowcount
+                cursor.close()
+                
+                print(f"   └─ ✅ 쿼리 실행 성공! 영향받은 행: {affected_rows}")
+                
+                # 저장 확인
+                check_query = "SELECT model_id, file_size, is_active FROM models WHERE model_id = %s"
+                check_result = self.fetch_query(check_query, (model_id,))
+                
+                if check_result:
+                    print(f"   └─ ✅ 저장 확인 성공: {check_result[0]}")
+                else:
+                    print(f"   └─ ⚠️ 저장 확인 실패: 데이터를 찾을 수 없음")
+                
+                self.logger.info(f"🤖 모델 정보 + 파일 저장 완료: {model_id}")
                 self.logger.info(f"   └─ 타입: {model_type}")
                 self.logger.info(f"   └─ 심볼: {', '.join(symbols)}")
                 self.logger.info(f"   └─ 파일 크기: {file_size:,} bytes")
                 return True
-            return False
-            
+                
+            except mysql.connector.Error as db_error:
+                print(f"   └─ ❌ MySQL 오류: {db_error}")
+                print(f"      └─ 오류 코드: {db_error.errno}")
+                print(f"      └─ SQL 상태: {db_error.sqlstate}")
+                self.logger.error(f"❌ MySQL 오류: {db_error}")
+                return False
+            except Exception as e:
+                print(f"   └─ ❌ 일반 오류: {e}")
+                self.logger.error(f"❌ 쿼리 실행 중 오류: {e}")
+                return False
+
         except Exception as e:
+            print(f"🔍 DEBUG: save_model_info_detailed 전체 오류: {e}")
+            print(f"   └─ 오류 타입: {type(e)}")
+            import traceback
+            print(f"   └─ 스택 트레이스:\n{traceback.format_exc()}")
             self.logger.error(f"❌ save_model_info_detailed 오류: {e}")
             return False
     

@@ -479,49 +479,120 @@ def setup_signal_handlers(live_traders: Dict[str, EnhancedLiveTrader], db_manage
             
             # 트레이딩 중지
             for symbol, live_trader in live_traders.items():
-                if live_trader.stop("강제 종료"):
-                    logger.info(f"✅ {symbol} 트레이딩이 성공적으로 중지되었습니다.")
-                else:
-                    logger.error(f"❌ {symbol} 트레이딩 중지 중 오류가 발생했습니다.")
+                try:
+                    if live_trader.stop("강제 종료"):
+                        logger.info(f"✅ {symbol} 트레이딩이 성공적으로 중지되었습니다.")
+                    else:
+                        logger.error(f"❌ {symbol} 트레이딩 중지 중 오류가 발생했습니다.")
+                except Exception as e:
+                    logger.error(f"❌ {symbol} 트레이딩 중지 실패: {e}")
             
-            # 모델 정보 저장
+            # 모델 정보 저장 - 각 심볼별로 개별 처리
             logger.info("💾 강제 종료 - 모델 정보 저장 중...")
-            try:
-                for symbol, live_trader in live_traders.items():
-                    model_path = symbol_to_model_mapping.get(symbol, '')
+            
+            for symbol, live_trader in live_traders.items():
+                try:
+                    # 1. 데이터 검증
+                    model_path = symbol_to_model_mapping.get(symbol)
+                    print(f'[DEBUG] {symbol} - model_path: {model_path}')
                     
-                    if model_path:
-                        model_info = model_info_dict.get(model_path, {})
-                        model_id = os.path.splitext(os.path.basename(model_path))[0]
+                    if not model_path:
+                        logger.warning(f"⚠️ {symbol}: model_path가 없습니다. 건너뜁니다.")
+                        continue
+                    
+                    if not os.path.exists(model_path):
+                        logger.warning(f"⚠️ {symbol}: 모델 파일이 존재하지 않습니다: {model_path}")
+                        continue
+                    
+                    # 2. 모델 정보 가져오기 및 검증
+                    model_info = model_info_dict.get(model_path, {})
+                    if model_info is None:
+                        model_info = {}
+                        logger.warning(f"⚠️ {symbol}: model_info가 None입니다. 빈 딕셔너리로 대체합니다.")
+                    
+                    model_id = os.path.splitext(os.path.basename(model_path))[0]
+                    
+                    print(f'[DEBUG] {symbol} - model_info type: {type(model_info)}')
+                    print(f'[DEBUG] {symbol} - model_info: {model_info}')
+                    if isinstance(model_info, dict):
+                        print(f'[DEBUG] {symbol} - model_info keys: {list(model_info.keys())}')
+                    
+                    # 3. 트레이딩 요약 정보 가져오기
+                    try:
                         final_summary = live_trader.get_daily_summary()
+                        print(f'[DEBUG] {symbol} - final_summary: {final_summary}')
+                    except Exception as e:
+                        logger.error(f"❌ {symbol}: get_daily_summary 실패: {e}")
+                        final_summary = {'total_trades': 0, 'error': str(e)}
+                    
+                    # 4. 모델 메타데이터 준비 (안전한 방식)
+                    base_metadata = {}
+                    if isinstance(model_info, dict) and 'metadata' in model_info:
+                        metadata_value = model_info.get('metadata')
+                        if isinstance(metadata_value, dict):
+                            base_metadata = metadata_value
+                        else:
+                            logger.warning(f"⚠️ {symbol}: metadata가 dict가 아닙니다. type: {type(metadata_value)}")
+                    
+                    model_metadata = {
+                        **base_metadata,
+                        'trading_results': final_summary,
+                        'session_id': session_id,
+                        'forced_termination': True,
+                        'completion_time': datetime.now().isoformat(),
+                        'symbol': symbol
+                    }
+                    
+                    # 5. config 정보도 안전하게 처리
+                    config_info = {}
+                    if isinstance(model_info, dict) and 'config' in model_info:
+                        config_value = model_info.get('config')
+                        if isinstance(config_value, dict):
+                            config_info = config_value
+                        else:
+                            logger.warning(f"⚠️ {symbol}: config가 dict가 아닙니다. type: {type(config_value)}")
+                    
+                    # 6. 모델 타입 안전하게 가져오기
+                    model_type = 'Unknown'
+                    if isinstance(model_info, dict):
+                        model_type = model_info.get('model_type', 'Unknown')
+                    
+                    # 7. 데이터베이스 저장 시도
+                    unique_model_id = f"{model_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{symbol}"
+                    
+                    print(f'[DEBUG] {symbol} - 저장 시도 중...')
+                    print(f'[DEBUG] model_id: {unique_model_id}')
+                    print(f'[DEBUG] symbols: {[symbol]}')
+                    print(f'[DEBUG] metadata keys: {list(model_metadata.keys())}')
+                    
+                    success = db_manager.save_model_info_detailed(
+                        model_id=unique_model_id,
+                        file_path=model_path,
+                        symbols=[symbol],
+                        description=f"강제 종료된 모델 - {symbol} ({model_type}) - {final_summary.get('total_trades', 0)}회 거래",
+                        is_active=False,
+                        model_metadata=model_metadata,
+                        config_info=config_info
+                    )
+                    
+                    print(f'[DEBUG] {symbol} - save_model_info_detailed 결과: {success}')
+                    
+                    if success:
+                        logger.info(f"✅ {symbol} 모델 정보 저장 완료: {unique_model_id}")
+                    else:
+                        logger.error(f"❌ {symbol} 모델 정보 저장 실패 (success=False)")
                         
-                        success = db_manager.save_model_info_detailed(
-                            model_id=f"{model_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
-                            file_path=model_path,
-                            symbols=[symbol],
-                            description=f"강제 종료된 모델 - {symbol} ({model_info.get('model_type', 'Unknown')}) - {final_summary.get('total_trades', 0)}회 거래",
-                            is_active=False,
-                            model_metadata={
-                                **model_info.get('metadata', {}),
-                                'trading_results': final_summary,
-                                'session_id': session_id,
-                                'forced_termination': True,
-                                'completion_time': datetime.now().isoformat()
-                            },
-                            config_info=model_info.get('config')
-                        )
-                        
-                        if success:
-                            logger.info(f"✅ {symbol} 모델 정보 저장 완료: {model_id}")
-                            
-            except Exception as e:
-                logger.error(f"❌ 강제 종료 시 모델 정보 저장 실패: {e}")
+                except Exception as e:
+                    logger.error(f"❌ {symbol} 모델 정보 저장 중 예외 발생: {e}")
+                    import traceback
+                    logger.error(f"❌ {symbol} 상세 오류: {traceback.format_exc()}")
             
             # 최종 DB 저장
             for symbol, live_trader in live_traders.items():
                 try:
                     live_trader.save_trading_stats_to_db()
                     live_trader.update_position_in_db()
+                    logger.info(f"✅ {symbol} 최종 DB 저장 완료")
                 except Exception as e:
                     logger.error(f"❌ {symbol} 최종 DB 저장 실패: {e}")
             
@@ -530,13 +601,17 @@ def setup_signal_handlers(live_traders: Dict[str, EnhancedLiveTrader], db_manage
                 final_stats = {}
                 if live_traders:
                     first_trader = next(iter(live_traders.values()))
-                    summary = first_trader.get_daily_summary()
-                    final_stats = {
-                        'total_trades': summary.get('total_trades', 0),
-                        'successful_trades': summary.get('successful_trades', 0),
-                        'return_pct': summary.get('daily_return_pct', 0),
-                        'forced_termination': True
-                    }
+                    try:
+                        summary = first_trader.get_daily_summary()
+                        final_stats = {
+                            'total_trades': summary.get('total_trades', 0),
+                            'successful_trades': summary.get('successful_trades', 0),
+                            'return_pct': summary.get('daily_return_pct', 0),
+                            'forced_termination': True
+                        }
+                    except Exception as e:
+                        logger.error(f"❌ 세션 통계 수집 실패: {e}")
+                        final_stats = {'forced_termination': True, 'error': str(e)}
                 
                 db_manager.update_trading_session_status(session_id, 'STOPPED', final_stats)
                 logger.info(f"🏁 트레이딩 세션 종료 정보 저장 완료: {session_id}")
@@ -547,13 +622,22 @@ def setup_signal_handlers(live_traders: Dict[str, EnhancedLiveTrader], db_manage
             # 트레이딩 통계 저장
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             for symbol, live_trader in live_traders.items():
-                results_path = os.path.join(args.results_dir, f"{symbol}_final_trading_stats_{timestamp}.json")
-                
-                if live_trader.save_trading_stats(results_path):
-                    logger.info(f"📊 {symbol} 최종 트레이딩 통계가 저장되었습니다: {results_path}")
+                try:
+                    results_path = os.path.join(args.results_dir, f"{symbol}_final_trading_stats_{timestamp}.json")
+                    
+                    if live_trader.save_trading_stats(results_path):
+                        logger.info(f"📊 {symbol} 최종 트레이딩 통계가 저장되었습니다: {results_path}")
+                    else:
+                        logger.error(f"❌ {symbol} 트레이딩 통계 저장 실패")
+                except Exception as e:
+                    logger.error(f"❌ {symbol} 트레이딩 통계 저장 중 오류: {e}")
             
             # 데이터베이스 연결 종료
-            db_manager.disconnect()
+            try:
+                db_manager.disconnect()
+                logger.info("🔌 데이터베이스 연결 종료 완료")
+            except Exception as e:
+                logger.error(f"❌ 데이터베이스 연결 종료 실패: {e}")
             
             logger.info("👋 프로그램을 종료합니다.")
             os._exit(0)
@@ -561,7 +645,6 @@ def setup_signal_handlers(live_traders: Dict[str, EnhancedLiveTrader], db_manage
     # Ctrl+C (SIGINT) 및 SIGTERM 핸들러 등록
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
-
 
 def validate_environment(config, logger):
     """실행 환경 검증"""
@@ -586,6 +669,67 @@ def validate_environment(config, logger):
     
     logger.info("✅ 실행 환경 검증 완료")
     return True
+
+def save_models_on_market_close(live_traders: Dict[str, EnhancedLiveTrader], 
+                               db_manager: DatabaseManager, 
+                               logger, session_id: str, 
+                               symbol_to_model_mapping: Dict[str, str], 
+                               model_info_dict: Dict[str, Dict]):
+    """장 마감 또는 종료 시 models 테이블에 저장"""
+    logger.info("💾 모델 정보를 데이터베이스에 저장 중...")
+    
+    for symbol, live_trader in live_traders.items():
+        try:
+            # 1. 데이터 검증
+            model_path = symbol_to_model_mapping.get(symbol)
+            
+            if not model_path or not os.path.exists(model_path):
+                logger.warning(f"⚠️ {symbol}: 모델 파일이 없습니다. 건너뜁니다.")
+                continue
+            
+            # 2. 모델 정보 가져오기
+            model_info = model_info_dict.get(model_path, {})
+            model_id = os.path.splitext(os.path.basename(model_path))[0]
+            
+            # 3. 트레이딩 요약 정보
+            try:
+                final_summary = live_trader.get_daily_summary()
+            except Exception as e:
+                logger.error(f"❌ {symbol}: get_daily_summary 실패: {e}")
+                final_summary = {'total_trades': 0, 'error': str(e)}
+            
+            # 4. 모델 메타데이터 준비
+            model_metadata = {
+                **model_info.get('metadata', {}),
+                'trading_results': final_summary,
+                'session_id': session_id,
+                'completion_time': datetime.now().isoformat(),
+                'symbol': symbol
+            }
+            
+            # 5. 모델 타입 확인
+            model_type = model_info.get('model_type', 'Unknown')
+            
+            # 6. 데이터베이스 저장
+            unique_model_id = f"{model_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{symbol}"
+            
+            success = db_manager.save_model_info_detailed(
+                model_id=unique_model_id,
+                file_path=model_path,
+                symbols=[symbol],
+                description=f"트레이딩 완료 모델 - {symbol} ({model_type}) - {final_summary.get('total_trades', 0)}회 거래",
+                is_active=False,
+                model_metadata=model_metadata,
+                config_info=model_info.get('config', {})
+            )
+            
+            if success:
+                logger.info(f"✅ {symbol} 모델 정보 저장 완료: {unique_model_id}")
+            else:
+                logger.error(f"❌ {symbol} 모델 정보 저장 실패")
+                
+        except Exception as e:
+            logger.error(f"❌ {symbol} 모델 정보 저장 중 예외 발생: {e}")
 
 
 def main():
@@ -878,9 +1022,13 @@ def main():
                     if state.get('running', False):
                         all_stopped = False
                         break
-                
+
                 if all_stopped:
                     logger.info("🏁 모든 트레이딩 시스템이 중지되었습니다. (장 마감 자동 종료)")
+                    
+                    # 장 마감 시 즉시 models 테이블 저장
+                    save_models_on_market_close(live_traders, db_manager, logger, session_id, 
+                                            symbol_to_model_mapping, model_info_dict)
                     break
                 
                 # 시장 상태 주기적 로깅 (10분마다)
@@ -1068,46 +1216,9 @@ def main():
             # 정리 작업
             logger.info("🧹 정리 작업 시작...")
             
-            logger.info("💾 사용된 모델 정보를 데이터베이스에 저장 중...")
-            try:
-                for symbol, live_trader in live_traders.items():
-                    # 해당 심볼에 사용된 모델 경로 찾기
-                    model_path = symbol_to_model_mapping.get(symbol, '')
-                    
-                    if model_path:
-                        # 모델 정보 로드
-                        model_info = model_info_dict.get(model_path, {})
-                        model_id = os.path.splitext(os.path.basename(model_path))[0]
-                        
-                        # 트레이딩 통계 가져오기
-                        final_summary = live_trader.get_daily_summary()
-                        
-                        # 완전한 모델 정보로 데이터베이스에 저장
-                        success = db_manager.save_model_info_detailed(
-                            model_id=f"{model_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
-                            file_path=model_path,
-                            symbols=[symbol],
-                            description=f"트레이딩 완료 모델 - {symbol} ({model_info.get('model_type', 'Unknown')}) - {final_summary.get('total_trades', 0)}회 거래",
-                            is_active=False,  # 종료된 모델이므로 비활성화
-                            model_metadata={
-                                **model_info.get('metadata', {}),
-                                'trading_results': final_summary,
-                                'session_id': session_id,
-                                'completion_time': datetime.now().isoformat(),
-                                'auto_stopped_by_market_close': all_stopped  # 장 마감 자동 종료 여부
-                            },
-                            config_info=model_info.get('config')
-                        )
-                        
-                        if success:
-                            logger.info(f"✅ {symbol} 모델 정보 저장 완료: {model_id}")
-                            logger.info(f"   └─ 거래 횟수: {final_summary.get('total_trades', 0)}회")
-                            logger.info(f"   └─ 수익률: {final_summary.get('daily_return_pct', 0):.2f}%")
-                        else:
-                            logger.warning(f"⚠️ {symbol} 모델 정보 저장 실패")
-                            
-            except Exception as e:
-                logger.error(f"❌ 모델 정보 저장 중 오류: {e}")
+            if 'all_stopped' not in locals() or not all_stopped:
+                save_models_on_market_close(live_traders, db_manager, logger, session_id, 
+                                        symbol_to_model_mapping, model_info_dict)
             
             for symbol, live_trader in live_traders.items():
                 if live_trader.stop("정상 종료"):
