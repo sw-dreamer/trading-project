@@ -23,15 +23,24 @@ from werkzeug.utils import secure_filename
 # 라우팅 : "어떤 url이 들어왔을 때 어떤 함수를 실행할지 정하는 것"
 
 # 몽고DB 연동 코드 
-mongo_client = MongoClient('mongodb://192.168.40.192/')   #localhost 주소 
+try:
+    mongo_client = MongoClient('mongodb://192.168.40.192/', serverSelectionTimeoutMS=5000)
+    # 연결 테스트
+    mongo_client.server_info()
+    
+    # polygon DB 접속
+    polygon_db = mongo_client['polygon']                        #DB 이름
+    polygon_articles = polygon_db['articles']                    #컬렉션 이름
 
-# polygon DB 접속
-polygon_db = mongo_client['polygon']                        #DB 이름
-polygon_articles =polygon_db['articles']                    #컬렉션 이름
-
-# yahoo DB 접속
-yahoo_db = mongo_client['yahoo']                           #DB 이름
-yahoo_news =yahoo_db['news']                               #컬렉션 이름
+    # yahoo DB 접속
+    yahoo_db = mongo_client['yahoo']                           #DB 이름
+    yahoo_news = yahoo_db['news']                               #컬렉션 이름
+    
+except Exception as e:
+    print(f"MongoDB 연결 실패: {str(e)}")
+    # 기본값 설정
+    polygon_articles = None
+    yahoo_news = None
 
 class DashboardApp:
     """
@@ -119,24 +128,9 @@ class DashboardApp:
         # 기사 페이지
         @self.app.route('/news')
         def news():
-            ticker = request.args.get('name')  
+            ticker = request.args.get('name')
+            return render_template('news.html', ticker=ticker)
 
-            query_filter = {}
-            if ticker:
-                query_filter = {"name": ticker}
-
-            # polygon_articles 컬렉션에서 데이터 가져오기
-            news_data = list(polygon_articles.find(query_filter, {
-                '_id': 0,
-                'name': 1,
-                'title': 1,
-                'summary': 1,
-                'sentiment': 1,
-                'date': 1,
-                'url': 1
-            }))
-
-            return render_template('news.html', news=news_data)
         
         # API 라우트 설정
         
@@ -155,41 +149,40 @@ class DashboardApp:
             models = self.data_manager.get_model_info(refresh=refresh)
             return jsonify(models)
         
+        
         # 기사 데이터 조회 API
         @self.app.route('/api/news')
         def get_news():
+            # URL 파라미터에서 티커 심볼과 뉴스 소스 가져오기
             ticker = request.args.get('name')
-            try:
-                query = {}
-                if ticker:
-                    query = {"name": ticker}
+            source = request.args.get('source') 
+            
+            # MongoDB 쿼리 필터 초기화
+            query_filter = {}
+            if ticker:
+                query_filter = {"name": ticker}
 
-                polygon_articles_data = list(polygon_articles.find(query, {
-                    '_id': 0,
-                    'name': 1,
-                    'title': 1,
-                    'summary': 1,
-                    'sentiment': 1,
-                    'date': 1,
-                    'url': 1
+            # Polygon 뉴스 데이터 조회
+            if source == 'polygon':
+                news_data = list(polygon_articles.find(query_filter, {
+                    '_id': 0, 'name': 1, 'title': 1, 'summary': 1,
+                    'sentiment': 1, 'date': 1, 'url': 1
                 }))
+                return jsonify({'polygon': news_data})
+            
+            # Yahoo 뉴스 데이터 조회
+            elif source == 'yahoo':
+                news_data = list(yahoo_news.find(query_filter, {
+                    '_id': 0, 'name': 1, 'title': 1, 'summary': 1,
+                    'sentiment': 1, 'date': 1, 'url': 1
+                }))
+                return jsonify({'yahoo': news_data})
+            
+            # 잘못된 소스가 지정된 경우 에러 반환
+            else:
+                return jsonify({'error': 'Invalid source'}), 400
 
-                yahoo_news_data = list(yahoo_news.find(query, {
-                    '_id': 0,
-                    'name': 1,
-                    'title': 1,
-                    'summary': 1,
-                    'sentiment': 1,
-                    'date': 1,
-                    'url': 1
-                }))
                 
-                return jsonify({
-                    'polygon': polygon_articles_data,
-                    'yahoo': yahoo_news_data
-                })
-            except Exception as e:
-                return jsonify({'error': str(e)})
                 
         # 백테스트 결과 API
         @self.app.route('/api/backtest-results')
