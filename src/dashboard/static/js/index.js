@@ -26,11 +26,11 @@ function refreshDashboard() {
     loadCharts();
 }
 
+// 트레이딩 통계 
 function updateTradingStats(data) {
     if (!data || $.isEmptyObject(data)) {
         $('#portfolio-value').text('데이터 없음');
         $('#portfolio-change').html('변화: <span>-</span>');
-        $('#today-pnl').text('데이터 없음');
         $('#today-trades').html('거래 횟수: <span>-</span>');
         $('#total-return').text('데이터 없음');
         $('#total-duration').html('기간: <span>-</span>');
@@ -40,41 +40,42 @@ function updateTradingStats(data) {
         return;
     }
 
-    const stats = data.trading_stats;
+    // 트레이딩 통계 데이터 추출(대시보드 화면에 표시 필요한 데이터)
+    const stats = data.trading_stats;  // "trading_stats"라는 리스트에 있는 값 받아서 stats에 저장
 
     if (stats) {
         const currentBalance = stats.portfolio_value || 0;
-        const initialBalance = stats.initial_balance || 0;
-        const pnl = stats.daily_pnl || 0;
+        const totalReturn = stats.total_pnl || 0;
+        const initialBalance = currentBalance - totalReturn;
+        const returnPercent = initialBalance > 0 ? (totalReturn / initialBalance * 100) : 0;
+
+        const pnl = stats.total_pnl || 0;
+        const dailyPnl = stats.daily_pnl || 0;
         const pnlPercent = initialBalance > 0 ? (pnl / initialBalance * 100) : 0;
 
         $('#portfolio-value').text(`$${currentBalance.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}`);
-        const changeClass = pnl >= 0 ? 'text-success' : 'text-danger';
-        const changeSign = pnl >= 0 ? '+' : '';
-        $('#portfolio-change').html(`변화: <span class="${changeClass}">${changeSign}$${pnl.toLocaleString('ko-KR', { maximumFractionDigits: 2 })} (${changeSign}${pnlPercent.toFixed(2)}%)</span>`);
-    }
-
-    if (stats && stats.trades) {
-        const today = new Date().toISOString().split('T')[0];
-        const todayTrades = stats.trades.filter(t => t.timestamp && t.timestamp.startsWith(today));
-        const todayPnl = todayTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
-
-        $('#today-pnl').text(`$${todayPnl.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}`);
-        $('#today-trades').html(`거래 횟수: <span>${todayTrades.length}</span>`);
-    }
-
-    if (stats && stats.start_time) {
-        const totalReturn = stats.pnl || 0;
-        const initialBalance = stats.initial_balance || 0;
-        const returnPercent = initialBalance > 0 ? (totalReturn / initialBalance * 100) : 0;
-
+        $('#portfolio-change').html(`변화: <span class="${pnl >= 0 ? 'text-success' : 'text-danger'}">${pnl >= 0 ? '+' : ''}$${pnl.toLocaleString('ko-KR', { maximumFractionDigits: 2 })} (${pnlPercent.toFixed(2)}%)</span>`);
         $('#total-return').text(`${returnPercent.toFixed(2)}%`);
-        const startTime = new Date(stats.start_time);
+        $('#daily-pnl').text(`$${dailyPnl.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}`);
+    }
+
+
+    // 오늘 거래 횟수 계산 (trades 기반)
+    if (data.trades && data.trades.length > 0) {
+        const today = new Date().toISOString().split('T')[0];
+        const todayTrades = data.trades.filter(t => t.timestamp && t.timestamp.startsWith(today));
+        $('#daily-trades').html(`거래 횟수: <span>${todayTrades.length}</span>`);
+    }
+
+    // 기간 계산
+    if (stats && stats.timestamp) {
+        const startTime = new Date(stats.timestamp);
         const now = new Date();
         const diffDays = Math.floor((now - startTime) / (1000 * 60 * 60 * 24));
         $('#total-duration').html(`기간: <span>${diffDays}일</span>`);
     }
 
+    // 포지션 데이터
     if (data.positions) {
         const positionsCount = Object.keys(data.positions).length;
         let positionsValue = 0;
@@ -85,8 +86,9 @@ function updateTradingStats(data) {
         $('#positions-value').html(`가치: <span>$${positionsValue.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}</span>`);
     }
 
-    if (stats && stats.trades && stats.trades.length > 0) {
-        const recentTrades = stats.trades.slice(-10).reverse();
+    // 최근 거래 내역
+    if (data.trades && data.trades.length > 0) {
+        const recentTrades = data.trades.slice(-10).reverse();
         let tradesHtml = '';
         recentTrades.forEach(trade => {
             const timestamp = trade.timestamp || '';
@@ -114,7 +116,8 @@ function updateTradingStats(data) {
         $('#recent-trades').html('<tr><td colspan="7" class="text-center">거래 내역이 없습니다.</td></tr>');
     }
 }
-
+       
+    
 function loadCharts() {
     // 포트폴리오 가치 차트
     $.getJSON('/api/charts/portfolio', function(data) {

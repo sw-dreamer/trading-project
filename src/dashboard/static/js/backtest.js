@@ -59,15 +59,15 @@
       tbody.innerHTML = '<tr><td colspan="6" class="text-center">거래 내역이 없습니다.</td></tr>';
       return;
     }
-    trades.forEach(trade => {
+    trades.forEach(backtest_trade => {
       const row = document.createElement('tr');
       row.innerHTML = `
-        <td>${trade.timestamp}</td>
-        <td>${trade.action > 0 ? '매수' : '매도'}</td>
-        <td>${trade.price.toFixed(2)}</td>
-        <td>${trade.shares}</td>
-        <td>${trade.cost ? trade.cost.toFixed(2) : '-'}</td>
-        <td>${trade.portfolio_value.toFixed(2)}</td>
+        <td>${backtest_trade.timestamp}</td>
+        <td>${backtest_trade.action > 0 ? '매수' : '매도'}</td>
+        <td>${backtest_trade.price.toFixed(2)}</td>
+        <td>${backtest_trade.shares}</td>
+        <td>${backtest_trade.cost ? backtest_trade.cost.toFixed(2) : '-'}</td>
+        <td>${backtest_trade.portfolio_value.toFixed(2)}</td>
       `;
       tbody.appendChild(row);
     });

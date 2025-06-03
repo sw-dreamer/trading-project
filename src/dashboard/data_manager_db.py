@@ -41,11 +41,12 @@ class DBDataManager:
             self.logger.info("DBDataManager 초기화 완료")
     
     # 트레이딩 통계
-    def get_trading_stats(self, refresh: bool = False) -> Dict[str, Any]:
+    def get_trading_stats(self, model_id: Optional[str] = None, refresh: bool = False) -> Dict[str, Any]:
         """
         트레이딩 통계 조회
         
         Args:
+            model_id: 모델 ID (옵션, 특정 모델 결과만 조회)
             refresh: 캐시 갱신 여부 (데이터베이스 방식에서는 무시됨)
             
         Returns:
@@ -83,6 +84,8 @@ class DBDataManager:
             positions = self.db_manager.execute_query(positions_query)
             
             # 통계 데이터 구성
+            # portfolio_values = 자산 변화만 뽑은 리스트 
+            # timestamps = 타임스탬프만 뽑은 리스트
             portfolio_values = [row['portfolio_value'] for row in reversed(stats_rows)]    
             timestamps = [row['timestamp'].isoformat() for row in reversed(stats_rows)]
             
@@ -104,6 +107,8 @@ class DBDataManager:
                 else:
                     drawdown = (peak - value) / peak
                     drawdowns.append(drawdown)
+                    
+            
             
             # 포지션 데이터 가공
             positions_dict = {}
@@ -120,6 +125,17 @@ class DBDataManager:
                     # 타임스탬프
                     'timestamp': position['timestamp'].isoformat()
                 }
+            
+            # 오늘의 손익 합산
+            today_str = datetime.now().strftime('%Y-%m-%d')
+            today_pnl_query = """
+            SELECT SUM(daily_pnl) AS today_pnl
+            FROM trading_stats
+            WHERE DATE(timestamp) = %s
+            """
+            today_pnl_result = self.db_manager.execute_query(today_pnl_query, (today_str,))
+            today_pnl = today_pnl_result[0]['today_pnl'] if today_pnl_result and today_pnl_result[0]['today_pnl'] else 0
+            
             
             # 최신 트레이딩 통계 데이터
             latest_stats = stats_rows[0]
@@ -150,10 +166,11 @@ class DBDataManager:
                     # 주식의 현재 시가 총합(주식자산 평가 금액)
                     'equity_value': float(latest_stats['equity_value']),
                     # 오늘 손익
-                    'daily_pnl': float(latest_stats['daily_pnl']),
+                    'daily_pnl': float(latest_stats['daily_pnl']or 0),
                     # 누적 손익
                     'total_pnl': float(latest_stats['total_pnl']),
-                    'timestamp': latest_stats['timestamp'].isoformat()
+                    'timestamp': latest_stats['timestamp'].isoformat(),
+                    
                 }
             }
             
@@ -242,6 +259,16 @@ class DBDataManager:
             if self.logger:
                 self.logger.error(f"백테스트 결과 조회 중 오류 발생: {e}")
             return {}
+        
+    # 거래 내역 조회
+    def get_trades(self, model_id: str) -> List[Dict[str, Any]]:
+            query = """
+            SELECT * FROM trades
+            WHERE model_id = %s
+            ORDER BY timestamp ASC
+            """
+            return self.db_manager.execute_query(query, (model_id,))
+    
     
     # ALPACA에서 가져와야 하는 데이터들 (db에는 trade_details 테이블에 저장되어 있음)
     def _get_trade_details(self, model_id: str) -> Dict[str, Any]:

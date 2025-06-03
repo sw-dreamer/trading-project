@@ -138,13 +138,14 @@ class DashboardApp:
 
             return render_template('news.html', news=news_data)
         
-        # API 엔드포인트 설정
+        # API 라우트 설정
         
         # 트레이딩 통계 API
         @self.app.route('/api/trading-stats')
         def get_trading_stats():
+            model_id = request.args.get('model_id')
             refresh = request.args.get('refresh', 'false').lower() == 'true'
-            stats = self.data_manager.get_trading_stats(refresh=refresh)
+            stats = self.data_manager.get_trading_stats(model_id=model_id, refresh=refresh)
             return jsonify(stats)
         
         # 모델 정보 API
@@ -196,7 +197,13 @@ class DashboardApp:
             model_id = request.args.get('model_id')
             refresh = request.args.get('refresh', 'false').lower() == 'true'
             results = self.data_manager.get_backtest_results(model_id=model_id, refresh=refresh)
+            # trades = 거래내역 데이터 조회
+            trades = self.data_manager.get_trades(model_id=model_id)
+            if model_id in results:
+                results[model_id]['trades'] = trades
             return jsonify(results)
+        
+    
         
         # 성능 지표 API
         @self.app.route('/api/performance-metrics')
