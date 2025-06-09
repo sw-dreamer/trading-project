@@ -25,6 +25,9 @@ from src.trading.data_validator import RealTimeDataValidator
 from src.trading.database_manager import DatabaseManager
 from typing import Dict, List
 
+#from src.alpaca import alpaca_client
+from src.alpaca.alpaca_client import AlpacaClient
+
 
 class EnhancedLiveTrader:
     """데이터베이스 연동이 포함된 향상된 실시간 트레이더 - 기존 테이블 호환 버전 + 장 마감 자동 종료"""

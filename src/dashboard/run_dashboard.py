@@ -14,6 +14,8 @@ import argparse
 import logging
 from pathlib import Path
 
+
+
 # 현재 디렉토리를 상위 경로에 추가하여 src 모듈을 찾을 수 있도록 함
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(os.path.dirname(current_dir))
@@ -25,6 +27,10 @@ from src.dashboard.data_manager_file import FileDataManager
 from src.dashboard.data_manager_factory import DataManagerFactory
 from src.utils.database import DatabaseManager
 from src.utils.logger import Logger
+
+#from src.alpaca import alpaca_client
+from src.alpaca.alpaca_client import AlpacaClient
+from src.config import config  # Alpaca API 설정 불러오기
 
 # 스크랩트를 실행 할 때 여러 옵션을 줄 수 있게 만드는 함수 
 def parse_args():
@@ -130,14 +136,27 @@ def main():
                 logger.info(f"동기화 결과: {sync_results}")
             except Exception as e:
                 logger.error(f"동기화 중 오류 발생: {e}")
+                
+        # Alpaca API 연동 (config에서 키 불러오기)
+        try:
+            alpaca = AlpacaClient(config.API_KEY, config.API_SECRET, config.BASE_URL, data_feed=config.DATA_FEED)
+            account = alpaca.get_account()
+            logger.info(f"✅ Alpaca 계좌 연결 성공! 현금 잔고: ${account['cash']}")
+            logger.info(f"✅ 데이터 피드 설정: {config.DATA_FEED}")
+        except Exception as e:
+            logger.info(f"❌ Alpaca 계좌 연결 실패: {e}")
+            exit(1)
         
         # 대시보드 앱 생성 및 실행(서버 실행)
         app = DashboardApp(
+            alpaca=alpaca,
             data_manager=data_manager,
             host=args.host,
             port=args.port,
             debug=args.debug
         )
+        
+        
         
         logger.info(f"대시보드 실행 - http://{args.host}:{args.port}")
         app.run()

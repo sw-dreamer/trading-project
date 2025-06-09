@@ -18,6 +18,7 @@ from src.dashboard.visualization import Visualizer
 from src.utils.logger import Logger
 from src.utils.database import DatabaseManager
 from werkzeug.utils import secure_filename
+from src.alpaca.alpaca_client import AlpacaClient
 
 # <라우팅 설정>
 # 라우팅 : "어떤 url이 들어왔을 때 어떤 함수를 실행할지 정하는 것"
@@ -49,6 +50,7 @@ class DashboardApp:
     
     def __init__(
         self,
+        alpaca,
         data_manager,
         static_dir: Optional[str] = None,
         templates_dir: Optional[str] = None,
@@ -67,6 +69,8 @@ class DashboardApp:
             port: 포트 번호
             debug: 디버그 모드 여부
         """
+        # alpaca API
+        self.alpaca = alpaca
         # 데이터 관리자 및 로거
         self.data_manager = data_manager
         self.logger = data_manager.logger
@@ -131,6 +135,42 @@ class DashboardApp:
             ticker = request.args.get('name')
             return render_template('news.html', ticker=ticker)
 
+            query_filter = {}
+            if ticker:
+                query_filter = {"name": ticker}
+
+            # polygon_articles 컬렉션에서 데이터 가져오기
+            news_data = list(polygon_articles.find(query_filter, {
+                '_id': 0,
+                'name': 1,
+                'title': 1,
+                'summary': 1,
+                'sentiment': 1,
+                'date': 1,
+                'url': 1
+            }))
+
+            return render_template('news.html', news=news_data)
+        
+        # 개인 계정 조회
+        @self.app.route('/api/account', methods=['GET'])
+        def get_account():
+            # 여기서는 임시 데이터 예제
+            # 실제 구현에선 broker API에서 데이터를 가져와야 함
+            account = self.alpaca.get_account()  # 객체 반환
+            account_data = {
+                "portfolio_value": float(account['portfolio_value']), 
+                "cash": float(account['cash']),
+                "positions": [
+                    {"symbol": "AAPL", "quantity": 10, "current_price": 180.25},
+                    {"symbol": "TSLA", "quantity": 5, "current_price": 850.50}
+                ]
+            }
+            
+            self.logger.info(f"✅ Alpaca 포트폴리오가치치: ${account['portfolio_value']}")
+            self.logger.info(f"✅ Alpaca 현금 잔고: ${account['cash']}")
+            
+            return jsonify(account_data)
         
         # API 라우트 설정
         
