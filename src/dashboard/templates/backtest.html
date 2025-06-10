@@ -35,68 +35,56 @@
 
   <div class="container-fluid mt-4">
 
-    <!-- 시스템 개요 -->
-    <div class="row mb-3">
-      <div class="col-md-12">
-        <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">백테스트 결과</h5>
-            </div>
-            <div class="card-body">
-            <p>SAC 트레이딩 시스템을 백테스트하고 결과를 확인할 수 있습니다.</p>
+
+  <!-- 모델 선택  id = modelSelect -->
+  <div class="row mb-1"> <!-- 여백 줄임 -->
+    <!-- 모델 선택 -->
+    <div class="col-md-3">
+      <div class="card h-100">
+        <div class="card-header">
+          <h5 class="mb-0">모델 선택</h5>
+        </div>
+        <div class="card-body py-2"> <!-- 카드 내부 padding 줄임 -->
+          <div class="custom-select-wrapper">
+            <select id="modelSelect" class="form-control custom-select">
+              <option value="">모델을 선택하세요</option>
+            </select>
+            <div class="custom-select-arrow">▼</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 모델 선택  id = modelSelect -->
-    <div class="row mb-3">
-      <!-- 모델 선택 -->
-      <div class="col-md-3">
-        <div class="card h-100">
-          <div class="card-header">
-            <h5 class="mb-0">모델 선택</h5>
-          </div>
-          <div class="card-body">
-            <div class="custom-select-wrapper">
-              <select id="modelSelect" class="form-control custom-select">
-                <option value="">모델을 선택하세요</option>
-              </select>
-              <div class="custom-select-arrow">▼</div>
-            </div>
-          </div>
+    <!-- 성능 요약 -->
+    <div class="col-md-9">
+      <div class="card h-100">
+        <div class="card-header">
+          <h5 class="mb-0">성능 요약</h5>
         </div>
-      </div>
-    
-      <!-- 성능 요약 -->
-      <div class="col-md-9">
-        <div class="card h-100">
-          <div class="card-header">
-            <h5 class="mb-0">성능 요약</h5>
-          </div>
-          <div class="card-body">
-            <div class="row text-center">
-              <div class="col-md-3">
-                <h6>총 수익률</h6>
-                <p id="totalReturn">-</p>
-              </div>
-              <div class="col-md-3">
-                <h6>샤프 비율</h6>
-                <p id="sharpeRatio">-</p>
-              </div>
-              <div class="col-md-3">
-                <h6>최대 낙폭</h6>
-                <p id="maxDrawdown">-</p>
-              </div>
-              <div class="col-md-3">
-                <h6>승률</h6>
-                <p id="winRate">-</p>
-              </div>
+        <div class="card-body py-2"> 
+          <div class="row text-center">
+            <div class="col-md-3">
+              <h6 class="value-label">총 수익률</h6>
+              <p id="totalReturn"  class="value-text">-</p>
+            </div>
+            <div class="col-md-3">
+              <h6 class="value-label">샤프 비율</h6>
+              <p id="sharpeRatio"  class="value-text">-</p>
+            </div>
+            <div class="col-md-3">
+              <h6 class="value-label">최대 낙폭</h6>
+              <p id="maxDrawdown"  class="value-text">-</p>
+            </div>
+            <div class="col-md-3">
+              <h6 class="value-label">승률</h6>
+              <p id="winRate"  class="value-text">-</p>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+
     
       
       <!-- 포트폴리오 가치 변화, 낙폭 변화 -->
@@ -104,20 +92,20 @@
     <div class="col-md-6">
       <div class="card">
         <div class="card-header">
-          <h5 class="mb-0">포트폴리오 가치 변화(수정필요)</h5>
+          <h5 class="mb-0">위험 대비 수익률 평가</h5>
         </div>
         <div class="card-body">
-          <div id="portfolioChart" style="height: 400px;"></div>
+          <div id="riskReturnChart" style="height: 400px;"></div>
         </div>
       </div>
     </div>
     <div class="col-md-6">
       <div class="card">
         <div class="card-header">
-          <h5 class="mb-0">낙폭 변화(수정필요)</h5>
+          <h5 class="mb-0">초기자산 vs 최종자산</h5>
         </div>
         <div class="card-body">
-          <div id="drawdownChart" style="height: 400px;"></div>
+          <div id="initialVsFinalChart" style="height: 400px;"></div>
         </div>
       </div>
     </div>
@@ -128,17 +116,17 @@
     <div class="col-md-6">
       <div class="card">
         <div class="card-header">
-          <h5 class="mb-0">거래 분포 (수정필요)</h5>
+          <h5 class="mb-0">모델 별 총 거래 수 </h5>
         </div>
         <div class="card-body">
-          <div id="tradeDistributionChart" style="height: 400px;"></div>
+          <div id="modelTradeCountChart" style="height: 400px;"></div>
         </div>
       </div>
     </div>
     <div class="col-md-6">
       <div class="card">
         <div class="card-header">
-          <h5 class="mb-0">모델 비교</h5>
+          <h5 class="mb-0">모델별 수익률 비교</h5>
         </div>
         <div class="card-body">
           <div id="modelComparisonChart" style="height: 400px;"></div>
@@ -146,30 +134,12 @@
       </div>
     </div>
   </div>
-  
-  <!-- 거래 내역 -->
-  <div class="card mb-4">
-    <div class="card-header">
-      <h5 class="mb-0">거래 내역</h5>
+
+  <footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center">
+        <span class="text-muted">© 2025 SAC 트레이딩 시스템 백테스트 결과</span>
     </div>
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-striped text-white" id="tradesTable">
-          <thead>
-            <tr>
-              <th>날짜/시간</th>
-              <th>종류</th>
-              <th>가격</th>
-              <th>수량</th>
-              <th>비용</th>
-              <th>포트폴리오 가치</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+</footer>
   
     
 

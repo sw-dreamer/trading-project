@@ -33,7 +33,6 @@ function updateTradingStats(data) {
         $('#portfolio-change').html('변화: <span>-</span>');
         $('#today-trades').html('거래 횟수: <span>-</span>');
         $('#total-return').text('데이터 없음');
-        $('#total-duration').html('기간: <span>-</span>');
         $('#positions-count').text('데이터 없음');
         $('#positions-value').html('가치: <span>-</span>');
         $('#recent-trades').html('<tr><td colspan="7" class="text-center">데이터가 없습니다.</td></tr>');
@@ -41,24 +40,51 @@ function updateTradingStats(data) {
     }
 
     // 트레이딩 통계 데이터 추출(대시보드 화면에 표시 필요한 데이터)
-    const stats = data.trading_stats;  // "trading_stats"라는 리스트에 있는 값 받아서 stats에 저장
+    const stats = data.trading_stats;
 
-    if (stats) {
+    if (Array.isArray(stats) && stats.length > 0) {
+        // 배열일 때: 가장 오래된 값과 최신값 비교
+        const oldest = stats[0];
+        const latest = stats[stats.length - 1];
+    
+        const oldestValue = oldest.portfolio_value || 0;
+        const latestValue = latest.portfolio_value || 0;
+        const portfolioChange = latestValue - oldestValue;
+        const portfolioChangePercent = oldestValue > 0 ? (portfolioChange / oldestValue * 100) : 0;
+    
+        const pnl = latest.total_pnl || 0;
+        const dailyPnl = latest.daily_pnl || 0;
+        // initialBalance: 가장 처음 포트폴리오 가치
+        const initialBalance = latestValue - pnl;
+        // totalreturnPercent: 총 수익률
+        const totalreturnPercent = initialBalance > 0
+        ? (pnl / initialBalance) * 100
+        : 0;
+    
+        $('#portfolio-value').text(`$${latestValue.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}`);
+        $('#portfolio-change').html(`
+            변화: <span class="${portfolioChange >= 0 ? 'text-success' : 'text-danger'}">
+                ${portfolioChange >= 0 ? '+' : ''}$${portfolioChange.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}
+                (${portfolioChangePercent.toFixed(2)}%)
+            </span>
+        `);
+        $('#total-return').text(`${totalreturnPercent.toFixed(5)}%`);
+        $('#daily-pnl').text(`$${dailyPnl.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}`);
+    
+        
+    } else if (stats && typeof stats === 'object') {
+        // 객체일 때: 그대로 처리
         const currentBalance = stats.portfolio_value || 0;
-        const totalReturn = stats.total_pnl || 0;
-        const initialBalance = currentBalance - totalReturn;
-        const returnPercent = initialBalance > 0 ? (totalReturn / initialBalance * 100) : 0;
-
         const pnl = stats.total_pnl || 0;
         const dailyPnl = stats.daily_pnl || 0;
+        const initialBalance = currentBalance - pnl;
         const pnlPercent = initialBalance > 0 ? (pnl / initialBalance * 100) : 0;
-
+    
         $('#portfolio-value').text(`$${currentBalance.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}`);
-        $('#portfolio-change').html(`변화: <span class="${pnl >= 0 ? 'text-success' : 'text-danger'}">${pnl >= 0 ? '+' : ''}$${pnl.toLocaleString('ko-KR', { maximumFractionDigits: 2 })} (${pnlPercent.toFixed(2)}%)</span>`);
-        $('#total-return').text(`${returnPercent.toFixed(2)}%`);
+        $('#portfolio-change').html(`변화: <span class="${pnl >= 0 ? 'text-success' : 'text-danger'}">${pnl >= 0 ? '+' : ''}$${pnl.toLocaleString('ko-KR', { maximumFractionDigits: 2 })} (${pnlPercent.toFixed(5)}%)</span>`);
+        $('#total-return').text(`${pnlPercent.toFixed(5)}%`);
         $('#daily-pnl').text(`$${dailyPnl.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}`);
     }
-
 
     // 오늘 거래 횟수 계산 (trades 기반)
     if (data.trades && data.trades.length > 0) {
@@ -67,28 +93,36 @@ function updateTradingStats(data) {
         $('#daily-trades').html(`거래 횟수: <span>${todayTrades.length}</span>`);
     }
 
-    // 기간 계산
-    if (stats && stats.timestamp) {
-        const startTime = new Date(stats.timestamp);
-        const now = new Date();
-        const diffDays = Math.floor((now - startTime) / (1000 * 60 * 60 * 24));
+        // 기간 계산
+    if (stats && stats.start_date && stats.end_date) {
+        const startTime = new Date(stats.start_date);
+        const endTime = new Date(stats.end_date);
+        const diffTime = Math.abs(endTime - startTime);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         $('#total-duration').html(`기간: <span>${diffDays}일</span>`);
     }
+
 
     // 포지션 데이터
     if (data.positions) {
         const positionsCount = Object.keys(data.positions).length;
         let positionsValue = 0;
+    
         for (const symbol in data.positions) {
-            positionsValue += data.positions[symbol].market_value || 0;
+            const qty = parseFloat(data.positions[symbol].quantity || 0);
+            const price = parseFloat(data.positions[symbol].current_price || 0);
+            positionsValue += qty * price;
         }
+    
         $('#positions-count').text(positionsCount);
-        $('#positions-value').html(`가치: <span>$${positionsValue.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}</span>`);
+        $('#positions-value').html(`가치: <span>$${positionsValue.toLocaleString('ko-KR', {minimumFractionDigits: 6,
+            maximumFractionDigits: 6 })}</span>`);
     }
+    
 
     // 최근 거래 내역
     if (data.trades && data.trades.length > 0) {
-        const recentTrades = data.trades.slice(-10).reverse();
+        const recentTrades = data.trades;
         let tradesHtml = '';
         recentTrades.forEach(trade => {
             const timestamp = trade.timestamp || '';
@@ -108,7 +142,6 @@ function updateTradingStats(data) {
                     <td>${quantity}</td>
                     <td>$${price}</td>
                     <td>$${amount}</td>
-                    <td class="${statusClass}">${status}</td>
                 </tr>`;
         });
         $('#recent-trades').html(tradesHtml);
@@ -117,6 +150,14 @@ function updateTradingStats(data) {
     }
 }
        
+
+
+
+
+
+
+
+// <차트 로드>
     
 function loadCharts() {
     // 포트폴리오 가치 차트
@@ -149,13 +190,14 @@ function loadCharts() {
         }
     });
 
-    // 거래 분포 차트
-    $.getJSON('/api/charts/trade-distribution', function(data) {
+    // 매수 vs 매도 비율 바차트
+    $.getJSON('/api/charts/trade-buy-sell', function(data) {
         if (data && !data.error) {
             const finalLayout = { ...data.layout };
-            Plotly.newPlot('trade-distribution-chart', data.data, finalLayout);
+            Plotly.newPlot('trade-buy-sell-chart', data.data, finalLayout);
         } else {
-            $('#trade-distribution-chart').html('<div class="text-center py-5">거래 분포 데이터가 없습니다.</div>');
+            $('#trade-buy-sell-chart').html('<div class="text-center py-5">데이터 없음</div>');
         }
     });
+
 }

@@ -125,24 +125,24 @@
             <div class="col-md-6">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0">거래 분포</h5>
+                        <h5 class="mb-0">매수 vs 매도 비율</h5>
                     </div>
                     <div class="card-body">
-                        <div id="trade-distribution-chart" class="chart-container"></div>
+                        <div id="trade-buy-sell-chart" class="chart-container"></div>
                     </div>
                 </div>
             </div>
         </div>
-
+        
         <div class="row">
             <div class="col-md-12">
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">최근 거래 내역</h5>
                     </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped">
+                    <div class="card-body p-0">
+                        <div class="table-responsive recent-trades-scroll">
+                            <table class="table table-striped mb-0">
                                 <thead>
                                     <tr>
                                         <th>시간</th>
@@ -151,7 +151,6 @@
                                         <th>수량</th>
                                         <th>가격</th>
                                         <th>금액</th>
-                                        <th>상태</th>
                                     </tr>
                                 </thead>
                                 <tbody id="recent-trades">
@@ -165,11 +164,10 @@
                 </div>
             </div>
         </div>
-    </div>
-
+        
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container text-center">
-            <span class="text-muted">© 2023 SAC 트레이딩 시스템 대시보드</span>
+            <span class="text-muted">© 2025 SAC 트레이딩 시스템 대시보드</span>
         </div>
     </footer>
 

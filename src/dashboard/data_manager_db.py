@@ -6,7 +6,7 @@
 import os
 import json
 import pandas as pd
-from typing import Dict, List, Any, Optional, Union
+from typing import Dict, List, Any, Optional, Union, Tuple
 from datetime import datetime, timedelta
 import time
 
@@ -71,17 +71,10 @@ class DBDataManager:
             trades_query = """
             SELECT * FROM trades 
             ORDER BY timestamp DESC 
-            LIMIT 20
             """
             
             trades = self.db_manager.execute_query(trades_query)
             
-            # 현재 포지션 조회
-            positions_query = """
-            SELECT * FROM positions
-            """
-            
-            positions = self.db_manager.execute_query(positions_query)
             
             # 통계 데이터 구성
             # portfolio_values = 자산 변화만 뽑은 리스트 
@@ -110,21 +103,29 @@ class DBDataManager:
                     
             
             
+            # 현재 포지션 조회
+            positions_query = """
+            SELECT * FROM positions
+            """
+            
+            positions = self.db_manager.execute_query(positions_query)
+            
             # 포지션 데이터 가공
             positions_dict = {}
             for position in positions:
+                try:
+                    current_price = float(position['current_price'])
+                except (TypeError, ValueError):
+                    current_price = 0
+
                 positions_dict[position['symbol']] = {
-                    # 보유수량
                     'quantity': float(position['quantity']),
-                    # 평균 매입가
                     'avg_entry_price': float(position['avg_entry_price']),
-                    # 현재가
-                    'current_price': float(position['current_price']) if position['current_price'] else 0,
-                    # 미실현 손익
+                    'current_price': current_price,
                     'unrealized_pnl': float(position['unrealized_pnl']),
-                    # 타임스탬프
                     'timestamp': position['timestamp'].isoformat()
                 }
+
             
             # 오늘의 손익 합산
             today_str = datetime.now().strftime('%Y-%m-%d')
@@ -136,6 +137,15 @@ class DBDataManager:
             today_pnl_result = self.db_manager.execute_query(today_pnl_query, (today_str,))
             today_pnl = today_pnl_result[0]['today_pnl'] if today_pnl_result and today_pnl_result[0]['today_pnl'] else 0
             
+            
+            # 기간 계산용 데이터
+            query = """
+            SELECT MIN(timestamp) AS start_date, MAX(timestamp) AS end_date
+            FROM trading_stats
+            """
+            start_end_result = self.db_manager.execute_query(query)
+            start_date = start_end_result[0]['start_date'].isoformat() if start_end_result and start_end_result[0]['start_date'] else None
+            end_date = start_end_result[0]['end_date'].isoformat() if start_end_result and start_end_result[0]['end_date'] else None
             
             # 최신 트레이딩 통계 데이터
             latest_stats = stats_rows[0]
@@ -170,6 +180,8 @@ class DBDataManager:
                     # 누적 손익
                     'total_pnl': float(latest_stats['total_pnl']),
                     'timestamp': latest_stats['timestamp'].isoformat(),
+                    'start_date': start_date, 
+                    'end_date': end_date        
                     
                 }
             }
@@ -183,6 +195,60 @@ class DBDataManager:
             if self.logger:
                 self.logger.error(f"트레이딩 통계 조회 중 오류 발생: {e}")
             return {}
+    
+    
+    # 모델별 수익률 데이터 가져오기
+    def get_performance_chart_data_from_trading_stats(self) -> Dict[str, Tuple[float, float]]:
+        """
+        trades 테이블 기반: 모델별 누적 손익 비교용 데이터 생성
+        Returns:
+            dict: {model_id: (0, total_pnl)} 형식 (initial=0은 비교용, final은 누적 손익)
+        """
+        try:
+            query = """
+            SELECT model_id, SUM(pnl) AS total_pnl
+            FROM trades
+            GROUP BY model_id
+            """
+            results = self.db_manager.execute_query(query)
+
+            data = {}
+            for row in results:
+                model_id = row['model_id']
+                total_pnl = float(row['total_pnl']) if row['total_pnl'] is not None else 0
+                data[model_id] = (0, total_pnl)  # 초기값 0, 최종값 = 누적 손익
+
+            return data
+        except Exception as e:
+            if self.logger:
+                self.logger.error(f"[수익 비교 실패] trades 기반 모델 누적 손익 계산 실패: {e}")
+            return {}
+
+       
+
+
+    
+    # 매수 vs 매도 비율 데이터 가져오기
+    def get_trade_side_distribution(self, model_id: Optional[str] = None):
+        if model_id:
+            query = """
+                SELECT UPPER(TRIM(side)) AS side, COUNT(*) AS count
+                FROM trades
+                WHERE model_id = %s
+                GROUP BY UPPER(TRIM(side))
+            """
+            return self.db_manager.execute_query(query, (model_id,))
+        else:
+            query = """
+                SELECT UPPER(TRIM(side)) AS side, COUNT(*) AS count
+                FROM trades
+                GROUP BY UPPER(TRIM(side))
+            """
+            return self.db_manager.execute_query(query)
+
+
+
+    
     
     def get_backtest_results(self, model_id: Optional[str] = None, refresh: bool = False) -> Dict[str, Any]:
         """
@@ -262,12 +328,13 @@ class DBDataManager:
         
     # 거래 내역 조회
     def get_trades(self, model_id: str) -> List[Dict[str, Any]]:
-            query = """
+        query = """
             SELECT * FROM trades
             WHERE model_id = %s
             ORDER BY timestamp ASC
-            """
-            return self.db_manager.execute_query(query, (model_id,))
+        """
+        return self.db_manager.execute_query(query, (model_id,))
+
     
     
     # ALPACA에서 가져와야 하는 데이터들 (db에는 trade_details 테이블에 저장되어 있음)

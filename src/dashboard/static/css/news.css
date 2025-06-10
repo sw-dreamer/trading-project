@@ -165,4 +165,10 @@ body {
     background-color: #dbeafe;
     color: #1e3a8a;
   }
+
+  .ticker-btn.active {
+    background-color: #0b1a35 ;
+    color: white;
+    border-color: #0b1a35;
+  }
   

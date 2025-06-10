@@ -118,6 +118,7 @@ class Visualizer:
         
         return fig
     
+    # 수익률 변화 차트
     def create_returns_chart(
         self, 
         returns: List[float], 
@@ -181,6 +182,120 @@ class Visualizer:
         
         return fig
     
+    # 위험 대비 수익률 차트
+    def create_risk_return_chart(self, results: Dict[str, Any]) -> go.Figure:
+        model_ids = []
+        sharpe_ratios = []
+        drawdowns = []
+        total_returns = []
+
+        for model_id, data in results.items():
+            metrics = data.get("metrics", {})
+            model_ids.append(model_id)
+            sharpe_ratios.append(metrics.get("sharpe_ratio", 0))
+            drawdowns.append(metrics.get("max_drawdown", 0))
+            total_returns.append(metrics.get("total_return", 0))
+
+        # hover text
+        hover_texts = [
+            f"<b>{mid}</b><br>Sharpe: {s:.2f}<br>Drawdown: {d:.2%}<br>Return: {r:.2f}%"
+            for mid, s, d, r in zip(model_ids, sharpe_ratios, drawdowns, total_returns)
+        ]
+
+        
+        bubble_sizes = [12 + abs(r) * 2 for r in total_returns]
+
+        fig = go.Figure(data=[
+            go.Scatter(
+                x=drawdowns,
+                y=sharpe_ratios,
+                mode='markers',
+                text=hover_texts,
+                hoverinfo='text',
+                marker=dict(
+                    size=bubble_sizes,
+                    color=total_returns,
+                    colorscale='Blues',
+                    showscale=True,
+                    colorbar=dict(title="Total Return (%)"),
+                    line=dict(width=1, color='darkgray')  # 버블 외곽선 추가
+                )
+            )
+        ])
+
+        fig.update_layout(
+            title="Sharpe vs Max Drawdown",
+            xaxis_title="Max Drawdown",
+            yaxis_title="Sharpe Ratio",
+            template="plotly_white",
+            hovermode="closest",
+            height=400
+        )
+
+        return fig
+
+
+        fig.update_layout(
+            title="위험 대비 수익률 평가 (Sharpe vs Max Drawdown)",
+            xaxis_title="Max Drawdown",
+            yaxis_title="Sharpe Ratio",
+            template="plotly_white",
+            hovermode="closest"
+        )
+        return fig
+            
+    # 초기자산 vs 최종자산 차트
+    def create_initial_vs_final_balance_chart(
+        self,
+        model_ids: List[str],
+        initial_balances: List[float],
+        final_balances: List[float],
+        title: str = "초기 자산 vs 최종 자산 비교"
+    ) -> go.Figure:
+        """
+        모델별 초기 vs 최종 자산 비교 차트 생성
+
+        Args:
+            model_ids: 모델 ID 목록
+            initial_balances: 초기 자산 목록
+            final_balances: 최종 자산 목록
+            title: 차트 제목
+
+        Returns:
+            Plotly Figure 객체
+        """
+        fig = go.Figure()
+
+        # 초기 자산
+        fig.add_trace(go.Bar(
+            x=model_ids,
+            y=initial_balances,
+            name="초기 자산",
+            marker_color="#93c5fd"
+        ))
+
+        # 최종 자산
+        fig.add_trace(go.Bar(
+            x=model_ids,
+            y=final_balances,
+            name="최종 자산",
+            marker_color="#1e3a8a"
+        ))
+
+        layout = self.default_layout.copy()
+        layout.update({
+            'title': title,
+            'xaxis_title': "모델 ID",
+            'yaxis_title': "자산 ($)",
+            'barmode': 'group'
+        })
+        
+        fig.update_layout(layout)
+        return fig
+        
+    
+    
+    # 낙폭 차트
     def create_drawdown_chart(
         self, 
         drawdowns: List[float], 
@@ -189,53 +304,57 @@ class Visualizer:
     ) -> go.Figure:
         """
         낙폭(Drawdown) 차트 생성
-        
+
         Args:
-            drawdowns: 낙폭 목록
+            drawdowns: 낙폭 목록 (0~1 사이 실수)
             timestamps: 타임스탬프 목록
             title: 차트 제목
-            
+
         Returns:
             Plotly Figure 객체
         """
         fig = go.Figure()
-        
-        # 낙폭 라인 추가
+
+        # 1. 낙폭 선 그래프
         fig.add_trace(go.Scatter(
             x=timestamps,
-            y=[d * 100 for d in drawdowns],  # 퍼센트로 변환
+            y=[d * 100 for d in drawdowns],  # 퍼센트 단위로 변환
             mode='lines',
             name='낙폭',
             line=dict(color=self.colors['danger'], width=2),
             fill='tozeroy',
             fillcolor=f'rgba({int(self.colors["danger"][1:3], 16)}, {int(self.colors["danger"][3:5], 16)}, {int(self.colors["danger"][5:7], 16)}, 0.2)'
         ))
-        
-        # 최대 낙폭 표시
-        max_drawdown_idx = np.argmin(drawdowns)
-        max_drawdown = drawdowns[max_drawdown_idx]
-        
-        fig.add_trace(go.Scatter(
-            x=[timestamps[max_drawdown_idx]],
-            y=[max_drawdown * 100],
-            mode='markers',
-            name=f'최대 낙폭: {max_drawdown * 100:.2f}%',
-            marker=dict(color=self.colors['danger'], size=10)
-        ))
-        
-        # 레이아웃 설정
-        layout = self.default_layout.copy()
-        layout.update({
-            'title': title,
-            'xaxis_title': '날짜',
-            'yaxis_title': '낙폭 (%)',
-            'hovermode': 'x unified'
-        })
-        
-        fig.update_layout(layout)
-        
+
+        # 2. 최대 낙폭 표시 (점 + 텍스트 툴팁)
+        if drawdowns:
+            max_drawdown_idx = np.argmin(drawdowns)
+            max_drawdown = drawdowns[max_drawdown_idx]
+            max_drawdown_pct = max_drawdown * 100
+
+            fig.add_trace(go.Scatter(
+                x=[timestamps[max_drawdown_idx]],
+                y=[max_drawdown_pct],
+                mode='markers+text',
+                name=f'최대 낙폭: {max_drawdown_pct:.2f}%',
+                marker=dict(color=self.colors['danger'], size=10),
+                text=[f'최대 낙폭: {max_drawdown_pct:.2f}%'],
+                textposition='top right'
+            ))
+
+        # 3. 레이아웃 설정
+        fig.update_layout(
+            title=title,
+            xaxis_title='날짜',
+            yaxis_title='낙폭 (%)',
+            hovermode='x unified',
+            template='plotly_white'
+        )
+
         return fig
     
+    
+    # 거래 신호 차트
     def create_trade_chart(
         self, 
         prices: List[float], 
@@ -303,6 +422,85 @@ class Visualizer:
         
         return fig
     
+    
+    
+    # 모델별 성능 비교용 막대 차트 
+    def create_model_performance_chart(self, data: dict) -> go.Figure:
+        """
+        모델별 성능 비교용 막대 차트 (대체용)
+        
+        Args:
+            data (dict): {model_id: (initial_value, final_value)} 형식
+
+        Returns:
+            go.Figure: Plotly Figure 객체
+        """
+        if not data:
+            return go.Figure()
+
+        model_ids = list(data.keys())
+        returns = [
+            round(((final - initial) / initial) * 100, 2)
+            if initial > 0 else 0
+            for (initial, final) in data.values()
+        ]
+
+        fig = go.Figure(data=[
+            go.Bar(x=model_ids, y=returns, text=[f'{r}%' for r in returns], textposition='auto')
+        ])
+        
+        layout = self.default_layout.copy()
+        layout.update({
+            'title': 'trading_stats 기반 모델 수익률 (%)',
+            'xaxis_title': '모델 ID',
+            'yaxis_title': '총 수익률 (%)',
+            'margin': dict(l=40, r=40, t=40, b=80)
+        })
+        
+        fig.update_layout(layout)
+        return fig
+    
+    
+    # 거래 분포 차트
+    def create_trade_count_chart(self, results: Dict[str, Any]) -> go.Figure:
+        model_ids = []
+        trade_counts = []
+
+        for model_id, data in results.items():
+            metrics = data.get("metrics", {})
+            model_ids.append(model_id)
+            trade_counts.append(metrics.get("total_trades", 0))
+
+        fig = go.Figure(data=[
+            go.Bar(
+                x=model_ids,
+                y=trade_counts,
+                marker_color="#fd7f6f",  # emerald-500
+                hoverinfo="x+y",
+                hoverlabel=dict(
+                    bgcolor="#6EE7B7",  # emerald-300
+                    font_size=13,
+                    font_color="#111111"
+                )
+            )
+        ])
+
+        fig.update_layout(
+            title="모델 별 총 거래 수",
+            xaxis_title="모델 ID",
+            yaxis_title="총 거래 수",
+            template="plotly_white",
+            plot_bgcolor="#ffffff",
+            paper_bgcolor="#ffffff",
+            font=dict(color="#111111", size=14),
+            bargap=0.2
+        )
+
+        return fig
+
+
+    
+    # 백테스트 모델 성능 비교 차트
     def create_performance_comparison_chart(
         self, 
         metrics: Dict[str, Dict[str, float]],
@@ -344,7 +542,7 @@ class Visualizer:
         sorted_values = [values[i] for i in sorted_indices]
         
         # 차트 색상 결정
-        colors = [self.colors['primary'] for _ in range(len(sorted_models))]
+        colors = "#fb7185"
         
         # 막대 차트 생성
         fig = go.Figure(data=[
@@ -367,71 +565,81 @@ class Visualizer:
         
         return fig
     
-    def create_trade_distribution_chart(
-        self, 
-        trades: List[Dict[str, Any]],
-        title: str = "거래 분포"
-    ) -> go.Figure:
+    
+    # 모델별 성능 비교용 막대 차트 
+    def build_model_performance_chart(data: dict) -> dict:
         """
-        거래 분포 차트 생성
+        모델별 성능 비교용 막대 차트 
         
         Args:
-            trades: 거래 목록
-            title: 차트 제목
-            
+            data (dict): {model_id: (initial_value, final_value)} 형식
+
         Returns:
-            Plotly Figure 객체
+            dict: Plotly JSON format { 'data': [...], 'layout': {...} }
         """
-        # 거래별 손익 계산
-        pnls = []
-        for trade in trades:
-            if 'profit' in trade and trade['profit'] is not None:
-                pnls.append(trade['profit'])
-            elif 'pnl' in trade and trade['pnl'] is not None:
-                pnls.append(trade['pnl'])
-        
-        if not pnls:
-            # 데이터가 없는 경우 빈 차트 반환
+        if not data:
+            return {'data': [], 'layout': {}}
+
+        model_ids = list(data.keys())
+        returns = [
+                round(final, 2) if initial == 0 else round(((final - initial) / initial) * 100, 2)
+                for (initial, final) in data.values()
+            ]
+
+
+        fig = go.Figure(data=[
+            go.Bar(x=model_ids, y=returns, text=[f'{r}%' for r in returns], textposition='auto')
+        ])
+        fig.update_layout(
+            title='trading_stats 기반 모델 수익률 (%)',
+            xaxis_title='모델 ID',
+            yaxis_title='총 수익률 (%)',
+            yaxis=dict(range=[-1, 1]),  # Y축 범위 명시: 수동 설정
+            bargap=0.4,
+            margin=dict(l=40, r=40, t=40, b=80),
+            height=350
+        )
+
+        return fig.to_dict() 
+    
+    # 매수/매도 비율 바차트
+    def create_trade_buy_sell_chart_from_aggregate(
+        self,
+        side_counts: List[Dict[str, Any]],
+        title: str = "매수 vs 매도 비율"
+    ) -> go.Figure:
+        # side 값 집계
+        side_dict = {row['side'].upper(): row['count'] for row in side_counts}
+
+        buy_count = side_dict.get('BUY', 0)
+        sell_count = side_dict.get('SELL', 0)
+
+        total = buy_count + sell_count
+
+        if total == 0:
             fig = go.Figure()
             fig.update_layout(
-                title="데이터 없음: 거래 분포",
-                xaxis_title="손익",
+                title="데이터 없음: 매수/매도 비율",
+                xaxis_title="거래 유형",
                 yaxis_title="거래 수"
             )
             return fig
-        
-        # 히스토그램 생성
+
+        # 차트
         fig = go.Figure(data=[
-            go.Histogram(
-                x=pnls,
-                marker_color=self.colors['primary'],
-                opacity=0.7,
-                name="거래 분포"
+            go.Bar(
+                x=["BUY", "SELL"],
+                y=[buy_count, sell_count],
+                marker_color=[self.colors['buy'], self.colors['sell']],
+                name="거래 수"
             )
         ])
-        
-        # 0 기준선 추가
-        fig.add_vline(
-            x=0, 
-            line_width=1, 
-            line_dash="dash", 
-            line_color="gray"
-        )
-        
-        # 이익 거래와 손실 거래 수 계산
-        profit_trades = sum(1 for p in pnls if p > 0)
-        loss_trades = sum(1 for p in pnls if p < 0)
-        
-        # 승률 계산
-        win_rate = profit_trades / len(pnls) if pnls else 0
-        
-        # 주석 추가
+
+        # 주석
         fig.add_annotation(
-            x=0.95,
-            y=0.95,
-            xref="paper",
-            yref="paper",
-            text=f"총 거래: {len(pnls)}건<br>이익 거래: {profit_trades}건<br>손실 거래: {loss_trades}건<br>승률: {win_rate:.2%}",
+            x=0.95, y=0.95,
+            xref="paper", yref="paper",
+            text=f"총 거래: {total}건<br>BUY: {buy_count}건 ({buy_count/total:.2%})<br>SELL: {sell_count}건 ({sell_count/total:.2%})",
             showarrow=False,
             font=dict(size=12),
             align="right",
@@ -440,20 +648,20 @@ class Visualizer:
             borderwidth=1,
             borderpad=4
         )
-        
-        # 레이아웃 설정
+
+        # 레이아웃
         layout = self.default_layout.copy()
         layout.update({
             'title': title,
-            'xaxis_title': "손익",
+            'xaxis_title': "거래 유형",
             'yaxis_title': "거래 수",
-            'bargap': 0.1
+            'bargap': 0.3
         })
-        
-        fig.update_layout(layout)
-        
+        fig.update_layout(**layout)
         return fig
-    
+
+
+    # 모델 성능 비교 레이더 차트
     def create_model_comparison_radar_chart(
         self, 
         metrics: Dict[str, Dict[str, float]],
