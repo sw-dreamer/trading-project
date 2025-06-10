@@ -132,26 +132,44 @@ class DashboardApp:
         # 기사 페이지
         @self.app.route('/news')
         def news():
-            ticker = request.args.get('name')
-            return render_template('news.html', ticker=ticker)
+            ticker = request.args.get('name')  
+            source = request.args.get('source', 'polygon')  # 기본값 polygon
 
             query_filter = {}
             if ticker:
                 query_filter = {"name": ticker}
 
-            # polygon_articles 컬렉션에서 데이터 가져오기
-            news_data = list(polygon_articles.find(query_filter, {
-                '_id': 0,
-                'name': 1,
-                'title': 1,
-                'summary': 1,
-                'sentiment': 1,
-                'date': 1,
-                'url': 1
-            }))
+            polygon_data = []
+            yahoo_data = []
 
-            return render_template('news.html', news=news_data)
-        
+            if source == 'polygon':
+                polygon_data = list(polygon_articles.find(query_filter, {
+                    '_id': 0,
+                    'name': 1,
+                    'title': 1,
+                    'summary': 1,
+                    'sentiment': 1,
+                    'date': 1,
+                    'url': 1
+                }))
+            elif source == 'yahoo':
+                yahoo_data = list(yahoo_news.find(query_filter, {
+                    '_id': 0,
+                    'name': 1,
+                    'title': 1,
+                    'summary': 1,
+                    'sentiment': 1,
+                    'date': 1,
+                    'url': 1
+                }))
+
+            return render_template('news.html', 
+                polygon=polygon_data, 
+                yahoo=yahoo_data,
+                ticker=ticker,
+                source=source
+            )
+
         # 개인 계정 조회
         @self.app.route('/api/account', methods=['GET'])
         def get_account():
@@ -167,10 +185,11 @@ class DashboardApp:
                 ]
             }
             
-            self.logger.info(f"✅ Alpaca 포트폴리오가치치: ${account['portfolio_value']}")
+            self.logger.info(f"✅ Alpaca 포트폴리오가치: ${account['portfolio_value']}")
             self.logger.info(f"✅ Alpaca 현금 잔고: ${account['cash']}")
             
             return jsonify(account_data)
+    
         
         # API 라우트 설정
         
@@ -179,6 +198,7 @@ class DashboardApp:
         def get_trading_stats():
             model_id = request.args.get('model_id')
             refresh = request.args.get('refresh', 'false').lower() == 'true'
+            self.logger.info(f"📊 트레이딩 통계 요청됨 | model_id: {model_id}, refresh: {refresh}")
             stats = self.data_manager.get_trading_stats(model_id=model_id, refresh=refresh)
             return jsonify(stats)
         
@@ -189,39 +209,75 @@ class DashboardApp:
             models = self.data_manager.get_model_info(refresh=refresh)
             return jsonify(models)
         
+        # 초기자산 vs 최종자산 차트
+        @self.app.route('/api/charts/initial-vs-final')
+        def get_initial_vs_final_chart():
+            results = self.data_manager.get_backtest_results()
+
+            model_ids = []
+            initial_balances = []
+            final_balances = []
+
+            for model_id, data in results.items():
+                model_ids.append(model_id)
+                initial_balances.append(data.get("initial_balance", 0))
+                final_balances.append(data.get("final_balance", 0))
+
+            fig = self.visualizer.create_initial_vs_final_balance_chart(
+                model_ids=model_ids,
+                initial_balances=initial_balances,
+                final_balances=final_balances,
+                title="초기 자산 vs 최종 자산 비교"
+            )
+
+            return jsonify(json.loads(plotly.io.to_json(fig)))
         
-        # 기사 데이터 조회 API
+        # 위험 수익률 차트
+        @self.app.route("/api/charts/risk-return")
+        def get_risk_return_chart():
+            results = self.data_manager.get_backtest_results()
+            fig = self.visualizer.create_risk_return_chart(results)
+            return jsonify(json.loads(plotly.io.to_json(fig)))
+        
+            
+      # 기사 데이터 조회 API
         @self.app.route('/api/news')
         def get_news():
-            # URL 파라미터에서 티커 심볼과 뉴스 소스 가져오기
             ticker = request.args.get('name')
-            source = request.args.get('source') 
-            
-            # MongoDB 쿼리 필터 초기화
-            query_filter = {}
-            if ticker:
-                query_filter = {"name": ticker}
+            try:
+                query = {}
+                if ticker:
+                    query = {"name": ticker}
 
-            # Polygon 뉴스 데이터 조회
-            if source == 'polygon':
-                news_data = list(polygon_articles.find(query_filter, {
-                    '_id': 0, 'name': 1, 'title': 1, 'summary': 1,
-                    'sentiment': 1, 'date': 1, 'url': 1
+                polygon_articles_data = list(polygon_articles.find(query, {
+                    '_id': 0,
+                    'name': 1,
+                    'title': 1,
+                    'summary': 1,
+                    'sentiment': 1,
+                    'date': 1,
+                    'url': 1
                 }))
-                return jsonify({'polygon': news_data})
-            
-            # Yahoo 뉴스 데이터 조회
-            elif source == 'yahoo':
-                news_data = list(yahoo_news.find(query_filter, {
-                    '_id': 0, 'name': 1, 'title': 1, 'summary': 1,
-                    'sentiment': 1, 'date': 1, 'url': 1
-                }))
-                return jsonify({'yahoo': news_data})
-            
-            # 잘못된 소스가 지정된 경우 에러 반환
-            else:
-                return jsonify({'error': 'Invalid source'}), 400
 
+                yahoo_news_data = list(yahoo_news.find(query, {
+                    '_id': 0,
+                    'name': 1,
+                    'title': 1,
+                    'summary': 1,
+                    'sentiment': 1,
+                    'date': 1,
+                    'url': 1
+                }))
+                
+                return jsonify({
+                    'polygon': polygon_articles_data,
+                    'yahoo': yahoo_news_data
+                })
+            except Exception as e:
+                return jsonify({'error': str(e)})
+                
+
+                
                 
                 
         # 백테스트 결과 API
@@ -340,6 +396,15 @@ class DashboardApp:
             
             return jsonify(json.loads(plotly.io.to_json(fig)))
         
+        # 거래 분포 차트 API
+        @self.app.route("/api/charts/trade-distribution")
+        def get_trade_distribution_chart():
+            results = self.data_manager.get_backtest_results()
+            fig = self.visualizer.create_trade_count_chart(results)
+            return jsonify(json.loads(plotly.io.to_json(fig)))
+
+        
+        
         # 낙폭 차트 API
         @self.app.route('/api/charts/drawdown')
         def get_drawdown_chart():
@@ -377,21 +442,24 @@ class DashboardApp:
             
             return jsonify(json.loads(plotly.io.to_json(fig)))
         
-        # 거래 분포 차트 API
-        @self.app.route('/api/charts/trade-distribution')
-        def get_trade_distribution_chart():
-            stats = self.data_manager.get_trading_stats()
-            
-            if not stats or 'trades' not in stats:
-                return jsonify({'error': 'No trade data available'})
-            
-            fig = self.visualizer.create_trade_distribution_chart(
-                trades=stats.get('trades', []),
-                title="거래 분포"
-            )
-            
-            return jsonify(json.loads(plotly.io.to_json(fig)))
         
+        # 매수 vs 매도 비율 차트 API
+        @self.app.route('/api/charts/trade-buy-sell')
+        def get_trade_buy_sell_chart():
+            model_id = request.args.get('model_id')
+            
+            # 집계된 BUY/SELL 수만 가져오기
+            side_counts = self.data_manager.get_trade_side_distribution(model_id=model_id)
+
+            fig = self.visualizer.create_trade_buy_sell_chart_from_aggregate(
+                side_counts,
+                title="매수 vs 매도 비율" if model_id else "전체 매수 vs 매도 비율"
+            )
+
+            return jsonify(json.loads(plotly.io.to_json(fig)))
+
+
+
         # 가격 차트 API
         @self.app.route('/api/charts/price')
         def get_price_chart():
@@ -445,6 +513,18 @@ class DashboardApp:
             )
             
             return jsonify(json.loads(plotly.io.to_json(fig)))
+        
+        
+        # 모델 성능 차트 API
+        @self.app.route('/api/charts/model-performance-alt')
+        def get_model_performance_alt_chart():
+            try:
+                data = self.data_manager.get_performance_chart_data_from_trading_stats()
+                fig = self.visualizer.create_model_performance_chart(data)
+                return jsonify(json.loads(plotly.io.to_json(fig)))
+            except Exception as e:
+                return jsonify({'error': str(e)})
+        
         
         # 레이더 차트 API
         @self.app.route('/api/charts/radar')
@@ -518,20 +598,17 @@ class DashboardApp:
             
             
     def run(self) -> None:
-        """
-        대시보드 웹 서버 실행
-        """
         if self.is_running:
-            self.logger.warning("서버가 이미 실행 중입니다.")
+            self.logger.warning("🚫 서버가 이미 실행 중입니다.")
             return
             
         self.is_running = True
-        self.logger.info(f"대시보드 웹 서버 시작: http://{self.host}:{self.port}")
+        self.logger.info(f"✅ 대시보드 웹 서버 시작됨: http://{self.host}:{self.port}")
         
         try:
             self.app.run(host=self.host, port=self.port, debug=self.debug)
         except Exception as e:
-            self.logger.error(f"서버 실행 중 오류 발생: {e}")
+            self.logger.error(f"❗ 서버 실행 중 오류 발생: {e}")
             self.is_running = False
     
     def stop(self) -> None:

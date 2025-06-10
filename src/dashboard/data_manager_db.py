@@ -337,47 +337,6 @@ class DBDataManager:
 
     
     
-    # ALPACA에서 가져와야 하는 데이터들 (db에는 trade_details 테이블에 저장되어 있음)
-    def _get_trade_details(self, model_id: str) -> Dict[str, Any]:
-        try:
-            query = """
-            SELECT timestamp, portfolio_value, action, price, shares, cost
-            FROM backtest_trade_details
-            WHERE model_id = %s
-            ORDER BY timestamp ASC
-            """
-            trades = self.db_manager.execute_query(query, (model_id,))
-
-            timestamps = [row['timestamp'].isoformat() for row in trades]
-            portfolio_values = [row['portfolio_value'] for row in trades]
-
-            trade_details = [
-                {
-                    'timestamp': row['timestamp'].isoformat(),
-                    'action': row['action'],
-                    'price': float(row['price']),
-                    'shares': float(row['shares']),
-                    'cost': float(row['cost']),
-                    'portfolio_value': float(row['portfolio_value'])
-                }
-                for row in trades
-            ]
-
-            return {
-                'portfolio_values': portfolio_values,
-                'timestamps': timestamps,
-                'trades': trade_details
-            }
-
-        except Exception as e:
-            if self.logger:
-                self.logger.error(f"[{model_id}] 트레이드 디테일 조회 오류: {e}")
-            return {
-                'portfolio_values': [],
-                'timestamps': [],
-                'trades': []
-            }
-    
     # 모델 정보
     def get_model_info(self, refresh: bool = False) -> Dict[str, Any]:
         """

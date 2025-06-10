@@ -57,7 +57,7 @@ for ticker in tickers:
         }
         print(f"✅ {ticker} 모델 발견: {model_path}")
     else:
-        print(f"⚠️  {ticker} 모델이 없어 거래 대상에서 제외됩니다.")
+        print(f"⚠️  {ticker} 모델이 없어  제외됩니다.")
 
 print(f"🎯 총 {len(ACTIVE_TRADING_SYMBOLS)}개 활성화된 모델")
 
