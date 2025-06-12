@@ -6,7 +6,7 @@ SAC 트레이딩 시스템의 웹 대시보드는 시스템의 모든 측면을 
 
 ### 1. 대시보드 메인 화면
 
-![대시보드 메인 화면](../web_screenshots/dashboard_main.png)
+![대시보드 메인 화면](![image](https://github.com/user-attachments/assets/a7af9e23-45a5-45ae-9bff-277de87bf5c0))
 
 - 포트폴리오 가치 변화 차트
 - 현재 포지션 요약
