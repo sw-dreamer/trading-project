@@ -220,3 +220,8 @@ trading/
 - GPU 호환성 문제: CPU 폴백 옵션 구현
 - API 한도 초과: 데이터 캐싱 및 요청 제한 관리
 - 모델 성능 부족: 하이퍼파라미터 튜닝 및 앙상블 방법 고려 
+
+---
+# 결과 화면
+
+https://github.com/sw-dreamer/trading-project/issues/2#issue-3139508476
