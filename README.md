@@ -224,5 +224,5 @@ trading/
 ---
 # 결과 화면
 
-<video src="https://github.com/sw-dreamer/trading-project/issues/2#issue-3139508476" controls width="600"></video>
+
 
