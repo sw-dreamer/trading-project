@@ -1,0 +1,97 @@
+@startuml
+title SAC 트레이딩 시스템 - 실시간 트레이딩 프로세스
+
+skinparam ParticipantPadding 30
+skinparam BoxPadding 10
+
+actor 트레이더 as Trader
+box "SAC 트레이딩 시스템" #LightBlue
+  participant "LiveTradingSystem" as System
+  participant "MarketDataHandler" as DataHandler
+  participant "SAC 모델" as Model
+  participant "LiveBroker" as Broker
+  participant "DataManager" as DataManager
+end box
+database "데이터베이스/파일" as DB
+
+== 초기화 ==
+
+Trader -> System: 시스템 시작 요청
+System -> DataHandler: 시장 데이터 연결 요청
+DataHandler -> DataHandler: WebSocket 연결 설정
+System -> Model: 저장된 모델 로드
+Model --> System: 모델 로드 완료
+System -> Broker: 브로커 API 연결
+Broker --> System: 연결 상태 확인
+System -> DataManager: 초기 포트폴리오 상태 로드
+DataManager -> DB: 쿼리 실행
+DB --> DataManager: 데이터 반환
+DataManager --> System: 포트폴리오 상태 반환
+System --> Trader: 시스템 초기화 완료
+
+== 주기적 트레이딩 루프 ==
+
+loop 트레이딩 세션 동안
+  DataHandler -> DataHandler: 새로운 데이터 수신
+  DataHandler -> System: 새로운 시장 데이터 전달
+  
+  System -> System: 데이터 전처리
+  System -> Model: 현재 상태 기반 액션 요청
+  Model -> Model: 상태 분석 및 액션 결정
+  Model --> System: 매수/매도/홀딩 액션 반환
+  
+  alt 거래 신호 발생
+    System -> Broker: 주문 요청
+    Broker -> Broker: 주문 검증
+    Broker -> Broker: 주문 실행
+    Broker --> System: 주문 결과 반환
+    
+    System -> DataManager: 거래 기록 저장
+    DataManager -> DB: 거래 데이터 저장
+    DB --> DataManager: 저장 확인
+  else 홀딩 (거래 없음)
+    System -> System: 현재 포지션 유지
+  end
+  
+  System -> DataManager: 포트폴리오 상태 업데이트
+  DataManager -> DB: 상태 데이터 저장
+  DB --> DataManager: 저장 확인
+  
+  System -> Trader: 거래 알림 (옵션)
+end
+
+== 보고서 생성 ==
+
+System -> DataManager: 성과 데이터 요청
+DataManager -> DB: 성과 데이터 쿼리
+DB --> DataManager: 데이터 반환
+DataManager --> System: 가공된 성과 데이터
+System -> System: 보고서 및 차트 생성
+System --> Trader: 성과 보고서 제공
+
+== 종료 ==
+
+Trader -> System: 시스템 종료 요청
+System -> Broker: 열린 포지션 확인
+Broker --> System: 포지션 정보 반환
+alt 열린 포지션 존재
+  System -> Trader: 포지션 종료 확인 요청
+  Trader -> System: 확인/거부
+  
+  alt 포지션 종료 승인
+    System -> Broker: 모든 포지션 종료 요청
+    Broker -> Broker: 포지션 청산
+    Broker --> System: 청산 결과
+  else 포지션 유지
+    System -> System: 포지션 유지 상태로 종료
+  end
+end
+
+System -> DataHandler: 데이터 연결 종료
+DataHandler -> DataHandler: 연결 해제
+System -> Broker: API 연결 종료
+System -> DataManager: 최종 상태 저장
+DataManager -> DB: 최종 데이터 저장
+System --> Trader: 시스템 종료 완료
+
+@enduml 

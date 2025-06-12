@@ -1,0 +1,6 @@
+이 디렉토리에는 웹 대시보드의 스크린샷이 저장됩니다.
+- dashboard_main.png - 대시보드 메인 화면
+- live_trading.png - 실시간 트레이딩 화면
+- backtest_results.png - 백테스트 결과 화면
+- model_management.png - 모델 관리 화면
+- settings.png - 설정 화면 

@@ -1,0 +1,294 @@
+@startuml
+title SAC 트레이딩 시스템 - 전체 클래스 다이어그램
+
+' 패키지 설정
+package "Utils" {
+  class Logger {
+    - log_file: str
+    - log_level: int
+    + info()
+    + warning()
+    + error()
+    + debug()
+  }
+  
+  class DatabaseManager {
+    - config: Dict
+    - connection_pool
+    - pool_name: str
+    - pool_size: int
+    - logger: Logger
+    + execute_query()
+    + execute_many()
+    + create_tables()
+    + get_connection()
+  }
+  
+  class Utils {
+    + normalize_data()
+    + calculate_returns()
+    + calculate_drawdown()
+    + calculate_sharpe_ratio()
+    + load_config()
+  }
+}
+
+package "Dashboard" {
+  class DashboardApp {
+    - data_manager
+    - visualizer
+    - app: Flask
+    - host: str
+    - port: int
+    - debug: bool
+    + run()
+    + stop()
+    - _setup_routes()
+  }
+  
+  class DataManager {
+    - data_dir: str
+    - logger: Logger
+    - cache: Dict
+    - last_update: Dict
+    - cache_ttl: Dict
+    + get_trading_stats()
+    + get_backtest_results()
+    + get_model_info()
+    + get_market_data()
+    + get_performance_metrics()
+  }
+  
+  class DBDataManager {
+    - db_manager
+    - data_dir: str
+    - logger: Logger
+    + get_trading_stats()
+    + get_backtest_results()
+    + get_model_info()
+    + get_market_data()
+    + get_performance_metrics()
+    + sync_file_to_db()
+    - _sync_trading_stats()
+    - _sync_backtest_results()
+    - _sync_model_info()
+    - _sync_market_data()
+  }
+  
+  class DataManagerFactory {
+    + create_manager()
+    + sync_file_to_db()
+  }
+  
+  class Visualizer {
+    + create_portfolio_value_chart()
+    + create_returns_chart()
+    + create_drawdown_chart()
+    + create_trade_distribution_chart()
+    + create_trade_chart()
+    + create_performance_comparison_chart()
+    + create_model_comparison_radar_chart()
+  }
+}
+
+package "Environment" {
+  class TradingEnvironment {
+    - observation_space
+    - action_space
+    - market_data
+    - current_step: int
+    - portfolio: Portfolio
+    - broker: Broker
+    - reward_function: RewardFunction
+    + reset()
+    + step()
+    + get_state()
+    + render()
+  }
+  
+  class RewardFunction {
+    + calculate_reward()
+  }
+  
+  class Portfolio {
+    - cash: float
+    - positions: Dict
+    - initial_balance: float
+    + get_value()
+    + update()
+  }
+  
+  class Broker {
+    - commission_rate: float
+    + place_order()
+    + get_position()
+  }
+}
+
+package "Models" {
+  class SACModel {
+    - actor_network: ActorNetwork
+    - critic_network: CriticNetwork
+    - target_network: CriticNetwork
+    - buffer: ReplayBuffer
+    + train()
+    + predict()
+    + save()
+    + load()
+    + update_target_network()
+  }
+  
+  class ActorNetwork {
+    - model: nn.Module
+    + forward()
+    + get_action()
+  }
+  
+  class CriticNetwork {
+    - model: nn.Module
+    + forward()
+  }
+  
+  class ReplayBuffer {
+    - capacity: int
+    - buffer: list
+    + add()
+    + sample()
+    + size()
+  }
+}
+
+package "Training" {
+  class Trainer {
+    - env: TradingEnvironment
+    - model: SACModel
+    - logger: Logger
+    - config: Dict
+    + train()
+    + evaluate()
+    + save_model()
+  }
+  
+  class TrainingConfig {
+    - batch_size: int
+    - learning_rate: float
+    - gamma: float
+    - tau: float
+    - alpha: float
+    - buffer_size: int
+    - max_episodes: int
+  }
+}
+
+package "Backtesting" {
+  class Backtester {
+    - env: TradingEnvironment
+    - model: SACModel
+    - data_manager: DataManager
+    + run_backtest()
+    + analyze_results()
+    + save_results()
+  }
+  
+  class BacktestResult {
+    - model_id: str
+    - start_date: date
+    - end_date: date
+    - trades: List
+    - portfolio_values: List
+    - metrics: Dict
+    + calculate_metrics()
+    + to_json()
+  }
+}
+
+package "LiveTrading" {
+  class LiveTradingSystem {
+    - env: TradingEnvironment
+    - model: SACModel
+    - broker: LiveBroker
+    - data_handler: MarketDataHandler
+    - logger: Logger
+    + start()
+    + stop()
+    + process_tick()
+    + save_stats()
+  }
+  
+  class LiveBroker {
+    - api_key: str
+    - secret_key: str
+    - connection
+    + place_order()
+    + get_position()
+    + get_account_info()
+  }
+  
+  class MarketDataHandler {
+    - api_key: str
+    - symbols: List
+    - connection
+    + get_latest_data()
+    + subscribe()
+    + unsubscribe()
+  }
+}
+
+package "DataCollection" {
+  class DataCollector {
+    - api_key: str
+    - symbols: List
+    - from_date: date
+    - to_date: date
+    + collect_data()
+    + save_data()
+    + process_data()
+  }
+  
+  class MarketData {
+    - symbol: str
+    - data: DataFrame
+    + to_csv()
+    + from_csv()
+    + normalize()
+  }
+}
+
+' 관계 설정
+DataManager <|-- DBDataManager
+DataManagerFactory ..> DataManager : <<creates>>
+DataManagerFactory ..> DBDataManager : <<creates>>
+DatabaseManager <-- DBDataManager
+DashboardApp --> "1" DataManager : uses
+DashboardApp --> "1" Visualizer : uses
+Trainer --> "1" TradingEnvironment : uses
+Trainer --> "1" SACModel : uses
+Trainer --> "1" Logger : uses
+Backtester --> "1" TradingEnvironment : uses
+Backtester --> "1" SACModel : uses
+Backtester --> "1" DataManager : uses
+LiveTradingSystem --> "1" TradingEnvironment : uses
+LiveTradingSystem --> "1" SACModel : uses
+LiveTradingSystem --> "1" LiveBroker : uses
+LiveTradingSystem --> "1" MarketDataHandler : uses
+LiveTradingSystem --> "1" Logger : uses
+TradingEnvironment --> "1" Portfolio : contains
+TradingEnvironment --> "1" Broker : uses
+TradingEnvironment --> "1" RewardFunction : uses
+SACModel --> "1" ActorNetwork : contains
+SACModel --> "1" CriticNetwork : contains
+SACModel --> "1" ReplayBuffer : uses
+DBDataManager --> "1" DatabaseManager : uses
+DataCollector ..> MarketData : <<creates>>
+
+note bottom of SACModel
+  SAC(Soft Actor-Critic)은 강화학습 모델로
+  Actor-Critic 구조와 최대 엔트로피 접근법을 결합
+end note
+
+note bottom of TradingEnvironment
+  OpenAI Gym 인터페이스를 준수하는
+  트레이딩 환경 구현
+end note
+
+@enduml 
