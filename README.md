@@ -7,7 +7,7 @@
 
 ## 2. 프로젝트 구조
 ```
-v02_sac-trading/
+trading/
 ├── data/                      # 수집된 주식 데이터 저장
 ├── logs/                      # 로그 파일 저장
 ├── models/                    # 학습된 모델 저장
