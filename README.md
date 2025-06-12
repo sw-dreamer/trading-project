@@ -224,5 +224,8 @@ trading/
 ---
 # 결과 화면
 
+<video src="https://raw.githubusercontent.com/sw-dreamer/trading-project/master/results/result_video.mp4" controls width="600">
+  브라우저가 video 태그를 지원하지 않습니다. <a href="https://raw.githubusercontent.com/sw-dreamer/trading-project/master/results/result_video.mp4">여기서 직접 보기</a>
+</video>
 
 
