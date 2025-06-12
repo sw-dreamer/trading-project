@@ -18,7 +18,7 @@ SAC 트레이딩 시스템의 웹 대시보드는 시스템의 모든 측면을 
 
 ### 2. 실시간 트레이딩 모니터링
 
-![실시간 트레이딩](../web_screenshots/live_trading.png)
+![image](https://github.com/user-attachments/assets/86d8cf00-c42d-45e4-b808-ba5c2d904dee)
 
 - 실시간 시장 데이터 차트
 - 매수/매도 신호 표시
@@ -26,9 +26,17 @@ SAC 트레이딩 시스템의 웹 대시보드는 시스템의 모든 측면을 
 - 실시간 손익 계산
 - 포트폴리오 가치 변화 추적
 
-### 3. 백테스트 결과 비교
+### 3. 실시간 차트
 
-![백테스트 결과](../web_screenshots/backtest_results.png)
+![image](https://github.com/user-attachments/assets/0b1ce7a3-633f-4270-bba0-787954efe61f)
+
+
+### 4. 백테스트 결과
+
+![image](https://github.com/user-attachments/assets/7f7179d0-9d63-4201-a672-a1e4121bec81)
+
+![image](https://github.com/user-attachments/assets/8a048552-c658-4ee6-99ac-55ea70a61a0e)
+
 
 - 여러 모델의 백테스트 결과 비교
 - 성능 지표 시각화 (총 수익률, 샤프 비율, 최대 낙폭, 승률 등)
@@ -36,23 +44,16 @@ SAC 트레이딩 시스템의 웹 대시보드는 시스템의 모든 측면을 
 - 거래 분포 분석
 - 수익률 분포 및 통계
 
-### 4. 모델 관리
+### 5. 모델 관리
 
-![모델 관리](../web_screenshots/model_management.png)
+![image](https://github.com/user-attachments/assets/ea04140b-13b4-489c-b951-f7203cc2e63d)
+
+![image](https://github.com/user-attachments/assets/72853bc3-165a-4afa-8d28-dcc259a322c7)
 
 - 학습된 모델 목록 및 정보
 - 모델 성능 지표
 - 모델 활성화/비활성화 설정
 - 모델 비교 및 선택
-
-### 5. 설정 및 구성
-
-![설정 화면](../web_screenshots/settings.png)
-
-- 트레이딩 파라미터 설정
-- 데이터 소스 관리
-- 알림 설정
-- 시스템 로그 확인
 
 ## 기술 스택
 
@@ -103,7 +104,7 @@ SAC 트레이딩 시스템의 웹 대시보드는 시스템의 모든 측면을 
 
 ### 파일 모드 실행
 ```bash
-python src/dashboard/run_dashboard.py --data-dir results
+python src/dashboard/run_dashboard.py
 ```
 
 ### 데이터베이스 모드 실행
