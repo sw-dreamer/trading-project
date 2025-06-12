@@ -224,4 +224,4 @@ trading/
 ---
 # 결과 화면
 
-<video src="https://user-images.githubusercontent.com/123456789/your-uploaded-video.mp4" controls width="600"></video>
+<video src="https://github.com/sw-dreamer/trading-project/issues/2#issue-3139508476" controls width="600"></video>
