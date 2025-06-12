@@ -3,7 +3,7 @@
 ## 1. 프로젝트 개요
 - **프로젝트명**: SAC 강화학습 기반 주식 트레이딩 시스템
 - **목적**: Soft Actor-Critic(SAC) 알고리즘을 활용한 주식 트레이딩 시스템 구축
-- **개발환경**: Python 3.10, PyTorch GPU(CUDA), RTX 3080 이상 호환
+- **개발환경**: Python 3.10, PyTorch GPU(CUDA), RTX 1660 이상 호환
 
 ## 2. 프로젝트 구조
 ```
