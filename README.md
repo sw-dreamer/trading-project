@@ -224,6 +224,9 @@ trading/
 ---
 # 결과 화면
 
-## 📹 데모 영상 보기
-
 [▶️ result_video.mp4 직접 보기](https://raw.githubusercontent.com/sw-dreamer/trading-project/master/results/result_video.mp4)
+
+
+https://github.com/user-attachments/assets/4bfb6a06-4185-4a76-a7f1-9845d3369fba
+
+
