@@ -224,6 +224,12 @@ trading/
 - GPU 호환성 문제: CPU 폴백 옵션 구현
 - API 한도 초과: 데이터 캐싱 및 요청 제한 관리
 - 모델 성능 부족: 하이퍼파라미터 튜닝 및 앙상블 방법 고려 
+---
+# 훈련 화면
+
+
+https://github.com/user-attachments/assets/13952cf9-204a-4052-bbb0-63f934e3181a
+
 
 ---
 # 결과 화면
