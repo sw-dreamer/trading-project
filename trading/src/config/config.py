@@ -149,8 +149,8 @@ overlap_ratio = 0.0
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Alpaca API 설정 (페이퍼 트레이딩)
-API_KEY = os.getenv("APCA_API_KEY_ID", "PKA4MWC7J2E7HBJBTK2A")
-API_SECRET = os.getenv("APCA_API_SECRET_KEY", "xDFQSpiVpj9ditsgqZIfjAC9P0dthkuh93p5J0Xx")
+API_KEY = os.getenv("APCA_API_KEY_ID", "PKDNLSCCUDJF3G9I9QYZ")
+API_SECRET = os.getenv("APCA_API_SECRET_KEY", "UIcam0hQK3c6Ve9XDsJ7ZERIHdSepTOlJZZyVOL4")
 BASE_URL = "https://paper-api.alpaca.markets"  # 페이퍼 트레이딩 URL
 DATA_FEED = 'iex'  # 무료 데이터 피드
 DEBUG = True       # 디버그 모드 활성화
